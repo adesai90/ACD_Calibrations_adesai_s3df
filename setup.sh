@@ -16,7 +16,7 @@
 # Set up access to the GLAST (both flight and ground) applications.
 # -----------------------------------------------------------------------------
 
-export GLASTROOT=/afs/slac.stanford.edu/g/glast
+export GLASTROOT=/sdf/group/fermi/a #Old path: /afs/slac.stanford.edu/g/glast
 
 export GROUPSCRIPTS=${GLASTROOT}/ground/scripts
 
@@ -35,14 +35,14 @@ umask 002
 # -----------------------------------------------------------------------------
 # Set up access to the ground software CVS repository.
 # -----------------------------------------------------------------------------
-export CVSROOT=/afs/slac/g/lcls/cvs # Old path: /nfs/slac/g/glast/ground/cvs
+export CVSROOT=/sdf/group/fermi/g/glast_ground/cvs/ # Old path: /nfs/slac/g/glast/ground/cvs
 export CVS_RSH=ssh
 
 # -----------------------------------------------------------------------------
 # set up access to calibration files
 # -----------------------------------------------------------------------------
-export LATCalibRoot=/afs/slac.stanford.edu/g/glast/ground/releases/calibrations/
-export LATMonRoot=/afs/slac.stanford.edu/g/glast/ground/releases/monitor/
+export LATCalibRoot=/sdf/group/fermi/a/ground/releases/calibrations/ #Old path: /afs/slac.stanford.edu/g/glast/ground/releases/calibrations/
+export LATMonRoot=/sdf/group/fermi/a/ground/releases/monitor/ #Old path: /afs/slac.stanford.edu/g/glast/ground/releases/monitor/
 
 # -----------------------------------------------------------------------------
 # Set up access to CMT:
@@ -96,7 +96,7 @@ unameVersion=`uname -r`
 ###export BUILDS=/nfs/farm/g/glast/u09/builds/
 
 # Environment variable for production (vanilla) Engineering Model calibrations
-export EMcalibroot=/afs/slac.stanford.edu/g/glast/ground/EMCalibData
+export EMcalibroot=/sdf/group/fermi/a/ground/EMCalibData #Old path: /afs/slac.stanford.edu/g/glast/ground/EMCalibData
 
 # Set up a default CMTPATH - caveat emptor - users should be careful
 # about setting their own, based on which GLAST applications they want 
@@ -143,7 +143,7 @@ export EMcalibroot=/afs/slac.stanford.edu/g/glast/ground/EMCalibData
 #setenv CLEANFILES      /nfs/farm/g/glast/u01/cleanruns/
 
 # Point to GLAST supported version of xrootd copy
-alias xrdcp='/afs/slac/g/glast/applications/xrootd/PROD/bin/xrdcp'
+alias xrdcp='~/miniconda/envs/acd_test/bin/xrdcp' # NOTE: REPLACE WITH GROUP CONDA ENV!!! Old path: '/afs/slac/g/glast/applications/xrootd/PROD/bin/xrdcp'
 
 # -----------------------------------------------------------------------------
 # Set up Oracle (only possible on Sun).
