@@ -16,4 +16,4 @@ export RDBMODELROOT=$PARENT/rdbmodel
 #unset PYTHONPATH
 #unset LD_LIBRARY_PATH
 #unset DYLD_LIBRARY_PATH
-export PATH=$PARENT/$PATH # NEED this for finding $PARENT files
+export PATH=${PARENT}:${PATH} # NEED this for finding $PARENT files
