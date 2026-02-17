@@ -1,0 +1,32 @@
+Feb 9th,10th:
+-Setup and check
+
+Feb 10th:
+- Setup github in home directory and as public repository to check working
+- Tried to update paths and find path to xrootd, 
+issues found where there are interlinking path to /afs and/nfs directories.
+
+Feb 11th
+- Create new and clean conda environment to test code
+Used: 
+    conda create -n acd_test -c conda-forge python=3.10 fermitools xrootd gcc_linux-64 gxx_linux-64 root
+Note, this might work without fermitools, but adding it here just in case. To troubleshoot make a new version without fermitools to see if it works
+Remember for conda, start with:
+    export CONDA_PREFIX=/sdf/home/a/abhishek/miniconda
+    export PATH=${CONDA_PREFIX}/bin/:$PATH
+    source ${CONDA_PREFIX}/etc/profile.d/conda.sh
+- Made directory releases,wrkdir and python to start working
+- Added config file which is also uploaded to github
+- Made folders as stated in DGreen doc.
+
+Feb 13th
+- Added setup for terminal to fermi environment (can only be run from fermi-devl)
+   For future reference:
+   ssh -Y abhishek@s3dflogin-mfa.slac.stanford.edu
+   ssh fermi-devl
+- Following steps from DGreen doc.
+  Made scons_make like stated and ran cv checkout.
+  Updated mootcore file ... 
+- Issues with python2!!!! and python 3!!!!, cant change every python call...yet.... so changing conda environment
+ new environment (note anydependancies added later are also added in this one path)
+ conda create -n acd_test2 -c conda-forge python=2.7 xrootd root=6.16 scons f2c gfortran gcc_linux-64=7 gxx_linux-64=7 libstdcxx-ng=7

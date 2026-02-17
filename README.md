@@ -9,4 +9,14 @@ Currently, the code uses inner files of GLASTROOT (either in \afs directory or \
 
 # Fix Feb 10 2026:
 - Go though individual paths to make sure that files that are read have no issues of path.
-    -
+Fix 1:  Now the group.sh file that is used to setup config needs to be changed, so instead of export GLASTROOT and then source $GLASTROOT/....group.sh, directly run setup.sh
+
+Fix 2: Fixed a config file and added it to the girthub with the paths, so run source config.sh on sstart and dont make a new config flie
+
+
+# Steps:
+- Download github folder on slac
+- Setup conda environment using (setup.sh for now), later make it accessible by all
+- Run setup.sh and config.sh files found in the git folder. (AD: Merge this in the next version)
+- 
+
