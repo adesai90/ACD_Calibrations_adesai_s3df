@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 if [[ "$1" == "-dumpversion" ]]; then
     echo "4.4"
 elif [[ "$1" == "--version" ]]; then
