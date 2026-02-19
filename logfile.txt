@@ -19,7 +19,7 @@ Remember for conda, start with:
 - Added config file which is also uploaded to github
 - Made folders as stated in DGreen doc.
 
-Feb 13th
+Feb 13th/17th
 - Added setup for terminal to fermi environment (can only be run from fermi-devl)
    For future reference:
    ssh -Y abhishek@s3dflogin-mfa.slac.stanford.edu
@@ -29,4 +29,70 @@ Feb 13th
   Updated mootcore file ... 
 - Issues with python2!!!! and python 3!!!!, cant change every python call...yet.... so changing conda environment
  new environment (note anydependancies added later are also added in this one path)
- conda create -n acd_test2 -c conda-forge python=2.7 xrootd root=6.16 scons f2c gfortran gcc_linux-64=7 gxx_linux-64=7 libstdcxx-ng=7
+ 
+didnt work: 
+ conda create -n acd_test2 -c conda-forge python=2.7 xrootd root=6.16 scons f2c emacs  
+ conda create -n acd_test2 -c conda-forge python=2.7 root=5.34 scons xrootd f2c
+
+testing
+ conda create -n acd_test2 -c conda-forge python=2.7.18 root=6.16.00 xrootd=4.9.1 scons=3.1.2 f2c gcc_linux-64=7 gxx_linux-64=7 gfortran_linux-64=7
+ conda install -c conda-forge gfortran_linux-64
+ conda install cmake
+ conda install -c conda-forge boost
+ conda install -c conda-forge gaudi
+
+-figured out issue with not finding f2c stemns from locate looking in /usr/bin. 
+didnt work: added lines to the setup.sh file to make sure locate reads the correct directory
+ basically:
+ updatedb -l 0 -o $CONDA_PREFIX/locate.db -U $CONDA_PREFIX
+ alias locate='locate -d $CONDA_PREFIX/locate.db'
+finally_worked **** - 
+ ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/f2c/3.4-gl2/gcc44 \
+      /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/f2c/3.4-gl2/gcc85
+ Turns out it was looking for a particular gcc 85 folder in the group directory, added a link to fix it.
+
+
+Feb 19th:
+Still not working:
+- scons is probably loaded from /sdf/data/fermi/n/u52/ReleaseManagerBuild/redhat6-x86_64-64bit-gcc44/Optimized/GlastRelease/20-09-10/sconsTools/
+- The ISSUE IS GCC!!!!!! it keeps on trying to go for gcc85 as thats what it finds, the easiers wau is to make a fake gcc which says it is 4.4 gcc but is not inreality.... 
+mkdir -p ~/fake_gcc
+cat > ~/fake_gcc/g++ << 'EOF'
+#!/bin/bash
+if [[ "$1" == "--version" ]]; then
+    echo "g++ (GCC) 4.4.7"
+else
+    /usr/bin/g++ "$@"
+fi
+EOF
+chmod +x ~/fake_gcc/g++
+
+cat > ~/fake_gcc/gcc << 'EOF'
+#!/bin/bash
+if [[ "$1" == "--version" ]]; then
+    echo "gcc (GCC) 4.4.7"
+else
+    /usr/bin/gcc "$@"
+fi
+EOF
+chmod +x ~/fake_gcc/gcc
+
+
+
+
+
+
+
+
+########################################################################################
+###########
+###########
+###########              IMP NOTES
+###########
+###########
+########################################################################################
+
+Should be done:
+- newer glast_release should be built with latest gcc and linux builds so that compatibility issues are less
+   If that is done though, it should work with the ACD calibs.
+- 

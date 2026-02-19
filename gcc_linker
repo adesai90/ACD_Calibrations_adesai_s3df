@@ -1,0 +1,7 @@
+#!/bin/bash
+if [[ "$*" == *"--version"* ]]; then
+    echo "gcc (GCC) 4.4.0 20120313"
+    echo "Copyright (C) 2010 Free Software Foundation, Inc."
+else
+    exec /usr/bin/gcc "$@"
+fi
