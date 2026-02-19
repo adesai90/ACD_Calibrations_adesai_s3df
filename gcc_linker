@@ -1,7 +1,7 @@
 #!/bin/bash
-if [[ "$*" == *"-dumpversion"* ]]; then
+if [[ "$1" == "-dumpversion" ]]; then
     echo "4.4"
-elif [[ "$*" == *"--version"* ]]; then
+elif [[ "$1" == "--version" ]]; then
     echo "gcc (GCC) 4.4.0"
 else
     exec /usr/bin/gcc "$@"
