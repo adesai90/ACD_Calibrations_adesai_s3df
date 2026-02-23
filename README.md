@@ -18,5 +18,7 @@ Fix 2: Fixed a config file and added it to the girthub with the paths, so run so
 - Download github folder on slac
 - Setup conda environment using (setup.sh for now), later make it accessible by all
 - Run setup.sh and config.sh files found in the git folder. (AD: Merge this in the next version)
-- 
+- MAKE SURE you run cvs checkout in the $RELEASE directory
+- Also make sure scons package has the correct python linked to it in the first line 
+
 

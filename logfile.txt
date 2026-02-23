@@ -37,9 +37,8 @@ didnt work:
 testing
  conda create -n acd_test2 -c conda-forge python=2.7.18 root=6.16.00 xrootd=4.9.1 scons=3.1.2 f2c gcc_linux-64=7 gxx_linux-64=7 gfortran_linux-64=7
  conda install -c conda-forge gfortran_linux-64
- conda install cmake
- conda install -c conda-forge boost
- conda install -c conda-forge gaudi
+- make sure that 1st line python path in scons is changed to /sdf/home/a/abhishek/miniconda/envs/acd_test2/bin/python
+get location by which scons, my path ~/miniconda/envs/acd_test2/bin/scons
 
 -figured out issue with not finding f2c stemns from locate looking in /usr/bin. 
 didnt work: added lines to the setup.sh file to make sure locate reads the correct directory
@@ -56,27 +55,20 @@ Feb 19th:
 Still not working:
 - scons is probably loaded from /sdf/data/fermi/n/u52/ReleaseManagerBuild/redhat6-x86_64-64bit-gcc44/Optimized/GlastRelease/20-09-10/sconsTools/
 - The ISSUE IS GCC!!!!!! it keeps on trying to go for gcc85 as thats what it finds, the easiers wau is to make a fake gcc which says it is 4.4 gcc but is not inreality.... 
-mkdir -p ~/fake_gcc
-cat > ~/fake_gcc/g++ << 'EOF'
-#!/bin/bash
-if [[ "$1" == "--version" ]]; then
-    echo "g++ (GCC) 4.4.7"
-else
-    /usr/bin/g++ "$@"
-fi
-EOF
-chmod +x ~/fake_gcc/g++
+ADDED a gcc_linker in github needs to be run with scons!!!! and also 
+export CXX=/sdf/home/a/abhishek/ACD_calib/ACD_calib_github_software/gpp_linker
+export CC=/sdf/home/a/abhishek/ACD_calib/ACD_calib_github_software/gcc_linker
 
-cat > ~/fake_gcc/gcc << 'EOF'
-#!/bin/bash
-if [[ "$1" == "--version" ]]; then
-    echo "gcc (GCC) 4.4.7"
-else
-    /usr/bin/gcc "$@"
-fi
-EOF
-chmod +x ~/fake_gcc/gcc
-
+Feb20th:
+-scons appear to be running but no mootfile, even after keep config file exactly as given in doc.
+- issue found by
+   '''./scons_make 2>&1 | grep -i "error\|failed\|cannot find\|undefined" | head -30'''
+- issue: SCons import failed. Unable to find engine files in:
+ImportError: No module named SCons.Script
+- turns out scons was not built for python I am using
+****** in ~/miniconda/envs/acd_test2/bin/scons
+change /sdf/home/a/abhishek/miniconda/envs/acd_test2/bin/python
+-
 
 
 
@@ -92,7 +84,7 @@ chmod +x ~/fake_gcc/gcc
 ###########
 ########################################################################################
 
-Should be done:
+To be done:
 - newer glast_release should be built with latest gcc and linux builds so that compatibility issues are less
    If that is done though, it should work with the ACD calibs.
 - 
