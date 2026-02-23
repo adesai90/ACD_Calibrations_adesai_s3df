@@ -17,4 +17,5 @@ source ${CONDA_PREFIX}/etc/profile.d/conda.sh
 conda activate acd_test2
 source ${MY_DIR}/ACD_calib_github_software/config.sh
 source ${MY_DIR}/ACD_calib_github_software/setup.sh
-source ${RELEASE}_setup.sh
+source ${RELEASE}/_setup.sh
+cd ${RELEASE}/workdir
