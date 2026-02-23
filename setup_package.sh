@@ -32,15 +32,18 @@ fi
 # Setting up environments
 
 cd releases/GR-20-09-10/
-cvs checkout calibGenACD
-cvs checkout mootCore
-sed -i "s/if 'CHS' in progEnv.Dictionary()\['CPPDEFINES'\]:/#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\n    if True:/" mootCore/SConscript.sh
+read -p "Add calibGebACD, mootcore and links to home directory? (yes/no): " answer
+if [ "$answer" = "yes" ]; then
+    cvs checkout calibGenACD
+    cvs checkout mootCore
+    perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript
+    PARENT_LIB=/sdf/group/fermi/n/u52/ReleaseManagerBuild/redhat6-x86_64-64bit-gcc44/Optimized/GlastRelease/20-09-10/lib/redhat6-x86_64-64bit-gcc44-Optimized/
+    LOCAL_LIB=${MY_DIR}/releases/GR-20-09-10/lib/redhat8-x86_64-64bit-gcc44-Optimized/
+    cd $LOCAL_LIB
+    for lib in $PARENT_LIB/lib*.so $PARENT_LIB/lib*.a; do     ln -sf $lib $LOCAL_LIB/$(basename $lib); done
+fi
 
 # Linking all the libraries correctly!
-PARENT_LIB=/sdf/group/fermi/n/u52/ReleaseManagerBuild/redhat6-x86_64-64bit-gcc44/Optimized/GlastRelease/20-09-10/lib/redhat6-x86_64-64bit-gcc44-Optimized/
-LOCAL_LIB=${MY_DIR}/releases/GR-20-09-10/lib/redhat8-x86_64-64bit-gcc44-Optimized/
-cd $LOCAL_LIB
-for lib in $PARENT_LIB/lib*.so $PARENT_LIB/lib*.a; do     ln -sf $lib $LOCAL_LIB/$(basename $lib); done
 
 
 cd ${MY_DIR}
@@ -52,5 +55,5 @@ if [ "$answer" = "yes" ]; then
     scons -i -C ${PARENT} --with-GLAST-EXT=${GLAST_EXT} --duplicate=soft-copy \
     --exclude=workdir --supersede=${RELEASE} --rm --compile-opt \
     --with-cc=${MY_DIR}/ACD_calib_github_software/gcc_linker \
-    --with-cxx=${MY_DIR}/ACD_calib_github_software/gpp_linker --debug=explain $* > ${MY_DIR}/ACD_calib/build_out.log 2> ${MY_DIR}/ACD_calib/build_err.log
+    --with-cxx=${MY_DIR}/ACD_calib_github_software/gpp_linker --debug=explain $* > build_out.log 2> build_err.log
 fi
