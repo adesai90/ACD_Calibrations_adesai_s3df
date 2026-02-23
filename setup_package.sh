@@ -37,10 +37,10 @@ if [ "$answer" = "yes" ]; then
     cvs checkout calibGenACD
     cvs checkout mootCore
     perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript
-    PARENT_LIB=/sdf/group/fermi/n/u52/ReleaseManagerBuild/redhat6-x86_64-64bit-gcc44/Optimized/GlastRelease/20-09-10/lib/redhat6-x86_64-64bit-gcc44-Optimized/
-    LOCAL_LIB=${MY_DIR}/releases/GR-20-09-10/lib/redhat8-x86_64-64bit-gcc44-Optimized/
-    cd $LOCAL_LIB
-    for lib in $PARENT_LIB/lib*.so $PARENT_LIB/lib*.a; do     ln -sf $lib $LOCAL_LIB/$(basename $lib); done
+    #PARENT_LIB=/sdf/group/fermi/n/u52/ReleaseManagerBuild/redhat6-x86_64-64bit-gcc44/Optimized/GlastRelease/20-09-10/lib/redhat6-x86_64-64bit-gcc44-Optimized/
+    #LOCAL_LIB=${MY_DIR}/releases/GR-20-09-10/lib/redhat8-x86_64-64bit-gcc44-Optimized/
+    #cd $LOCAL_LIB
+    #for lib in $PARENT_LIB/lib*.so $PARENT_LIB/lib*.a; do     ln -sf $lib $LOCAL_LIB/$(basename $lib); done
 fi
 
 # Linking all the libraries correctly!
@@ -50,9 +50,11 @@ cd ${MY_DIR}
 export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
 
 # SCONS_MAKE FILE
-read -p "Run Scons? (yes/no): " answer
+read -p "Run Scons, this will take some time? (yes/no): " answer
 if [ "$answer" = "yes" ]; then
-    scons -i -C ${PARENT} --with-GLAST-EXT=${GLAST_EXT} --duplicate=soft-copy \
+    echo "Starting Scons build...do not interrupt!"
+    scons -i -C ${PARENT} --variant=redhat6-x86_64-64bit-gcc44-Optimized \
+    --with-GLAST-EXT=${GLAST_EXT} --duplicate=soft-copy \
     --exclude=workdir --supersede=${RELEASE} --rm --compile-opt \
     --with-cc=${MY_DIR}/ACD_calib_github_software/gcc_linker \
     --with-cxx=${MY_DIR}/ACD_calib_github_software/gpp_linker --debug=explain $* > build_out.log 2> build_err.log

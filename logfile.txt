@@ -68,10 +68,24 @@ ImportError: No module named SCons.Script
 - turns out scons was not built for python I am using
 ****** in ~/miniconda/envs/acd_test2/bin/scons
 change /sdf/home/a/abhishek/miniconda/envs/acd_test2/bin/python
--
+- ISSUE calibGenACD/ and  mootCore/ are not in $RELEASE
+- ok now we are installing.
+- make sure scons is run with ./scons_make > /sdf/home/a/abhishek/ACD_calib/build_out.log 2> /sdf/home/a/abhishek/ACD_calib/build_err.log to troubleshoot
+- PARENT_LIB=/sdf/group/fermi/n/u52/ReleaseManagerBuild/redhat6-x86_64-64bit-gcc44/Optimized/GlastRelease/20-09-10/lib/redhat6-x86_64-64bit-gcc44-Optimized/
+(acd_test2) [abhishek@sdfiana021 ACD_calib]$ LOCAL_LIB=/sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/lib/redhat8-x86_64-64bit-gcc44-Optimized
+(acd_test2) [abhishek@sdfiana021 ACD_calib]$ LOCAL_LIB=/sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/lib/redhat8-x86_64-64bit-gcc44-Optimized/
+(acd_test2) [abhishek@sdfiana021 ACD_calib]$ cd $LOCAL_LIB
+(acd_test2) [abhishek@sdfiana021 redhat8-x86_64-64bit-gcc44-Optimized]$ for lib in $PARENT_LIB/lib*.so $PARENT_LIB/lib*.a; do
+>     ln -sf $lib $LOCAL_LIB/$(basename $lib)
+> done
 
-
-
+Feb 23:
+-Issue with how the ACD calibrations was built, turns out there was a possible cxx version mismatch. To fix it 
+while using scons_make add argument -D_GLIBCXX_USE_CXX11_ABI=0 , This tells gcc to use the old ABI compatible with the parent libs. 
+-Modifying setup_init and setup_package files as there is a lot of commands now
+- Still finding an issue, as linking the files gets overwritten by fresh install, solution check if sconstruct is detecting the directory in some manner,
+- Found with claude that there is a simpler way to override the system mismathc, You can override the variant directly! Add --variant to your scons call:
+-adding --variant=redhat6-x86_64-64bit-gcc44-Optimized to scons 
 
 
 
