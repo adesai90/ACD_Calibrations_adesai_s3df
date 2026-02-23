@@ -1,5 +1,5 @@
 # =============================================================================
-# CODE to setup ACD calibrations in user directory
+# CODE to install ACD calibrations in user directory
 # -----------------------------------------------------------------------------
 #
 # Assumes you have a working conda environment
@@ -37,10 +37,6 @@ if [ "$answer" = "yes" ]; then
     cvs checkout calibGenACD
     cvs checkout mootCore
     perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript
-    #PARENT_LIB=/sdf/group/fermi/n/u52/ReleaseManagerBuild/redhat6-x86_64-64bit-gcc44/Optimized/GlastRelease/20-09-10/lib/redhat6-x86_64-64bit-gcc44-Optimized/
-    #LOCAL_LIB=${MY_DIR}/releases/GR-20-09-10/lib/redhat8-x86_64-64bit-gcc44-Optimized/
-    #cd $LOCAL_LIB
-    #for lib in $PARENT_LIB/lib*.so $PARENT_LIB/lib*.a; do     ln -sf $lib $LOCAL_LIB/$(basename $lib); done
 fi
 
 # Linking all the libraries correctly!

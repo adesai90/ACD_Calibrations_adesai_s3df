@@ -86,8 +86,16 @@ while using scons_make add argument -D_GLIBCXX_USE_CXX11_ABI=0 , This tells gcc 
 - Still finding an issue, as linking the files gets overwritten by fresh install, solution check if sconstruct is detecting the directory in some manner,
 - Found with claude that there is a simpler way to override the system mismathc, You can override the variant directly! Add --variant to your scons call:
 -adding --variant=redhat6-x86_64-64bit-gcc44-Optimized to scons 
+- Ran for everything except:
+sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/calibGenACD/build/redhat6-x86_64-64bit-gcc44-Optimized/apps/runOverlayPedestal.o
+/sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/calibGenACD/build/redhat6-x86_64-64bit-gcc44-Optimized/runOverlayPedestal
+/sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/src/MootQuery.os
+/sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/libmootCore.so
+1st 2 are expected, bothom 2 might be an issue
 
-
+------ Moving to steps beyonf scons:
+- Make python and workdir directories in $RELEASE
+- cp $RELEASE/mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/src/py_mootCore.py $RELEASE/python/
 
 
 ########################################################################################
