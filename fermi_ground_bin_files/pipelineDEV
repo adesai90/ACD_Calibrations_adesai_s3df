@@ -1,0 +1,17 @@
+#!/bin/bash                                                                                              
+export JAVAVER=1.6
+source /sdf/group/fermi/kube/oracle/bin/setup-11g-j7.sh
+export PIPELINE_VER=1.5
+export RELEASE_DIR=/sdf/group/fermi/kube/pipeline-II/dev/jars-v${PIPELINE_VER}
+export RELEASE_VER=1.2
+
+#export URL="http://glast-ground.slac.stanford.edu/GroupManager"                                         
+export URL="http://glast-tomcat01.slac.stanford.edu:8080/GroupManager"
+
+
+${JAVA_HOME}/bin/java -Doracle.jdbc.J2EE13Compliant=true \
+                      -Dexperiment.groupmanager.url=${URL} \
+                      -Dpipeline.experiment=Fermi \
+                      -Ddb.alias=DEV \
+                      -Djava.util.logging.config.file=client-logging.properties \
+                      -jar ${RELEASE_DIR}/org-srs-pipeline-client-${RELEASE_VER}.jar "$@"

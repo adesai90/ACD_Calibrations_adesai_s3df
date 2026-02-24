@@ -9,6 +9,7 @@
 # conda create -n acd_test2 -c conda-forge python=2.7.18 root=6.16.00 xrootd=4.9.1 scons=3.1.2 f2c gcc_linux-64=7 gxx_linux-64=7 gfortran_linux-64=7
 #
 # Initialize:
+git_dir=$(pwd)
 cd ..
 MY_DIR=$(pwd)
 export CONDA_PREFIX=/sdf/home/a/abhishek/miniconda
@@ -55,3 +56,14 @@ if [ "$answer" = "yes" ]; then
     --with-cc=${MY_DIR}/ACD_calib_github_software/gcc_linker \
     --with-cxx=${MY_DIR}/ACD_calib_github_software/gpp_linker --debug=explain $* > build_out.log 2> build_err.log
 fi
+
+echo "Scons command ran, check build files for log and error, fixing some harcoded paths now"
+
+cp -r ${git_dir}/fermi_ground_bin_files ${RELEASE}/fermi_ground_bin_files
+
+perl -i -pe 's|/afs/slac/g/glast/|${RELEASE}/fermi_ground_bin_files|g' \
+    ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/ParseFileListNew.py \
+    ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/ParseFileList.py \
+    ${MY_DIR}/releases/GR-20-09-10/mootCore/cmt/requirements
+
+# If you want to manually check if there are /afs paths, run grep -rn "/afs/slac/g/glast/" /sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/ 2>/dev/null

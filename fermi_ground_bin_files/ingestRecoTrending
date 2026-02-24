@@ -1,0 +1,2 @@
+echo "Exiting. NOTE You need to change ingestRecoTrending in fermi_ground_bin_files as the original links point to ../dataQualityMonitoring/bin/ingestRecoTrending"
+exit 1

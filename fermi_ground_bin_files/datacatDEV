@@ -1,0 +1,8 @@
+#!/bin/bash                                                                                              
+source /sdf/group/fermi/kube/oracle/bin/setup-11g-j7.sh
+
+export RELEASE_DIR=/sdf/group/fermi/kube/datacatalog/prod/jars
+export RELEASE_VER=2.5.2
+
+${JAVA_HOME}/bin/java -Doracle.jdbc.J2EE13Compliant=true -Ddb.alias=DEV -jar ${RELEASE_DIR}/org-srs-data\
+cat-client-${RELEASE_VER}.jar "$@"

@@ -1,0 +1,44 @@
+#!/bin/bash                                                                                              
+source /sdf/group/fermi/sw/oracle/oracle-12.2.0.1.0/setup.sh
+export JAVA_HOME=/sdf/group/fermi/sw/java/jdk/jdk8
+export TNS_ADMIN=~glast/a/oracle/admin/
+
+export PIPELINE_VER=1.5
+
+export BASEDIR="/sdf/home/g/glast/a/pipeline-II/prod"
+
+export RELEASE_DIR=${BASEDIR}/jars-v${PIPELINE_VER}
+export RELEASE_VER=1.2
+#Mode:                                                                                                   
+export MODE=PROD
+#export MODE=DEV                                                                                         
+#export MODE=TEST                                                                                        
+
+#Experiment:                                                                                             
+export EXPERIMENT=Fermi
+#export URL="http://glast-ground.slac.stanford.edu/GroupManager"      
+export URL="http://glast-tomcat01.slac.stanford.edu:8080/GroupManager"
+
+# NOTE THIS URL MIGHT NEED UPDATING!
+# ADDED THE FOLLOWING CONDITION JUST TO MAKE SURE
+read -p "Continue with using URL="https://glast-ground.slac.stanford.edu/GroupManager/"? (yes/no): " answer
+if [ "$answer" = "yes" ]; then
+    echo "Continuing..."
+    export URL="https://glast-ground.slac.stanford.edu/GroupManager/"
+    # rest of your script
+else
+    echo "Exiting."
+    exit 1
+fi
+
+
+#export EXPERIMENT=Srs                                                                                   
+#export URL="http://srs.slac.stanford.edu/GroupManager"                                                  
+
+${JAVA_HOME}/bin/java -Doracle.jdbc.J2EE13Compliant=true \
+                      -Dexperiment.groupmanager.url=${URL} \
+                      -Dpipeline.experiment=${EXPERIMENT} \
+                      -Ddb.alias=${MODE} \
+                      -Djava.util.logging.config.file=client-logging.properties \
+                      -jar ${RELEASE_DIR}/org-srs-pipeline-client-${RELEASE_VER}.jar "$@"
+

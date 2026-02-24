@@ -1,0 +1,10 @@
+#!/bin/sh                                                                                                
+read -p "This is using old afs!!!! specifically /afs/slac/g/glast/ground/trendableData/bin/trendableData Continue? (yes/no): " answer
+if [ "$answer" = "yes" ]; then
+    echo "Continuing..."
+    /afs/slac/g/glast/ground/trendableData/bin/trendableData org.glast.trendabledata.fill.AddDataToDataEntry $*
+    # rest of your script
+else
+    echo "Exiting. NOTE You need to change createTrendableData in fermi_ground_bin_files"
+    exit 1
+fi
