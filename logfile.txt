@@ -93,19 +93,51 @@ sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/calibGenACD/build/redhat6-x86
 /sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/libmootCore.so
 1st 2 are expected, bothom 2 might be an issue
 
+Feb 23-27
 -Now the issue is the hardcoded /afs paths!
 finding them: grep -rn "/afs/slac/g/glast/" /sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/ 2>/dev/null
 and manually replace them with "/sdf/group/fermi/a/"
 - added it to scons setup so this is done automatically
+- GOT ERROR! It is calling internal old data files,
+    to resolve this, I made a new folder called fermi_ground_bin_files and copied all the files from /u'gl folder there
+    in fermi_ground_bin_files find internal paths using find /sdf/group/fermi -type d -name "oracle" 2>/dev/null
+/sdf/group/fermi/kube/oracle
+
+
+
 
 
 ------ Moving to steps beyonf scons:
 - Make python and workdir directories in $RELEASE
 - cp $RELEASE/mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/src/py_mootCore.py $RELEASE/python/
--- did not follow one instruction from Dgreen : Copy all of .cxx
-and .h files in /nfs/farm/g/glast/u/damgreen/releases/GR-20-09-10_TEST/calibGenACD/src/
-to your $RELEASE/calibGenAD/src/ folder.
+-- (not required Mostly) did not follow one instruction from Dgreen : Copy all of .cxx and .h files in /nfs/farm/g/glast/u/damgreen/releases/GR-20-09-10_TEST/calibGenACD/src/ to your $RELEASE/calibGenAD/src/ folder.
 
+- GOT ERROR while parsing files in ParseFileListNew.py Digi, 
+    ValueError: could not convert string to float: enJDK 64-
+    dataCatLine = "%s find --sort nMetStart --group %s /Data/Flight/Level1/LPA/ > %s"%(DATACATBIN,group,dataCatList)
+    replaced using 
+    perl -i -pe 's|/Data/Flight/Level1/LPA/ > %s|/Data/Flight/Level1/LPA/ 2>\\/dev\\/null \| grep \x27^root:\\/\\/\x27 > %s|' ParseFileListNew.py
+    -this removes a java warning which causes issues while re-reading DIGI*.lists!
+    ADDED IN SETUP Package so no need to do anything
+
+- NOTE: To make sure everything runs in workdirectory run from workdir.
+(maybe make a code to run these simply....)
+- 
+
+
+
+
+########################################################################################
+###########
+###########
+###########              AFTER INSTALL
+###########
+###########
+########################################################################################
+
+- IN workdir:
+- Ran python $RELEASE/calibGenACD/python/ParseFileListNew.py DIGI
+- Ran python $RELEASE/calibGenACD/python/ParseFileListNew.py RECON
 
 
 ########################################################################################

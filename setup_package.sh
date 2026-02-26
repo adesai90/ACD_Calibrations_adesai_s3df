@@ -59,11 +59,14 @@ fi
 
 echo "Scons command ran, check build files for log and error, fixing some harcoded paths now"
 
-cp -r ${git_dir}/fermi_ground_bin_files ${RELEASE}/fermi_ground_bin_files
+cp -r ${git_dir}/fermi_ground_bin_files PN
 
-perl -i -pe 's|/afs/slac/g/glast/|${RELEASE}/fermi_ground_bin_files|g' \
+perl -i -pe 's|/afs/slac/g/glast/ground/bin/|${RELEASE}/fermi_ground_bin_files|g' \
     ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/ParseFileListNew.py \
     ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/ParseFileList.py \
     ${MY_DIR}/releases/GR-20-09-10/mootCore/cmt/requirements
 
 # If you want to manually check if there are /afs paths, run grep -rn "/afs/slac/g/glast/" /sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/ 2>/dev/null
+
+cd ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/
+perl -i -pe 's|/Data/Flight/Level1/LPA/ > %s|/Data/Flight/Level1/LPA/ 2>\\/dev\\/null \| grep \x27^root:\\/\\/\x27 > %s|' ParseFileListNew.py
