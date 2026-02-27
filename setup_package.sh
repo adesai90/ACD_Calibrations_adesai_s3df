@@ -70,3 +70,23 @@ perl -i -pe 's|/afs/slac/g/glast/ground/bin/|${RELEASE}/fermi_ground_bin_files|g
 
 cd ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/
 perl -i -pe 's|/Data/Flight/Level1/LPA/ > %s|/Data/Flight/Level1/LPA/ 2>\\/dev\\/null \| grep \x27^root:\\/\\/\x27 > %s|' ParseFileListNew.py
+
+
+read -p "Modify AcdReportUtil.py, to writte to local working directory instead of latmonroot? (yes/no): " answer
+if [ "$answer" = "yes" ]; then
+    LOCAL_OUT="./acd_output"
+    FILE=${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/AcdReportUtil.py
+    perl -i -pe 's|(ACDMONROOT = os\.path\.join.*\n)|$1LOCAL_OUTDIR = os.environ.get("ACD_LOCAL_OUT", "./acd_output")\n os.makedirs(LOCAL_OUTDIR) if not os.path.exists(LOCAL_OUTDIR) else None\n|' $FILE
+    perl -i -pe 's|(    outFileName = inFileName \+ ".bak")|    #$1\n    outFileName = os.path.join(LOCAL_OUTDIR, os.path.basename(inFileName) + ".bak")|g' $FILE
+    perl -i -pe 's|(    outFileName = indexFileName \+ ".bak")|    #$1\n    outFileName = os.path.join(LOCAL_OUTDIR, os.path.basename(indexFileName) + ".bak")|g' $FILE
+    perl -i -pe 's|^(    os\.rename\(outFileName,inFileName\))|    #$1|g' $FILE
+    perl -i -pe 's|^(    os\.rename\(outFileName,indexFileName\))|    #$1|g' $FILE
+    perl -i -pe 's|^(        os\.rename\(os\.path\.join.*\))|        #$1|g' $FILE
+    echo "Changes made!"
+
+read -p "Add links to local libraries? (yes/no): " answer
+if [ "$answer" = "yes" ]; then
+    mkdir -p ${MY_DIR}/local_libs
+    ln -sf /lib64/libcrypto.so.3 ${MY_DIR}/local_libs/libcrypto.so.10
+    ln -sf /lib64/libssl.so.3 ${MY_DIR}/local_libs/libssl.so.10
+    export LD_LIBRARY_PATH=${MY_DIR}/local_libs:$LD_LIBRARY_PATH

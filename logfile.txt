@@ -122,7 +122,8 @@ and manually replace them with "/sdf/group/fermi/a/"
 
 - NOTE: To make sure everything runs in workdirectory run from workdir.
 (maybe make a code to run these simply....)
-- 
+- Changed export LATMonRoot=${RELEASE}/workdir from LATMonRoot=/sdf/group/fermi/a/ground/releases/monitor/
+
 
 
 
@@ -138,6 +139,11 @@ and manually replace them with "/sdf/group/fermi/a/"
 - IN workdir:
 - Ran python $RELEASE/calibGenACD/python/ParseFileListNew.py DIGI
 - Ran python $RELEASE/calibGenACD/python/ParseFileListNew.py RECON
+- Ran python $RELEASE/calibGenACD/python/AcdWeeklyReport.py 'run' -w 500 DIGI_260226.table RECON_260226.table
+- The AcdReportUtil.py files rewrites files in the group directory, modified them to write files to the local working directory, code added to setup.
+- #### AD: Check with Liz if everything works well and if we need to change LATMonRoot directly, if so the changes made needs to be reversed.
+- to run, files commented out os.system(runString) in acdweeklyreport
+- Issue with xquarts showing the gui for me, so restarted xquarts and ran xhost + in it and then restared again
 
 
 ########################################################################################

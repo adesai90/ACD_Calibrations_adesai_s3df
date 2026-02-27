@@ -19,3 +19,12 @@ source ${MY_DIR}/ACD_calib_github_software/config.sh
 source ${MY_DIR}/ACD_calib_github_software/setup.sh
 source ${RELEASE}/_setup.sh
 cd ${RELEASE}/workdir
+export LD_LIBRARY_PATH=${MY_DIR}/local_libs:$LD_LIBRARY_PATH
+export LIBGL_ALWAYS_INDIRECT=1
+export LIBGL_ALWAYS_SOFTWARE=1
+export MESA_LOADER_DRIVER_OVERRIDE=softpipe
+export ROOTSYS_NO_GL=1
+export GDK_GL=disable
+
+# Force ROOT to use pure X11 backend
+export ROOTENV_NO_OPENGL=1
