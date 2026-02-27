@@ -6,7 +6,7 @@
 #
 # If not use: 
 #
-# conda create -n acd_test2 -c conda-forge python=2.7.18 root=6.16.00 xrootd=4.9.1 scons=3.1.2 f2c gcc_linux-64=7 gxx_linux-64=7 gfortran_linux-64=7 libtiff=3.9.7
+# conda create -n acd_test2 -c conda-forge python=2.7.18 root=6.16.00 xrootd=4.9.1 scons=3.1.2 f2c gcc_linux-64=7 gxx_linux-64=7 gfortran_linux-64=7 libtiff
 # 
 #
 # Initialize:
@@ -91,3 +91,8 @@ if [ "$answer" = "yes" ]; then
     ln -sf /lib64/libcrypto.so.3 ${MY_DIR}/local_libs/libcrypto.so.10
     ln -sf /lib64/libssl.so.3 ${MY_DIR}/local_libs/libssl.so.10
     export LD_LIBRARY_PATH=${MY_DIR}/local_libs:$LD_LIBRARY_PATH
+
+read -p "Add to root paths to make sure there are no error? (yes/no): " answer
+if [ "$answer" = "yes" ]; then
+    cd $git_dir
+    ./update_canvas_code.pl ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdCalibUtil.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdPadMap.cxx
