@@ -10,9 +10,9 @@
 # Steps:
 - Download github folder on slac
 - Setup conda environment using (setup.sh for now), later make it accessible by all
-- Create Conda environment for install using \\ conda create -n acd_test2 -c conda-forge python=2.7.18 root=6.16.00 xrootd=4.9.1 scons=3.1.2 f2c gcc_linux-64=7 gxx_linux-64=7 gfortran_linux-64=7 libtiff \\
+- Create Conda environment for install using ``` conda create -n acd_test2 -c conda-forge python=2.7.18 root=6.16.00 xrootd=4.9.1 scons=3.1.2 f2c gcc_linux-64=7 gxx_linux-64=7 gfortran_linux-64=7 libtiff ```
 - Check and run setup_package.sh which should do eveything for you! 
-- Note that the ACD files are run using for example $RELEASE/calibGenACD/python/AcdWeeklyReport.py in the workdirectory if required.
+- Note that the ACD files are run using for example ```$RELEASE/calibGenACD/python/AcdWeeklyReport.py``` in the workdirectory if required.
 - The ACD codes try to write in the /sdf/group directory currently
 
 # Possbile errors:
