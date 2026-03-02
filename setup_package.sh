@@ -95,4 +95,4 @@ if [ "$answer" = "yes" ]; then
 read -p "Add to root paths to make sure there are no error? (yes/no): " answer
 if [ "$answer" = "yes" ]; then
     cd $git_dir
-    ./update_canvas_code.pl ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdCalibUtil.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdPadMap.cxx
+    ./update_canvas_code.pl
