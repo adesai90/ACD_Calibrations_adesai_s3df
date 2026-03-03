@@ -107,7 +107,7 @@ and manually replace them with "/sdf/group/fermi/a/"
 
 
 
------- Moving to steps beyonf scons:
+------ Moving to steps beyonf scons (Feb 27, March 1st week):
 - Make python and workdir directories in $RELEASE
 - cp $RELEASE/mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/src/py_mootCore.py $RELEASE/python/
 -- (not required Mostly) did not follow one instruction from Dgreen : Copy all of .cxx and .h files in /nfs/farm/g/glast/u/damgreen/releases/GR-20-09-10_TEST/calibGenACD/src/ to your $RELEASE/calibGenAD/src/ folder.
@@ -124,7 +124,7 @@ and manually replace them with "/sdf/group/fermi/a/"
 (maybe make a code to run these simply....)
 - Changed export LATMonRoot=${RELEASE}/workdir from LATMonRoot=/sdf/group/fermi/a/ground/releases/monitor/
 
-
+- NOTE: EVERYTHING STARTS RUNNING IN INTERACTIVE MODE 
 
 
 
@@ -152,12 +152,19 @@ and manually replace them with "/sdf/group/fermi/a/"
 ########################################################################################
 ###########
 ###########
-###########              IMP NOTES
+###########              ISSUES/Notes for s3df paths
 ###########
 ###########
 ########################################################################################
 
-To be done:
-- newer glast_release should be built with latest gcc and linux builds so that compatibility issues are less
-   If that is done though, it should work with the ACD calibs.
-- 
+
+- using /sdf/group/fermi/kube/oracle/
+- Reading files from /sdf/group/fermi/a
+- Trying to write files to /sdf/group/fermi/a/ground/releases/monitor/ACD/FLIGHT/
+- Trying to write files to /sdf/group/fermi/a/ground/releases/monitor/ACD/FLIGHT/
+- Is also trying to replace some files: mv: replace '/sdf/group/fermi/a/ground/releases/monitor/ACD/FLIGHT/ThreshVeto/trend/trend_veto.root'
+- addtrendabledata, addtrendablemetadata, ingestDigiTrending and ingestRecoTrending paths not set
+- pipeline/pipelinedev needs updated paths
+- the file update_canvas_code.pl is used to fixed ROOT errors, but this might not be required as root errors are not found anymore for interactive sessions.
+- If running from workdir use python $RELEASE/calibGenACD/python/Acd.....py
+
