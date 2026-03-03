@@ -38,7 +38,7 @@ read -p "Add calibGebACD, mootcore and links to home directory? (yes/no): " answ
 if [ "$answer" = "yes" ]; then
     cvs checkout calibGenACD
     cvs checkout mootCore
-    perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript
+    perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript #This is from the installation instructions on DGreen
 fi
 
 # Linking all the libraries correctly!
