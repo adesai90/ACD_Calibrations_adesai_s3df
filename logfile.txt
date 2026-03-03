@@ -143,7 +143,10 @@ and manually replace them with "/sdf/group/fermi/a/"
 - The AcdReportUtil.py files rewrites files in the group directory, modified them to write files to the local working directory, code added to setup.
 - #### AD: Check with Liz if everything works well and if we need to change LATMonRoot directly, if so the changes made needs to be reversed.
 - to run, files commented out os.system(runString) in acdweeklyreport
+
+-Lots of Root libraries issue, ran conda install -c conda-forge libtiff=3.9.7
 - Issue with xquarts showing the gui for me, so restarted xquarts and ran xhost + in it and then restared again
+- NOTE: got random issue wuth libraries so had to do a library fix, added in setup file
 
 
 ########################################################################################
