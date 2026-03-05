@@ -133,6 +133,8 @@ else
     echo "               and  python setup.py install --user"
     echo "               and export PATH=/sdf/home/a/abhishek/.local/bin:$PATH"
     echo "######################################################################"
+    source ${MY_DIR}/ACD_calib_github_software/op2_config.sh
+    source ${MY_DIR}/ACD_calib_github_software/op2_setup.sh
     
     
 
