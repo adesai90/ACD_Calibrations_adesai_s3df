@@ -12,7 +12,7 @@
 # Initialize:
 
 
-git_dir=${pwd}
+git_dir=$(pwd)
 echo "Git dir is ${git_dir}"
 
 if [ -d "${git_dir}/calibGenACD-master" ]; then
