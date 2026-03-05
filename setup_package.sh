@@ -13,6 +13,7 @@
 
 
 git_dir=${pwd}
+echo "Git dir is ${git_dir}"
 
 if [ -d "${git_dir}/calibGenACD-master" ]; then
     echo "Fermi calibGenACD git directory found."
