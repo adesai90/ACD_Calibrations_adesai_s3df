@@ -17,7 +17,7 @@ export MODE=PROD
 #Experiment:                                                                                             
 export EXPERIMENT=Fermi
 #export URL="http://glast-ground.slac.stanford.edu/GroupManager"      
-export URL="http://glast-tomcat01.slac.stanford.edu:8080/GroupManager"
+#export URL="http://glast-tomcat01.slac.stanford.edu:8080/GroupManager"
 
 # NOTE THIS URL MIGHT NEED UPDATING!
 # ADDED THE FOLLOWING CONDITION JUST TO MAKE SURE

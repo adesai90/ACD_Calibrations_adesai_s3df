@@ -1,0 +1,20 @@
+#! /bin/sh
+export SCONS_REL=20-09-10
+export SCONS_VARIANT=redhat6-x86_64-64bit-gcc44
+export SCONS_VERSION=Optimized
+export SCONS_TOTAL=${SCONS_VARIANT}-${SCONS_VERSION}
+export SCONS_BUILDS=/nfs/farm/g/glast/u52/ReleaseManagerBuild
+export GLAST_EXT_BASE=/afs/slac/g/glast/ground/GLAST_EXT
+export GLAST_EXT=${GLAST_EXT_BASE}/${SCONS_VARIANT}
+export PARENT=${SCONS_BUILDS}/${SCONS_VARIANT}/${SCONS_VERSION}/GlastRelease/${SCONS_REL}
+export RELEASE=/afs/slac/g/glast/users/username/releases/GR-${SCONS_REL}
+export INST_DIR=$RELEASE
+export BASE_DIR=$PARENT
+export CALIBGENACDROOT=$RELEASE/calibGenACD/
+export FACILITIESROOT=$PARENT/facilities
+export RDBMODELROOT=$PARENT/rdbmodel
+#unset PYTHONPATH
+#unset LD_LIBRARY_PATH
+#unset DYLD_LIBRARY_PATH
+export PATH=${PARENT}:${PATH} # NEED this for finding $PARENT files
+export MOOT_ARCHIVE=/afs/slac.stanford.edu/g/glast/moot/archive-mood 

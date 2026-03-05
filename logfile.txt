@@ -127,6 +127,18 @@ and manually replace them with "/sdf/group/fermi/a/"
 - NOTE: EVERYTHING STARTS RUNNING IN INTERACTIVE MODE 
 
 
+########################################################################################
+###########
+###########
+###########              Post Collaboration meeting
+###########
+###########
+########################################################################################
+
+-added opton for both setup with and without rehl6 container 
+-reinstalled the software.
+
+
 
 ########################################################################################
 ###########
@@ -152,7 +164,7 @@ and manually replace them with "/sdf/group/fermi/a/"
 ########################################################################################
 ###########
 ###########
-###########              ISSUES/Notes for s3df paths
+###########              Notes for s3df paths
 ###########
 ###########
 ########################################################################################
@@ -160,7 +172,8 @@ and manually replace them with "/sdf/group/fermi/a/"
 
 - using /sdf/group/fermi/kube/oracle/
 - Reading files from /sdf/group/fermi/a
-- Trying to write files to /sdf/group/fermi/a/ground/releases/monitor/ACD/FLIGHT/
+- Trying to write files to /sdf/group/fermi/a/ground/releases/monitor/ACD/FLIGHT/----- archival
+/sdf/group/fermi/ground/releases/monitor/ACD/ -write here dont use /a/...
 - Trying to write files to /sdf/group/fermi/a/ground/releases/monitor/ACD/FLIGHT/
 - Is also trying to replace some files: mv: replace '/sdf/group/fermi/a/ground/releases/monitor/ACD/FLIGHT/ThreshVeto/trend/trend_veto.root'
 - addtrendabledata, addtrendablemetadata, ingestDigiTrending and ingestRecoTrending paths not set
