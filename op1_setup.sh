@@ -16,7 +16,7 @@
 # Set up access to the GLAST (both flight and ground) applications.
 # -----------------------------------------------------------------------------
 
-export GLASTROOT=/sdf/group/fermi/ #Old path: /afs/slac.stanford.edu/g/glast
+export GLASTROOT=/sdf/group/fermi/a/ #Old path: /afs/slac.stanford.edu/g/glast
 
 export GROUPSCRIPTS=${GLASTROOT}/ground/scripts
 
