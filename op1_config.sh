@@ -17,4 +17,4 @@ export RDBMODELROOT=$PARENT/rdbmodel
 #unset LD_LIBRARY_PATH
 #unset DYLD_LIBRARY_PATH
 export PATH=${PARENT}:${PATH} # NEED this for finding $PARENT files
-export MOOT_ARCHIVE=/sdf/group/fermi/moot/archive-mood
+export MOOT_ARCHIVE=/sdf/group/fermi/a/moot/archive-mood
