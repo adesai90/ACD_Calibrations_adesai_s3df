@@ -168,6 +168,7 @@ else
     cd ${MY_DIR}
     export PATH=/sdf/home/a/abhishek/.local/bin:$PATH
     # SCONS_MAKE FILE
+    echo "current directory $(pwd) which shouls be ${MY_DIR}"
     read -p "Run Scons, this will take some time? (yes/no): " answer
     if [ "$answer" = "yes" ]; then
         echo "Starting Scons build...do not interrupt!"
