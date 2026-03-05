@@ -35,7 +35,8 @@ umask 002
 # -----------------------------------------------------------------------------
 # Set up access to the ground software CVS repository.
 # -----------------------------------------------------------------------------
-export CVSROOT=/nfs/slac/g/glast/ground/cvs
+#export CVSROOT=/nfs/slac/g/glast/ground/cvs
+export CVSROOT=/sdf/group/fermi/g/glast_ground/cvs/ # Old path: /nfs/slac/g/glast/ground/cvs
 export CVS_RSH=ssh
 
 # -----------------------------------------------------------------------------

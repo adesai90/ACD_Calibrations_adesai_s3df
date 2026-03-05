@@ -142,9 +142,13 @@ else
     echo "Current working Directory: ${MY_DIR}"
     read -p "Delete Past Build, removes files in releases, python and workdir? (yes/no): " answer
     if [ "$answer" = "yes" ]; then
-        rm -rf releases/GR-20-09-10/*
-        rm -rf python/*
-        rm -rf workdir/*
+        rm -rf ${MY_DIR}/releases/GR-20-09-10/
+        rm -rf ${MY_DIR}/python/
+        rm -rf ${MY_DIR}/workdir/
+        mkdir ${MY_DIR}/releases/
+        mkdir ${MY_DIR}/releases/GR-20-09-10/
+        mkdir ${MY_DIR}/python/
+        mkdir ${MY_DIR}/workdir/
     fi
 
     # Setting up environments
