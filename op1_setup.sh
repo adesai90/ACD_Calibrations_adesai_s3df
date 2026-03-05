@@ -17,11 +17,10 @@
 # -----------------------------------------------------------------------------
 
 export GLASTROOT=/sdf/group/fermi/ #Old path: /afs/slac.stanford.edu/g/glast
-export GLASTROOTA=/sdf/group/fermi/a/ #Old path: /afs/slac.stanford.edu/g/glast
 
-export GROUPSCRIPTS=${GLASTROOTA}/ground/scripts
+export GROUPSCRIPTS=${GLASTROOT}/ground/scripts
 
-export PATH=${PATH}:${GLASTROOTA}/applications/install/@sys/usr/bin:${GLASTROOT}/ground/releases:${GROUPSCRIPTS}:${GROUPSCRIPTS}/ReleaseManager
+export PATH=${PATH}:${GLASTROOT}/applications/install/@sys/usr/bin:${GLASTROOT}/ground/releases:${GROUPSCRIPTS}:${GROUPSCRIPTS}/ReleaseManager
 
 # -----------------------------------------------------------------------------
 # Set the NFS file creation mask.  This makes files created in group NFS space
