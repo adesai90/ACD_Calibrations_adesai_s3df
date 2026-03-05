@@ -154,7 +154,7 @@ else
     fi
 
     cd ${MY_DIR}
-
+    export PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.34.03-gr01/bin/:$PATH
     # SCONS_MAKE FILE
     read -p "Run Scons, this will take some time? (yes/no): " answer
     if [ "$answer" = "yes" ]; then
