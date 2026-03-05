@@ -48,7 +48,7 @@ if [ "$answer" = "1" ]; then
     read -p "Delete Past Build, removes files in releases, python and workdir? (yes/no): " answer
     if [ "$answer" = "yes" ]; then
         rm -rf ${MY_DIR}/releases/GR-20-09-10/*
-        rm -rf${MY_DIR}/ python/*
+        rm -rf ${MY_DIR}/ python/*
         rm -rf ${MY_DIR}/workdir/*
         mkdir ${MY_DIR}/releases/
         mkdir ${MY_DIR}/releases/GR-20-09-10/
