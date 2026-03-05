@@ -47,9 +47,9 @@ if [ "$answer" = "1" ]; then
     echo "Current working Directory: ${MY_DIR}"
     read -p "Delete Past Build, removes files in releases, python and workdir? (yes/no): " answer
     if [ "$answer" = "yes" ]; then
-        rm -rf ${MY_DIR}/releases/GR-20-09-10/*
-        rm -rf ${MY_DIR}/python/*
-        rm -rf ${MY_DIR}/workdir/*
+        rm -rf ${MY_DIR}/releases/GR-20-09-10/
+        rm -rf ${MY_DIR}/python/
+        rm -rf ${MY_DIR}/workdir/
         mkdir ${MY_DIR}/releases/
         mkdir ${MY_DIR}/releases/GR-20-09-10/
         mkdir ${MY_DIR}/python/
@@ -127,13 +127,16 @@ if [ "$answer" = "1" ]; then
     cp ${git_dir}/op1_source_complied_files.sh ${MY_DIR}/source_compiled_files.sh
 else
     echo "Running option 2. Using a container which links to the old /afs paths by using bind mount"
-    export CONDA_PREFIX=/sdf/home/a/abhishek/miniconda
-    export PATH=${CONDA_PREFIX}/bin/:$PATH
-    source ${CONDA_PREFIX}/etc/profile.d/conda.sh
-    conda activate acd_test2
-    source ${MY_DIR}/ACD_calib_github_software/op2_config.sh
-    source ${MY_DIR}/ACD_calib_github_software/op2_setup.sh
-    source ${git_dir}/start_rhel6.sh
+    echo "######################################################################"
+    echo "Run ${git_dir}/start_rhel6.sh before starting this"
+    echo "######################################################################"
+    
+    
+
+    read -p "Are you on container (yes/no):  " answer
+    if [ "$answer" = "yes" ]; then
+        echo "Continuing.."
+    fi
 
     # Delete past builds
     echo "Current working Directory: ${MY_DIR}"

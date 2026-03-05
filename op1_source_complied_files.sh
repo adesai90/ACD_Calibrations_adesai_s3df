@@ -16,7 +16,7 @@ source ${CONDA_PREFIX}/etc/profile.d/conda.sh
 conda activate acd_test2
 source ${MY_DIR}/ACD_calib_github_software/op1_config.sh
 source ${MY_DIR}/ACD_calib_github_software/op1_setup.sh
-source ${RELEASE}/bin/redhat6-x86_64-64bit-gcc44-Optimized/_setup.sh
+source ${RELEASE}/_setup.sh
 cd ${RELEASE}/workdir
 export LD_LIBRARY_PATH=${MY_DIR}/local_libs:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH

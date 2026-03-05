@@ -10,6 +10,16 @@
 #
 # Initialize:
 MY_DIR=$(pwd)
+echo "######################################################################"
+echo "Run ${git_dir}/start_rhel6.sh before starting this"
+echo "######################################################################"
+    
+    
+
+read -p "Are you on container (yes/no):  " answer
+if [ "$answer" = "yes" ]; then
+    echo "Continuing.."
+fi
 source ${MY_DIR}/ACD_calib_github_software/op2_config.sh
 source ${MY_DIR}/ACD_calib_github_software/op2_setup.sh
 source ${RELEASE}/_setup.sh
