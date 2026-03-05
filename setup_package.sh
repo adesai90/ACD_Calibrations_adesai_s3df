@@ -129,6 +129,9 @@ else
     echo "Running option 2. Using a container which links to the old /afs paths by using bind mount"
     echo "######################################################################"
     echo "Run ${git_dir}/start_rhel6.sh before starting this"
+    echo "Also need to install scons using cd /afs/slac/g/glast/applications/SCons/scons-2.1.0/"
+    echo "               and  python setup.py install --user"
+    echo "               and export PATH=/sdf/home/a/abhishek/.local/bin:$PATH"
     echo "######################################################################"
     
     
@@ -154,6 +157,7 @@ else
     # Setting up environments
 
     cd releases/GR-20-09-10/
+    export CVSROOT=/sdf/group/fermi/g/glast_ground/cvs/
     read -p "Add calibGebACD, mootcore and links to home directory? (yes/no): " answer
     if [ "$answer" = "yes" ]; then
         cvs checkout calibGenACD
@@ -162,6 +166,7 @@ else
     fi
 
     cd ${MY_DIR}
+    export PATH=/sdf/home/a/abhishek/.local/bin:$PATH
     # SCONS_MAKE FILE
     read -p "Run Scons, this will take some time? (yes/no): " answer
     if [ "$answer" = "yes" ]; then
