@@ -143,6 +143,14 @@ else
         echo "Continuing.."
     fi
 
+    export CLHEP_ROOT=/sdf/home/i/imereu/.conda/envs/fermipy
+
+    export CPATH=$CLHEP_ROOT/include:$CPATH
+    export CPLUS_INCLUDE_PATH=$CLHEP_ROOT/include:$CPLUS_INCLUDE_PATH
+
+    export LIBRARY_PATH=$CLHEP_ROOT/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$CLHEP_ROOT/lib:$LD_LIBRARY_PATH
+    
     # Delete past builds
     echo "Current working Directory: ${MY_DIR}"
     read -p "Delete Past Build, removes files in releases, python and workdir? (yes/no): " answer
