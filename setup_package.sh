@@ -32,10 +32,11 @@ read -p "Update AcdCalibBase and AcdJobConfig files? (yes/no): " answer
         cp ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase_org.cxx
         cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.cxx
         cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.h
-        cp ${git_dir}/../support_files/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx
-        cp ${git_dir}/../support_files/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx
-        cp ${git_dir}/../support_files/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig.h
+        cp ${git_dir}/../../support_files/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx
+        cp ${git_dir}/../../support_files/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx
+        cp ${git_dir}/../../support_files/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig.h
     fi
+echo "\n\n\n"
 
 echo "There are two options for the setup of ACD calibrations software."
 echo "1. Setup using links to /sdf/group/fermi/"
