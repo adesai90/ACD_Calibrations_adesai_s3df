@@ -25,6 +25,18 @@ fi
 cd ..
 MY_DIR=$(pwd)
 
+/Users/aadesai1/Desktop/In_use/ACD_calibrations/calibGenACD-master/src/AcdCalibMap.cxx
+# Delete past builds
+read -p "Update AcdCalibBase and AcdJobConfig files? (yes/no): " answer
+    if [ "$answer" = "yes" ]; then
+        cp ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase_org.cxx
+        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.cxx
+        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.h
+        cp ${git_dir}/../support_files/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx
+        cp ${git_dir}/../support_files/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx
+        cp ${git_dir}/../support_files/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig.h
+    fi
+
 echo "There are two options for the setup of ACD calibrations software."
 echo "1. Setup using links to /sdf/group/fermi/"
 echo "   - This will follow a setup which requires a user based conda environment along with a setup which uses conda based installs built for the sole purpose of running ACD Calibration codes."
@@ -71,7 +83,7 @@ if [ "$answer" = "1" ]; then
 
     cd ${MY_DIR}
     export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
-    export PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.34.03-gr01/bin/:$PATH
+    export PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.34.03-gr01/bin/:$PATH #For some reason root was not loading so added this
     
     # SCONS_MAKE FILE
     read -p "Run Scons, this will take some time? (yes/no): " answer
