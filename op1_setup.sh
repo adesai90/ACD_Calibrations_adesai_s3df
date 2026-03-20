@@ -22,7 +22,7 @@ export GROUPSCRIPTS=${GLASTROOT}/ground/scripts
 
 export PATH=${PATH}:${GLASTROOT}/applications/install/@sys/usr/bin:${GLASTROOT}/ground/releases:${GROUPSCRIPTS}:${GROUPSCRIPTS}/ReleaseManager
 
-export PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.34.03-gr01/bin/:$PATH
+#export PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.34.03-gr01/bin/:$PATH
 # -----------------------------------------------------------------------------
 # Set the NFS file creation mask.  This makes files created in group NFS space
 # writeable by all group members, not just the author.  Has no effect in AFS

@@ -181,3 +181,29 @@ and manually replace them with "/sdf/group/fermi/a/"
 - the file update_canvas_code.pl is used to fixed ROOT errors, but this might not be required as root errors are not found anymore for interactive sessions.
 - If running from workdir use python $RELEASE/calibGenACD/python/Acd.....py
 
+
+########################################################################################
+###########
+###########
+###########             POST SETUP ISSUES
+###########
+###########
+########################################################################################
+
+-For some reason the root files are being read but no events are found.
+It looks like the root files stored online have the tree labeled as Digi while the code is trying to read DigiEvents.
+Added the following to check:
+this one /sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/calibGenACD/build/redhat6-x86_64-64bit-gcc44-Optimized/src/AcdCalibBase.cxx
+links to /sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/calibGenACD/src/AcdCalibBase.cxx
+- so change stuff in the /sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/calibGenACD/src/ directory
+using 
+cp /sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.cxx /sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig_orig.cxx
+cp support_files/AcdCalibBase.cxx /sdf/home/a/abhishek/ACD_calib/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.cxx
+
+what it does:
+in AcdJobConfig_fixed.cpp adds the findTreeName() function that: Opens the ROOT file ---> Checks what tree names actually exist ---> Uses the correct tree name when creating the TChain
+This means:
+Instead of hardcoded new TChain("Digi") which was wrong It now finds and uses the actual tree name (probably "DigiEvent")
+The TChain can now load entries properly
+
+Need to make sure this is recomiled now! So have to change github before anything
