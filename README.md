@@ -16,6 +16,9 @@
 - Note that the ACD files are run using for example ```$RELEASE/calibGenACD/python/AcdWeeklyReport.py``` in the workdirectory if required.
 - The ACD codes try to write in the /sdf/group directory currently
 
+# AFTER SETUP:
+
+
 # Possbile errors:
 - MAKE SURE you run cvs checkout in the $RELEASE directory
 - Also make sure scons package has the correct python linked to it in the first line 
