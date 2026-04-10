@@ -18,5 +18,4 @@ export RDBMODELROOT=$PARENT/rdbmodel
 #unset DYLD_LIBRARY_PATH
 export PATH=${PARENT}:${PATH} # NEED this for finding $PARENT files
 export MOOT_ARCHIVE=/afs/slac.stanford.edu/g/glast/moot/archive-mood 
-export SWIG_LIB=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/swig/1.3.31-gl1/share/swig/1
-.3.31/
+
