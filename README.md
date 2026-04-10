@@ -17,6 +17,9 @@
 - The ACD codes try to write in the /sdf/group directory currently
 
 # AFTER SETUP:
+- You still need to change the files: AcdReport* to make sure directories are being saved
+- You also need to modify the job submission lines accordingly.
+(Use DGreen pdf file as a guide)
 
 
 # Possbile errors:

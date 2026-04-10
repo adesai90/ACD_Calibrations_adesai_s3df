@@ -6,7 +6,7 @@
 #
 # If not use: 
 #
-# conda create -n acd_test2 -c conda-forge python=2.7.18 root=6.16.00 xrootd=4.9.1 scons=3.1.2 f2c gcc_linux-64=7 gxx_linux-64=7 gfortran_linux-64=7 libtiff
+# conda create -n acd_test2 -c conda-forge python=2.7.18 root=6.16.00 xrootd=4.9.1 scons=3.1.2 f2c gcc_linux-64=7 gxx_linux-64=7 gfortran_linux-64=7 libtiff swig
 # 
 #
 # Initialize:
@@ -139,6 +139,7 @@ if [ "$answer" = "1" ]; then
         ./update_canvas_code.pl
     fi
 
+    cp ${MY_DIR}/releases/GR-20-09-10/bin/redhat6-x86_64-64bit-gcc44-Optimized/_setup.sh ${MY_DIR}/releases/GR-20-09-10/
     cp ${git_dir}/op1_source_complied_files.sh ${MY_DIR}/source_compiled_files.sh
 else
     echo "Running option 2. Using a container which links to the old /afs paths by using bind mount"

@@ -1,12 +1,12 @@
-Feb 9th,10th:
+Update:
 -Setup and check
 
-Feb 10th:
+Update:
 - Setup github in home directory and as public repository to check working
 - Tried to update paths and find path to xrootd, 
 issues found where there are interlinking path to /afs and/nfs directories.
 
-Feb 11th
+Update:
 - Create new and clean conda environment to test code
 Used: 
     conda create -n acd_test -c conda-forge python=3.10 fermitools xrootd gcc_linux-64 gxx_linux-64 root
@@ -19,7 +19,7 @@ Remember for conda, start with:
 - Added config file which is also uploaded to github
 - Made folders as stated in DGreen doc.
 
-Feb 13th/17th
+Update:
 - Added setup for terminal to fermi environment (can only be run from fermi-devl)
    For future reference:
    ssh -Y abhishek@s3dflogin-mfa.slac.stanford.edu
@@ -51,7 +51,7 @@ finally_worked **** -
  Turns out it was looking for a particular gcc 85 folder in the group directory, added a link to fix it.
 
 
-Feb 19th:
+Update:
 Still not working:
 - scons is probably loaded from /sdf/data/fermi/n/u52/ReleaseManagerBuild/redhat6-x86_64-64bit-gcc44/Optimized/GlastRelease/20-09-10/sconsTools/
 - The ISSUE IS GCC!!!!!! it keeps on trying to go for gcc85 as thats what it finds, the easiers wau is to make a fake gcc which says it is 4.4 gcc but is not inreality.... 
@@ -59,7 +59,7 @@ ADDED a gcc_linker in github needs to be run with scons!!!! and also
 export CXX=/sdf/home/a/abhishek/ACD_calib/ACD_calib_github_software/gpp_linker
 export CC=/sdf/home/a/abhishek/ACD_calib/ACD_calib_github_software/gcc_linker
 
-Feb20th:
+Update:
 -scons appear to be running but no mootfile, even after keep config file exactly as given in doc.
 - issue found by
    '''./scons_make 2>&1 | grep -i "error\|failed\|cannot find\|undefined" | head -30'''
@@ -79,7 +79,7 @@ change /sdf/home/a/abhishek/miniconda/envs/acd_test2/bin/python
 >     ln -sf $lib $LOCAL_LIB/$(basename $lib)
 > done
 
-Feb 23:
+Update:
 -Issue with how the ACD calibrations was built, turns out there was a possible cxx version mismatch. To fix it 
 while using scons_make add argument -D_GLIBCXX_USE_CXX11_ABI=0 , This tells gcc to use the old ABI compatible with the parent libs. 
 -Modifying setup_init and setup_package files as there is a lot of commands now
@@ -206,4 +206,19 @@ This means:
 Instead of hardcoded new TChain("Digi") which was wrong It now finds and uses the actual tree name (probably "DigiEvent")
 The TChain can now load entries properly
 
-Need to make sure this is recomiled now! So have to change github before anything
+Added fix to read locate the Digi/DigiEvents by recompiling after adding fixes. Appears to be working now.
+
+Adding fix to rewrite job submission code.
+
+########################################################################################
+#
+# NEW ISSUE
+#
+#
+########################################################################################
+
+python ParseFileListNew.py DIGI
+python ParseFileListNew.py RECON not parsing.. need to check why
+- swig issues while running swig -python -I/$PARENT/facilities -I/$PARENT/rdbModel -I/$RELEASE/mootCore \
+-c++ py_mootCore.i in mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/src/
+- added swig using conda --- conda install swig
