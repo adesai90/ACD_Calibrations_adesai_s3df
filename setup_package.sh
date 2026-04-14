@@ -88,6 +88,7 @@ if [ "$answer" = "1" ]; then
     #export PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.34.03-gr01/bin/:$PATH #For some reason root was not loading so added this
     #export LD_LIBRARY_PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/openssl/1.0.2/lib:$LD_LIBRARY_PATH
     
+    ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/f2c/3.4-gl2/gcc44 /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/f2c/3.4-gl2/gcc85
     # SCONS_MAKE FILE
     read -p "Run Scons, this will take some time? (yes/no): " answer
     if [ "$answer" = "yes" ]; then
@@ -141,6 +142,8 @@ if [ "$answer" = "1" ]; then
 
     cp ${MY_DIR}/releases/GR-20-09-10/bin/redhat6-x86_64-64bit-gcc44-Optimized/_setup.sh ${MY_DIR}/releases/GR-20-09-10/
     cp ${git_dir}/op1_source_complied_files.sh ${MY_DIR}/source_compiled_files.sh
+    cp ${git_dir}/calibGenACD-master/python/Acd* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/
+    
 else
     echo "Running option 2. Using a container which links to the old /afs paths by using bind mount"
     echo "######################################################################"

@@ -154,7 +154,7 @@ public :
   /// return the status of the Digi TChain
   Bool_t checkDigi() const;
   /// return the status of the Svac TChain
-  Bool_t checkSvac() const;
+  /// Bool_t checkSvac() const;
   /// return the status of the Merit TChain
   Bool_t checkMerit() const;
   /// return the status of the Recon TChain
