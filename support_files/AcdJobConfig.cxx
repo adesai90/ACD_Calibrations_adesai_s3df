@@ -374,11 +374,13 @@ Bool_t AcdJobConfig::checkDigi() const {
 
 Bool_t AcdJobConfig::checkSvac() const {
   if ( ! makeChain() ) return kFALSE;
-  if ( m_svacChain == 0 ) {
-    std::cerr << "This job requires svac ROOT files as input." << std::endl
+  ///if ( m_svacChain == 0 ) {
+  ///  std::cerr << "This job requires svac ROOT files as input." << std::endl
+	///      << std::endl;
+  ///  return kFALSE;
+  ///}
+  std::cerr << "Ignored svac check." << std::endl
 	      << std::endl;
-    return kFALSE;
-  }
   return kTRUE;
 }
  

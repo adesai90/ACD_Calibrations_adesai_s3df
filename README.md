@@ -17,7 +17,7 @@
 - You still need to change the files: AcdReport* to make sure directories are being saved, after install they are set to just run stuff to the workdir.
 - You also need to modify the job submission lines accordingly. (Use DGreen pdf file as a guide for this and the step above it)
 - In case of errors with parsefiles, check to see that the datacatbin is pointing to the right directory in Parsefilenew.py, it should be DATACATBIN = "/sdf/group/fermi/a/ground/bin/datacat"
-- CHECK src/AcdJobConfig.h to see if Line 155 has a checksvac() line (if it is not commented, make it a comment) 
+- CHECK src/AcdJobConfig.h,  to see if Line 155 has a checksvac() line (if it is not commented, make it a comment) 
 - The ACD codes try to write in the <LATMonRoot=/sdf/group/fermi/ground/releases/monitor/> directory currently
 
 

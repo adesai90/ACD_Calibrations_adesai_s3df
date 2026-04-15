@@ -210,15 +210,27 @@ Added fix to read locate the Digi/DigiEvents by recompiling after adding fixes. 
 
 Adding fix to rewrite job submission code.
 
+- Issue: python ParseFileListNew.py DIGI
+        python ParseFileListNew.py RECON not parsing..
+    - swig issues while running swig -python -I/$PARENT/facilities -I/$PARENT/rdbModel -I/$RELEASE/mootCore \
+    - c++ py_mootCore.i in mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/src/
+    - added swig using conda --- conda install swig (didnt work!)
+    - Turns out the problem is in a hardcoded path in the ParseFileNew code. Added to README not setup.
+
 ########################################################################################
 #
 # NEW ISSUE
 #
-#
 ########################################################################################
 
-python ParseFileListNew.py DIGI
-python ParseFileListNew.py RECON not parsing.. need to check why
-- swig issues while running swig -python -I/$PARENT/facilities -I/$PARENT/rdbModel -I/$RELEASE/mootCore \
--c++ py_mootCore.i in mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/src/
-- added swig using conda --- conda install swig
+- Issue: Code works with swig and not with recon:
+    Reason: src/AcdJobConfig.h has a checksvac() line (around line 155) which needs to be commented, doesnt do anything just checks for svac 
+    Removing cheksvac didnt fix it, forcing checksvac to always return true by commenting out checksvac.
+    Files cheanged (./releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.cxx) (./releases/GR-20-09-10/calibGenACD/build/redhat6-x86_64-64bit-gcc44-Optimized/src/AcdJobConfig.cxx)
+
+
+
+
+######
+- Issue with svag, might be comparision with ground calibration tool, but svac needs to be replaced with recon.
+- 
