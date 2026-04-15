@@ -79,6 +79,10 @@ if [ "$answer" = "1" ]; then
         perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript #This is from the installation instructions on DGreen
     fi
 
+
+    cp ${git_dir}/support_files/AcdCalibBase.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdCalibBase.cxx
+    cp ${git_dir}/support_files/AcdJobConfig.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.cxx
+    cp ${git_dir}/support_files/AcdJobConfig.h ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.h
     # Linking all the libraries correctly!
 
 
@@ -143,7 +147,7 @@ if [ "$answer" = "1" ]; then
     cp ${MY_DIR}/releases/GR-20-09-10/bin/redhat6-x86_64-64bit-gcc44-Optimized/_setup.sh ${MY_DIR}/releases/GR-20-09-10/
     cp ${git_dir}/op1_source_complied_files.sh ${MY_DIR}/source_compiled_files.sh
     cp ${git_dir}/calibGenACD-master/python/Acd* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/
-    
+
 else
     echo "Running option 2. Using a container which links to the old /afs paths by using bind mount"
     echo "######################################################################"
