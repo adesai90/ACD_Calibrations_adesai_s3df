@@ -80,9 +80,9 @@ if [ "$answer" = "1" ]; then
     fi
 
 
-    cp ${git_dir}/support_files/AcdCalibBase.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdCalibBase.cxx
-    cp ${git_dir}/support_files/AcdJobConfig.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.cxx
-    cp ${git_dir}/support_files/AcdJobConfig.h ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.h
+    #cp ${git_dir}/support_files/AcdCalibBase.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdCalibBase.cxx
+    #cp ${git_dir}/support_files/AcdJobConfig.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.cxx
+    #cp ${git_dir}/support_files/AcdJobConfig.h ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.h
     # Linking all the libraries correctly!
 
 
