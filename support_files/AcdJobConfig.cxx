@@ -374,16 +374,14 @@ Bool_t AcdJobConfig::checkDigi() const {
 
 Bool_t AcdJobConfig::checkSvac() const {
   if ( ! makeChain() ) return kFALSE;
-  ///if ( m_svacChain == 0 ) {
-  ///  std::cerr << "This job requires svac ROOT files as input." << std::endl
-	///      << std::endl;
-  ///  return kFALSE;
-  ///}
-  std::cerr << "Ignored svac check." << std::endl
+  if ( m_svacChain == 0 && m_reconChain == 0 ) {
+    std::cerr << "This job requires svac or recon ROOT files as input." << std::endl
 	      << std::endl;
+    return kFALSE;
+  }
   return kTRUE;
 }
- 
+
 Bool_t AcdJobConfig::checkMerit() const {
   if ( ! makeChain() ) return kFALSE;
   if ( m_meritChain == 0 ) {
