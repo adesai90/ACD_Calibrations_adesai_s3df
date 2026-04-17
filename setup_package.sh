@@ -32,9 +32,9 @@ read -p "Update AcdCalibBase and AcdJobConfig files? (yes/no): " answer
         cp ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase_org.cxx
         cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.cxx
         cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.h
-        cp ${git_dir}/support_files/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx
-        cp ${git_dir}/support_files/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx
-        cp ${git_dir}/support_files/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig.h
+        #cp ${git_dir}/support_files/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx
+        #cp ${git_dir}/support_files/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx
+        #cp ${git_dir}/support_files/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig.h
     fi
 echo "----modified----"
 
@@ -81,7 +81,7 @@ if [ "$answer" = "1" ]; then
 
 
     #cp ${git_dir}/support_files/AcdCalibBase.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdCalibBase.cxx
-    cp ${git_dir}/support_files/AcdJobConfig.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.cxx
+    #cp ${git_dir}/support_files/AcdJobConfig.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.cxx
     #cp ${git_dir}/support_files/AcdJobConfig.h ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.h
     # Linking all the libraries correctly!
 
