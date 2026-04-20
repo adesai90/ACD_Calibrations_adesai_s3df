@@ -35,8 +35,9 @@ read -p "Update AcdCalibBase and AcdJobConfig files? (yes/no): " answer
         #cp ${git_dir}/support_files/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx
         #cp ${git_dir}/support_files/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx
         #cp ${git_dir}/support_files/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig.h
+        echo "----modified----"
     fi
-echo "----modified----"
+echo "----done----"
 
 echo "There are two options for the setup of ACD calibrations software."
 echo "1. Setup using links to /sdf/group/fermi/"
@@ -72,9 +73,10 @@ if [ "$answer" = "1" ]; then
     # Setting up environments
 
     cd ${MY_DIR}/releases/GR-20-09-10/
-    read -p "Add calibGebACD, mootcore and links to home directory? (yes/no): " answer
+    #read -p "Add calibGebACD, mootcore and links to home directory? (yes/no): " answer
+    read -p "Add mootcore and links to home directory? (yes/no): " answer
     if [ "$answer" = "yes" ]; then
-        cvs checkout calibGenACD
+        #cvs checkout calibGenACD  # The files on github are the updated version of this! So do not checkout cvs!
         cvs checkout mootCore
         perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript #This is from the installation instructions on DGreen
     fi
