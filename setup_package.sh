@@ -73,10 +73,10 @@ if [ "$answer" = "1" ]; then
     # Setting up environments
 
     cd ${MY_DIR}/releases/GR-20-09-10/
-    #read -p "Add calibGebACD, mootcore and links to home directory? (yes/no): " answer
-    read -p "Add mootcore and links to home directory? (yes/no): " answer
+    read -p "Add calibGebACD, mootcore and links to home directory? (yes/no): " answer
     if [ "$answer" = "yes" ]; then
-        #cvs checkout calibGenACD  # The files on github are the updated version of this! So do not checkout cvs!
+        cvs checkout calibGenACD
+        cp -r ${git_dir}/calibGenACD-master/* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
         cvs checkout mootCore
         perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript #This is from the installation instructions on DGreen
     fi
