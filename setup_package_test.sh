@@ -18,8 +18,8 @@ echo "Git dir is ${git_dir}"
 if [ -d "${git_dir}/calibGenACD-master" ]; then
     echo "Fermi calibGenACD git directory found."
 else
-    echo "Cloning repository..."
-    git clone "https://github.com/fermi-lat/calibGenACD.git" calibGenACD-master
+    echo "The repository should exist! If you clone a new one, Make sure the paths on the cloned repositoiry are correct"
+    #git clone "https://github.com/fermi-lat/calibGenACD.git" calibGenACD-master #(incorrect paths!)
 fi
 
 cd ..
@@ -76,9 +76,11 @@ if [ "$answer" = "1" ]; then
     cd ${MY_DIR}/releases/GR-20-09-10/
     read -p "Add calibGebACD, mootcore and links to home directory? (yes/no): " answer
     if [ "$answer" = "yes" ]; then
-        cvs checkout calibGenACD
-        cvs checkout mootCore
-        chmod +x ${MY_DIR}/releases/GR-20-09-10/mootCore/*
+        #cvs checkout calibGenACD
+        mkdir ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
+        cp -r ${git_dir}/calibGenACD-master/* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
+        chmod -R +x ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
+        #chmod -R +x ${MY_DIR}/releases/GR-20-09-10/mootCore/*
         perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript #This is from the installation instructions on DGreen
     fi
 
@@ -110,8 +112,8 @@ if [ "$answer" = "1" ]; then
     echo "Scons command ran, check build files for log and error, fixing some harcoded paths now"
 
     #cvs checkout calibGenACD
-    cp -r ${git_dir}/calibGenACD-master/* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
-    chmod -R +x ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
+    #cp -r ${git_dir}/calibGenACD-master/* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
+    #chmod -R +x ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
     #echo "Rebuilding Scons with modified files"
     #scons -i -C ${PARENT} --variant=redhat6-x86_64-64bit-gcc44-Optimized --cxxflags="-D_GLIBCXX_USE_CXX11_ABI=0"\
     #    --with-GLAST-EXT=${GLAST_EXT} --duplicate=soft-copy \
