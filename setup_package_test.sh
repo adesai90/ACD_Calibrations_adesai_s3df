@@ -112,12 +112,12 @@ if [ "$answer" = "1" ]; then
     #cvs checkout calibGenACD
     cp -r ${git_dir}/calibGenACD-master/* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
     chmod -R +x ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
-    echo "Rebuilding Scons with modified files"
-    scons -i -C ${PARENT} --variant=redhat6-x86_64-64bit-gcc44-Optimized --cxxflags="-D_GLIBCXX_USE_CXX11_ABI=0"\
-        --with-GLAST-EXT=${GLAST_EXT} --duplicate=soft-copy \
-        --exclude=workdir --supersede=${RELEASE} --rm --compile-opt \
-        --with-cc=${MY_DIR}/ACD_calib_github_software/gcc_linker \
-        --with-cxx=${MY_DIR}/ACD_calib_github_software/gpp_linker --debug=explain $* > build_ou2.log 2> build_err2.log
+    #echo "Rebuilding Scons with modified files"
+    #scons -i -C ${PARENT} --variant=redhat6-x86_64-64bit-gcc44-Optimized --cxxflags="-D_GLIBCXX_USE_CXX11_ABI=0"\
+    #    --with-GLAST-EXT=${GLAST_EXT} --duplicate=soft-copy \
+    #    --exclude=workdir --supersede=${RELEASE} --rm --compile-opt \
+    #    --with-cc=${MY_DIR}/ACD_calib_github_software/gcc_linker \
+    #    --with-cxx=${MY_DIR}/ACD_calib_github_software/gpp_linker --debug=explain $* > build_ou2.log 2> build_err2.log
    
         
     
