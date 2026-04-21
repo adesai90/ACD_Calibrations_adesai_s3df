@@ -79,7 +79,7 @@ if [ "$answer" = "1" ]; then
         #cvs checkout calibGenACD
         mkdir ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
         cp -r ${git_dir}/calibGenACD-master/* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
-        chmod +x ${MY_DIR}/releases/GR-20-09-10/calibGenACD/*
+        chmod -R +x ${MY_DIR}/releases/GR-20-09-10/calibGenACD/*
         cvs checkout mootCore
         chmod +x ${MY_DIR}/releases/GR-20-09-10/mootCore/*
         perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript #This is from the installation instructions on DGreen
@@ -153,6 +153,8 @@ if [ "$answer" = "1" ]; then
     cp ${MY_DIR}/releases/GR-20-09-10/bin/redhat6-x86_64-64bit-gcc44-Optimized/_setup.sh ${MY_DIR}/releases/GR-20-09-10/
     cp ${git_dir}/op1_source_complied_files.sh ${MY_DIR}/source_compiled_files.sh
     cp ${git_dir}/calibGenACD-master/python/Acd* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/
+    cp ${MY_DIR}/releases/GR-20-09-10/mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/src/py_mootCore.py ${MY_DIR}/releases/GR-20-09-10/python/
+
 
 else
     echo "Running option 2. Using a container which links to the old /afs paths by using bind mount"
