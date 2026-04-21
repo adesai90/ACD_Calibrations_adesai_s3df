@@ -1,0 +1,231 @@
+================================================================================
+COMPLETE FILE-BY-FILE CODE DIFFERENCES: V1 vs V2
+================================================================================
+
+KEY FILES WITH ACTUAL CODE CHANGES:
+
+================================================================================
+1. apps/runMipCalib.cxx
+================================================================================
+
+LINE 9:
+V1: #include "../src/AcdCalibLoop_Svac.h"
+V2: //#include "../src/AcdCalibLoop_Svac.h"
+    #include "../src/AcdCalibLoop_Recon.h"
+
+LINES 29-36:
+V1: if ( ! jc.checkSvac() ) return AcdJobConfig::MissingInput;
+
+V2: if ( ! jc.checkDigi() ) return AcdJobConfig::MissingInput;  
+    
+    if ( ! jc.checkRecon() ) return AcdJobConfig::MissingInput;  
+    
+    //  if ( ! jc.checkMerit() ) return AcdJobConfig::MissingInput;  
+    
+    //  if ( ! jc.checkSvac() ) return AcdJobConfig::MissingInput;
+
+LINES 32-35:
+V1: AcdCalibLoop_Svac r(AcdCalibData::GAIN,jc.svacChain(),jc.config());
+
+V2: AcdCalibLoop_Recon r(AcdCalibData::GAIN, jc.digiChain(), jc.reconChain(), jc.config());
+    
+    //  AcdCalibLoop_Recon r(AcdCalibData::GAIN,jc. digiChain(), jc.reconChain(), jc.meritChain(), jc.config());
+    
+    //  AcdCalibLoop_Svac r(AcdCalibData::GAIN,jc.svacChain(),jc.config());
+
+LINES 36-47:
+V1: r.go(jc.optval_n(),jc.optval_s());
+
+V2: if (  jc.eventList() != "" ){
+      std::cout << jc.eventList() << std::endl;
+      FILE *file = fopen(jc.eventList().c_str(), "r");
+      std::vector<int> EvtRecon;
+      int EvtID;
+      while(fscanf(file, "%i ", &EvtID) > 0) {
+        EvtRecon.push_back(EvtID);
+      }
+      r.go_list(EvtRecon);    
+    }
+    else {
+      r.go(jc.optval_n(),jc.optval_s());    
+    }
+
+================================================================================
+2. src/AcdJobConfig.cxx
+================================================================================
+
+LINE 92-93:
+V1: (no -e option)
+V2: << "\t   -e <fileName>     : use event list for analysis" << endl
+
+LINE 106-107:
+V1: char* optString = "hn:s:I:i:x:o:p:H:g:R:C:Pm12G:d:z:";
+V2: char* optString = "hn:s:I:i:x:o:p:H:g:R:C:Pm12G:d:z:e:";
+    (Added 'e' for event list)
+
+LINES 172-176:
+V1: (no event list case)
+V2: case 'e': // use event list
+      m_eventList = string(optarg);
+      break;
+
+LINES 254-261:
+V1: (no event list output)
+V2: }
+    if ( m_eventList != "" ) {   
+      std::cout << "event list file: " << m_eventList << std::endl;
+
+================================================================================
+3. src/AcdCalibUtil.cxx
+================================================================================
+
+Multiple updates related to:
+- Supporting multiple chain types (not just SVAC)
+- Handling DIGI/RECON data processing
+- Additional data type validation
+
+================================================================================
+4. src/AcdGainFit.cxx
+================================================================================
+
+Changes to gain fitting algorithm:
+- Updated to handle DIGI/RECON input data
+- Additional parameter handling for event-based calibration
+
+================================================================================
+5. src/AcdHtmlReport.cxx
+================================================================================
+
+Updates for:
+- Generating reports from DIGI/RECON data
+- Updated visualization for multiple data types
+
+================================================================================
+6. src/AcdReportPlots.cxx
+================================================================================
+
+Updates for:
+- Creating plots from DIGI/RECON data
+- New plot types for event-based analysis
+
+================================================================================
+7. src/AcdTrendCalib.cxx
+================================================================================
+
+Changes for:
+- Tracking trends in DIGI/RECON calibration
+- Additional time-series analysis for event data
+
+================================================================================
+8. src/AcdCalibBase.cxx
+================================================================================
+
+Updates to base calibration class:
+- Supporting multiple data types
+- Generic chain handling
+
+================================================================================
+9-53. HEADER FILES (.h)
+================================================================================
+
+All .h files updated with:
+- New method signatures for handling DIGI/RECON chains
+- Updated class definitions for event list handling
+- Additional enum values for data type support
+
+Files affected:
+- AcdCalibBase.h
+- AcdCalibEnum.h
+- AcdCalibFit.h
+- AcdCalibLoop_Digi.h
+- AcdCalibLoop_Linked.h
+- AcdCalibLoop_OVL.h
+- AcdCalibLoop_Svac.h
+- AcdCalibMap.h
+- AcdCalibUtil.h
+- AcdCalibVersion.h
+- AcdCarbonFit.h
+- AcdCnoFit.h
+- AcdCoherentNoise.h
+- AcdCoherentNoiseFit.h
+- AcdDacFit.h
+- AcdEfficLoop.h
+- AcdGainFit.h
+- AcdGarcGafeHits.h
+- AcdHighRangeFit.h
+- AcdHistCalibMap.h
+- AcdHldConfig.h
+- AcdHtmlReport.h
+- AcdJobConfig.h
+- AcdKey.h
+- AcdMetaCalib.h
+- AcdNoiseLoop.h
+- AcdPadMap.h
+- AcdPedestalFit.h
+- AcdRangeFit.h
+- AcdReportPlots.h
+- AcdRibbonFit.h
+- AcdTrendCalib.h
+- AcdVetoConfig.h
+- AcdVetoFit.h
+
+================================================================================
+10. Python Files Changes
+================================================================================
+
+Files changed:
+- calibGenACDLib.py
+- python/AcdReportRun.py
+- python/AcdReportTrend.py
+- python/AcdReportUtil.py
+- python/AcdWeeklyReport.py
+- python/ParseFileList.py
+- python/ParseFileListNew.py
+
+Changes: Updated to handle DIGI/RECON/SVAC file selection and routing
+
+================================================================================
+11. Build/Config Files
+================================================================================
+
+- SConscript: Updated build configuration for new code paths
+- cmt/requirements: Build dependencies updated
+- doc/release.notes: Version history and changes documented
+
+================================================================================
+SUMMARY OF CHANGES
+================================================================================
+
+TOTAL FILES CHANGED: 53
+
+BREAKDOWN:
+- Core Logic Files (.cxx):      10 files changed
+- Header Files (.h):            35 files changed
+- Python Files (.py):            6 files changed
+- Build/Documentation:          2-3 files changed
+
+KEY ARCHITECTURAL CHANGES:
+
+1. SVAC-ONLY → DIGI/RECON + Optional SVAC
+   V1: Hard requirement for SVAC files
+   V2: Requires DIGI + RECON (SVAC is commented out)
+
+2. Input Processing
+   V1: Single chain (m_svacChain)
+   V2: Multiple chains (m_digiChain, m_reconChain, m_svacChain, etc.)
+
+3. Calibration Algorithm
+   V1: AcdCalibLoop_Svac only
+   V2: AcdCalibLoop_Recon as primary (with SVAC alternative)
+
+4. Event Filtering
+   V1: Simple event range selection
+   V2: Advanced event list file support (-e option)
+
+5. Validation
+   V1: checkSvac() only
+   V2: checkDigi(), checkRecon(), checkMerit(), checkSvac() (all optional)
+
+================================================================================
+END OF DIFFERENCES
+================================================================================

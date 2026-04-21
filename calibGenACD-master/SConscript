@@ -1,5 +1,5 @@
 # -*- python -*-
-# $Header: /nfs/slac/g/glast/ground/cvs/calibGenACD/SConscript,v 1.13 2014/02/14 03:28:28 echarles Exp $ 
+# $Header: /sdf/group/fermi/g/glast_ground/cvs/calibGenACD/SConscript,v 1.13 2014/02/14 03:28:28 echarles Exp $ 
 # Authors:  Eric Charles <echarles@slac.stanford.edu>
 # Version: calibGenACD-06-00-00
 Import('baseEnv')
