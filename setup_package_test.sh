@@ -59,7 +59,7 @@ if [ "$answer" = "1" ]; then
     chmod +x ${MY_DIR}/ACD_calib_github_software/gpp_linker
 
     # FIX ROOT to make sure glast root is used!
-    export ROOTSYS=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.26.00
+    export ROOTSYS=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.26.00a-gl2
     export PATH=$ROOTSYS/bin:$(echo $PATH | tr ':' '\n' | grep -v miniconda | grep -v conda | tr '\n' ':')
     export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
     unset CONDA_PREFIX_ROOT
