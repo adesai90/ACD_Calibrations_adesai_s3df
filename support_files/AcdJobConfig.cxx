@@ -317,14 +317,14 @@ Bool_t AcdJobConfig::makeChain( ) const {
     const std::string& token = tokens[iFile];
     if (token=="") continue;
     if (token.find("digi.root") != token.npos ) {
-      if ( m_digiChain == 0 ) //{
+  //    if ( m_digiChain == 0 ) //{
 	// ---AD changed: Detect actual tree name
-	std::string treeName = findTreeName(token.c_str(), "Digi"); // ---AD changed
-	if (treeName == "") { // ---AD changed
-	  std::cerr << "ADDED ERROR: Could not find Digi tree in file: " << token << std::endl; // ---AD changed
-	  return kFALSE; // ---AD changed
-	} // ---AD changed
-	m_digiChain = new TChain(treeName.c_str()); // ---AD changed
+	//std::string treeName = findTreeName(token.c_str(), "Digi"); // ---AD changed
+	//if (treeName == "") { // ---AD changed
+	//  std::cerr << "ADDED ERROR: Could not find Digi tree in file: " << token << std::endl; // ---AD changed
+	//  return kFALSE; // ---AD changed
+	//} // ---AD changed
+	//m_digiChain = new TChain(treeName.c_str()); // ---AD changed
   //    }
       chain = m_digiChain;
     } else if (token.find("svac.root") != token.npos ) {
