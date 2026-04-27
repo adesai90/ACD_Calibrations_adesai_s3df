@@ -125,7 +125,7 @@ if [ "$answer" = "1" ]; then
     if [ "$answer" = "yes" ]; then
         echo "Starting Scons build...do not interrupt!"
         scons -i -C ${PARENT} --variant=redhat6-x86_64-64bit-gcc44-Optimized --cxxflags="-D_GLIBCXX_USE_CXX11_ABI=0"\
-        --with-GLAST-EXT=${GLAST_EXT} --duplicate=soft-copy --with-root-dir=${ROOTSYS}\
+        --with-GLAST-EXT=${GLAST_EXT} --duplicate=soft-copy \
         --exclude=workdir --supersede=${RELEASE} --rm --compile-opt \
         --with-cc=${MY_DIR}/ACD_calib_github_software/gcc_linker \
         --with-cxx=${MY_DIR}/ACD_calib_github_software/gpp_linker --debug=explain $* > build_out.log 2> build_err.log
