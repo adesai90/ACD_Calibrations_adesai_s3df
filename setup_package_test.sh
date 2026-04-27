@@ -58,6 +58,15 @@ if [ "$answer" = "1" ]; then
     chmod +x ${MY_DIR}/ACD_calib_github_software/gcc_linker
     chmod +x ${MY_DIR}/ACD_calib_github_software/gpp_linker
 
+    export ROOTSYS=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.26.00
+    export PATH=$ROOTSYS/bin:$PATH
+    hash -r
+    unset ROOTSYS_CONDA
+    export PATH=$(echo $PATH | tr ':' '\n' | grep -v miniconda | tr '\n' ':')
+    export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+    export GLAST_ROOT_OVERRIDE=1
+    
+
     # Delete past builds
     echo "Current working Directory: ${MY_DIR}"
     read -p "Delete Past Build, removes files in releases, python and workdir? (yes/no): " answer
@@ -94,10 +103,7 @@ if [ "$answer" = "1" ]; then
 
     cd ${MY_DIR}
     export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
-    export ROOTSYS=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.26.00
-    export PATH=$ROOTSYS/bin:$PATH
-    export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
-    export GLAST_ROOT_OVERRIDE=1
+    
     echo "ROOTSYS=$ROOTSYS"
     which root-config
     root-config --version
