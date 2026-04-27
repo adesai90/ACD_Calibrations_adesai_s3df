@@ -28,17 +28,17 @@ MY_DIR=$(pwd)
 /Users/aadesai1/Desktop/In_use/ACD_calibrations/calibGenACD-master/src/AcdCalibMap.cxx
 # Delete past builds
 # This portion is to be run with cvs checkout calibgenacd and NOT github calibgenacd.
-#read -p "Update AcdCalibBase and AcdJobConfig files? (yes/no): " answer
-#    if [ "$answer" = "yes" ]; then
-#        cp ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase_org.cxx
-#        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.cxx
-#        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.h
-#        #cp ${git_dir}/support_files/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx
-#        #cp ${git_dir}/support_files/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx
-#        #cp ${git_dir}/support_files/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig.h
-#        echo "----modified----"
-#    fi
-#echo "----done----"
+read -p "Update AcdCalibBase and AcdJobConfig files? (yes/no): " answer
+    if [ "$answer" = "yes" ]; then
+        cp ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase_org.cxx
+        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.cxx
+        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.h
+        cp ${git_dir}/support_files/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx
+        cp ${git_dir}/support_files/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx
+        cp ${git_dir}/support_files/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig.h
+        echo "----modified----"
+    fi
+echo "----done----"
 
 echo "There are two options for the setup of ACD calibrations software."
 echo "1. Setup using links to /sdf/group/fermi/"
