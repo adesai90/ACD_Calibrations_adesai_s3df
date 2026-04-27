@@ -227,10 +227,21 @@ Adding fix to rewrite job submission code.
     Reason: src/AcdJobConfig.h has a checksvac() line (around line 155) which needs to be commented, doesnt do anything just checks for svac 
     Removing cheksvac didnt fix it, forcing checksvac to always return true by commenting out checksvac.
     Files cheanged (./releases/GR-20-09-10/calibGenACD/src/AcdJobConfig.cxx) (./releases/GR-20-09-10/calibGenACD/build/redhat6-x86_64-64bit-gcc44-Optimized/src/AcdJobConfig.cxx)
-
-
+    Need to recomplie, so after cvs checkout is run, another terminal is run to edit the 2 files and then scons is run...
+    
+- RESAON: Turns out the calibGenAcd was being rewritten by cvs checkout, so the github version that is optimized was not being used. Fixed this!
 
 
 ######
 - Issue with svag, might be comparision with ground calibration tool, but svac needs to be replaced with recon.
 - 
+
+
+
+########################################################################################
+#
+# TO BE DONE
+#
+########################################################################################
+
+-remove cvs mootcore
