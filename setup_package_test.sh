@@ -58,13 +58,22 @@ if [ "$answer" = "1" ]; then
     chmod +x ${MY_DIR}/ACD_calib_github_software/gcc_linker
     chmod +x ${MY_DIR}/ACD_calib_github_software/gpp_linker
 
+    # FIX ROOT to make sure glast root is used!
     export ROOTSYS=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.26.00
     export PATH=$ROOTSYS/bin:$PATH
-    hash -r
-    unset ROOTSYS_CONDA
-    export PATH=$(echo $PATH | tr ':' '\n' | grep -v miniconda | tr '\n' ':')
     export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+
+    hash -r
+
+    echo "Using GLAST ROOT:"
+    which root-config
+    root-config --version
     export GLAST_ROOT_OVERRIDE=1
+
+    echo "ROOTSYS=$ROOTSYS"
+    which root-config
+    root-config --version
+    root-config --libdir
     
 
     # Delete past builds
@@ -104,10 +113,6 @@ if [ "$answer" = "1" ]; then
     cd ${MY_DIR}
     export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
     
-    echo "ROOTSYS=$ROOTSYS"
-    which root-config
-    root-config --version
-    root-config --libdir
     #export PATH=~/miniconda/envs/acd_test2/bin/root:$PATH
     #export PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.34.03-gr01/bin/:$PATH #For some reason root was not loading so added this
     #export LD_LIBRARY_PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/openssl/1.0.2/lib:$LD_LIBRARY_PATH
