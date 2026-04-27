@@ -94,7 +94,15 @@ if [ "$answer" = "1" ]; then
 
     cd ${MY_DIR}
     export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
-    export PATH=~/miniconda/envs/acd_test2/bin/root:$PATH
+    export ROOTSYS=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.26.00
+    export PATH=$ROOTSYS/bin:$PATH
+    export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+    export GLAST_ROOT_OVERRIDE=1
+    echo "ROOTSYS=$ROOTSYS"
+    which root-config
+    root-config --version
+    root-config --libdir
+    #export PATH=~/miniconda/envs/acd_test2/bin/root:$PATH
     #export PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.34.03-gr01/bin/:$PATH #For some reason root was not loading so added this
     #export LD_LIBRARY_PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/openssl/1.0.2/lib:$LD_LIBRARY_PATH
     
@@ -104,7 +112,7 @@ if [ "$answer" = "1" ]; then
     if [ "$answer" = "yes" ]; then
         echo "Starting Scons build...do not interrupt!"
         scons -i -C ${PARENT} --variant=redhat6-x86_64-64bit-gcc44-Optimized --cxxflags="-D_GLIBCXX_USE_CXX11_ABI=0"\
-        --with-GLAST-EXT=${GLAST_EXT} --duplicate=soft-copy \
+        --with-GLAST-EXT=${GLAST_EXT} --duplicate=soft-copy --with-root-dir=${ROOTSYS}\
         --exclude=workdir --supersede=${RELEASE} --rm --compile-opt \
         --with-cc=${MY_DIR}/ACD_calib_github_software/gcc_linker \
         --with-cxx=${MY_DIR}/ACD_calib_github_software/gpp_linker --debug=explain $* > build_out.log 2> build_err.log
