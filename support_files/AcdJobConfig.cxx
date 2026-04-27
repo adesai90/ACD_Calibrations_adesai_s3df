@@ -271,27 +271,27 @@ Int_t AcdJobConfig::parse(int argn, char** argc) {
 }
 
 // ---AD changed: Helper function to find actual tree name in ROOT file
-std::string AcdJobConfig::findTreeName(const char* fileName, const char* expectedName) const { // ---AD changed
-  TFile* f = TFile::Open(fileName); // ---AD changed
-  if (f == 0) { // ---AD changed
-    std::cerr << "Could not open file: " << fileName << std::endl; // ---AD changed
-    return ""; // ---AD changed
-  } // ---AD changed
-  TTree* t = (TTree*)f->Get(expectedName);  // ---AD changed
-  if (t != 0) { // ---AD changed
-    std::cout << "Found tree: " << expectedName << std::endl; // ---AD changed
-    f->Close(); // ---AD changed
-    return expectedName; // ---AD changed
-  }// ---AD changed
-  std::cout << "Tree '" << expectedName << "' not found. Available objects:" << std::endl; // ---AD changed
-  TList* keyList = f->GetListOfKeys(); // ---AD changed
-  for (int i = 0; i < keyList->GetSize(); i++) { // ---AD changed
-    TKey* key = (TKey*)keyList->At(i); // ---AD changed
-    std::cout << "  - " << key->GetName() << " (" << key->GetClassName() << ")" << std::endl; // ---AD changed
-  } // ---AD changed
-  f->Close(); // ---AD changed
-  return ""; // ---AD changed
-}// ---AD changed 
+// std::string AcdJobConfig::findTreeName(const char* fileName, const char* expectedName) const { // ---AD changed
+//   TFile* f = TFile::Open(fileName); // ---AD changed
+//   if (f == 0) { // ---AD changed
+//     std::cerr << "Could not open file: " << fileName << std::endl; // ---AD changed
+//     return ""; // ---AD changed
+//   } // ---AD changed
+//   TTree* t = (TTree*)f->Get(expectedName);  // ---AD changed
+//   if (t != 0) { // ---AD changed
+//     std::cout << "Found tree: " << expectedName << std::endl; // ---AD changed
+//     f->Close(); // ---AD changed
+//     return expectedName; // ---AD changed
+//   }// ---AD changed
+//   std::cout << "Tree '" << expectedName << "' not found. Available objects:" << std::endl; // ---AD changed
+//   TList* keyList = f->GetListOfKeys(); // ---AD changed
+//   for (int i = 0; i < keyList->GetSize(); i++) { // ---AD changed
+//     TKey* key = (TKey*)keyList->At(i); // ---AD changed
+//     std::cout << "  - " << key->GetName() << " (" << key->GetClassName() << ")" << std::endl; // ---AD changed
+//   } // ---AD changed
+//   f->Close(); // ---AD changed
+//   return ""; // ---AD changed
+// }// ---AD changed 
 
 
 
