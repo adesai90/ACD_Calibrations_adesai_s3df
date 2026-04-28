@@ -269,30 +269,30 @@ Int_t AcdJobConfig::parse(int argn, char** argc) {
 
   return Success;
 }
-
-// ---AD changed: Helper function to find actual tree name in ROOT file
-// std::string AcdJobConfig::findTreeName(const char* fileName, const char* expectedName) const { // ---AD changed
-//   TFile* f = TFile::Open(fileName); // ---AD changed
-//   if (f == 0) { // ---AD changed
-//     std::cerr << "Could not open file: " << fileName << std::endl; // ---AD changed
-//     return ""; // ---AD changed
-//   } // ---AD changed
-//   TTree* t = (TTree*)f->Get(expectedName);  // ---AD changed
-//   if (t != 0) { // ---AD changed
-//     std::cout << "Found tree: " << expectedName << std::endl; // ---AD changed
-//     f->Close(); // ---AD changed
-//     return expectedName; // ---AD changed
-//   }// ---AD changed
-//   std::cout << "Tree '" << expectedName << "' not found. Available objects:" << std::endl; // ---AD changed
-//   TList* keyList = f->GetListOfKeys(); // ---AD changed
-//   for (int i = 0; i < keyList->GetSize(); i++) { // ---AD changed
-//     TKey* key = (TKey*)keyList->At(i); // ---AD changed
-//     std::cout << "  - " << key->GetName() << " (" << key->GetClassName() << ")" << std::endl; // ---AD changed
-//   } // ---AD changed
-//   f->Close(); // ---AD changed
-//   return ""; // ---AD changed
-// }// ---AD changed 
-
+/* 
+*  ---AD changed: Helper function to find actual tree name in ROOT file
+*  std::string AcdJobConfig::findTreeName(const char* fileName, const char* expectedName) const { // ---AD changed
+*    TFile* f = TFile::Open(fileName); // ---AD changed
+*    if (f == 0) { // ---AD changed
+*      std::cerr << "Could not open file: " << fileName << std::endl; // ---AD changed
+*      return ""; // ---AD changed
+*    } // ---AD changed
+*    TTree* t = (TTree*)f->Get(expectedName);  // ---AD changed
+*    if (t != 0) { // ---AD changed
+*      std::cout << "Found tree: " << expectedName << std::endl; // ---AD changed
+*      f->Close(); // ---AD changed
+*      return expectedName; // ---AD changed
+*    }// ---AD changed
+*    std::cout << "Tree '" << expectedName << "' not found. Available objects:" << std::endl; // ---AD changed
+*    TList* keyList = f->GetListOfKeys(); // ---AD changed
+*    for (int i = 0; i < keyList->GetSize(); i++) { // ---AD changed
+*      TKey* key = (TKey*)keyList->At(i); // ---AD changed
+*      std::cout << "  - " << key->GetName() << " (" << key->GetClassName() << ")" << std::endl; // ---AD changed
+*    } // ---AD changed
+*    f->Close(); // ---AD changed
+*    return ""; // ---AD changed
+*  }// ---AD changed 
+*/
 
 
 Bool_t AcdJobConfig::makeChain( ) const {
@@ -317,15 +317,19 @@ Bool_t AcdJobConfig::makeChain( ) const {
     const std::string& token = tokens[iFile];
     if (token=="") continue;
     if (token.find("digi.root") != token.npos ) {
-  //    if ( m_digiChain == 0 ) //{
-	// ---AD changed: Detect actual tree name
-	//std::string treeName = findTreeName(token.c_str(), "Digi"); // ---AD changed
-	//if (treeName == "") { // ---AD changed
-	//  std::cerr << "ADDED ERROR: Could not find Digi tree in file: " << token << std::endl; // ---AD changed
-	//  return kFALSE; // ---AD changed
-	//} // ---AD changed
-	//m_digiChain = new TChain(treeName.c_str()); // ---AD changed
-  //    }
+      if ( m_digiChain == 0 ) {
+        m_digiChain = new TChain("Digi"); // ---AD added aftter removing changed lines
+      }
+	/*
+  * ---AD changed: Detect actual tree name
+	* std::string treeName = findTreeName(token.c_str(), "Digi"); // ---AD changed
+	* if (treeName == "") { // ---AD changed
+	*   std::cerr << "ADDED ERROR: Could not find Digi tree in file: " << token << std::endl; // ---AD changed
+	*   return kFALSE; // ---AD changed
+  * } // ---AD changed
+	* m_digiChain = new TChain(treeName.c_str()); // ---AD changed
+  *   }
+  */
       chain = m_digiChain;
     } else if (token.find("svac.root") != token.npos ) {
       if ( m_svacChain == 0 ) {
