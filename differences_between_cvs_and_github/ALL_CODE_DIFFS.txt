@@ -226,6 +226,39 @@ KEY ARCHITECTURAL CHANGES:
    V1: checkSvac() only
    V2: checkDigi(), checkRecon(), checkMerit(), checkSvac() (all optional)
 
+
+Now the picture is completely clear. The diff tells us exactly why the old code works and the new one doesn't. Let me break it down:
+
+The Core Answer: Two Brand New Files Are the Problem
+bash
+
+Copy code
+Only in ../../ACD_calib_github_software/calibGenACD-master/src: AcdCalibLoop_Recon.cxx
+Only in ../../ACD_calib_github_software/calibGenACD-master/src: AcdCalibLoop_Recon.h
+
+The old code simply never had these files. The entire boost::shared_ptr / StatusCode.h fatal error chain is triggered exclusively by AcdCalibLoop_Recon.cxx. The old working code never compiled this file, so it never hit the GCC8 vs old Boost incompatibility.
+
+Complete Map of All Changes and Their Impact
+🔴 Fatal — New Files Introducing Incompatible Headers
+File	Impact
+AcdCalibLoop_Recon.cxx (new)	Pulls in StatusCode.h → boost::shared_ptr → fatal error under GCC8
+AcdCalibLoop_Recon.h (new)	Same chain, included by the .cxx and by runMipCalib.cxx
+🔴 Fatal — API Mismatch Introduced by New Files
+File	Change	Impact
+AcdCalibBase.h	Added go_list(std::vector<int>)	Needs matching .cxx implementation
+AcdJobConfig.h	Added eventList(), m_eventList member	Must be consistent with .cxx
+AcdJobConfig.cxx	Added -e option, m_eventList handling	New constructor args ripple into app files
+This is why runOverlayPedestal.cxx fails — it's calling AcdCalibLoop_Digi with 7 args because it was written alongside a newer version of AcdCalibLoop_Digi.h that you haven't updated yet.
+
+🟡 Non-Fatal — Logic/Cosmetic Changes
+File	Change
+AcdCalibBase.cxx	Added go_list(), nTotal fix, commented debug lines
+AcdCalibUtil.cxx/.h	PDF suffix changes, marker style
+AcdGainFit.cxx	Fit parameter limits tightened
+AcdTrendCalib.cxx	Status branch, delta calculation logic
+AcdReportPlots.cxx	Units string fix
+The Exact Fix
+
 ================================================================================
 END OF DIFFERENCES
 ================================================================================

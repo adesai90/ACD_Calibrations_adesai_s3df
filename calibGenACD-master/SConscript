@@ -10,6 +10,14 @@ if baseEnv['PLATFORM'] != "win32":
   progEnv = baseEnv.Clone()
   libEnv = baseEnv.Clone()
 
+  # ----------------------------------------------------------
+  # AD FIX: Force C++03 to maintain compatibility with old Boost
+  # headers in GLAST_EXT (boost::shared_ptr copy constructor)
+  # ----------------------------------------------------------
+  libEnv.Append(CXXFLAGS=['-std=c++03'])
+  progEnv.Append(CXXFLAGS=['-std=c++03'])
+  # ----------------------------------------------------------
+
   libEnv.Tool('addLinkDeps', package='calibGenACD', toBuild='shared')
   calibGenACD = libEnv.SharedLibrary('calibGenACD',  listFiles(['src/*.cxx']))
   

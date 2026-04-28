@@ -27,18 +27,7 @@ MY_DIR=$(pwd)
 
 /Users/aadesai1/Desktop/In_use/ACD_calibrations/calibGenACD-master/src/AcdCalibMap.cxx
 # Delete past builds
-# This portion is to be run with cvs checkout calibgenacd and NOT github calibgenacd.
-read -p "Update AcdCalibBase and AcdJobConfig files? (yes/no): " answer
-    if [ "$answer" = "yes" ]; then
-        cp ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase_org.cxx
-        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.cxx
-        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.h
-        cp ${git_dir}/support_files/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx
-        cp ${git_dir}/support_files/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx
-        cp ${git_dir}/support_files/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig.h
-        echo "----modified----"
-    fi
-echo "----done----"
+
 
 echo "There are two options for the setup of ACD calibrations software."
 echo "1. Setup using links to /sdf/group/fermi/"
@@ -104,6 +93,15 @@ if [ "$answer" = "1" ]; then
         #chmod -R +x ${MY_DIR}/releases/GR-20-09-10/mootCore/*
         perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript #This is from the installation instructions on DGreen
     fi
+
+    read -p "Update AcdCalibBase and AcdJobConfig files? (yes/no): " answer
+    if [ "$answer" = "yes" ]; then
+        cp ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/AcdCalibBase_org.cxx
+        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/AcdJobConfig_org.cxx
+        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.h ${MY_DIR}/releases/GR-20-09-10/calibGenACD/AcdJobConfig_org.h
+        echo "----modified----"
+    fi
+    echo "----done----"
 
 
     #cp ${git_dir}/support_files/AcdCalibBase.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdCalibBase.cxx
