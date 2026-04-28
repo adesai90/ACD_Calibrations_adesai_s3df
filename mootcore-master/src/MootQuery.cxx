@@ -1711,7 +1711,7 @@ namespace MOOT {
     where += precinct + std::string("'");
 
     std::string precinctKey = DbUtil::getColumnWhere(m_rdb,
-                                                     "Precincts"
+                                                     "Precincts",
                                                      "precinct_key",
                                                      where, false);
 
