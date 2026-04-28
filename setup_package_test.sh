@@ -89,7 +89,9 @@ if [ "$answer" = "1" ]; then
         mkdir ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
         cp -r ${git_dir}/calibGenACD-master/* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
         chmod -R +x ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
-        cvs checkout mootCore
+        mkdir ${MY_DIR}/releases/GR-20-09-10/mootCore/
+        cp -r ${git_dir}/mootcore-master/* ${MY_DIR}/releases/GR-20-09-10/mootCore/
+        chmod -R +x ${MY_DIR}/releases/GR-20-09-10/mootCore/
         #chmod -R +x ${MY_DIR}/releases/GR-20-09-10/mootCore/*
         perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript #This is from the installation instructions on DGreen
     fi
