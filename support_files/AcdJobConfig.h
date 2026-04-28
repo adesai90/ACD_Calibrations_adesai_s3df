@@ -170,7 +170,9 @@ protected:
 private:
 
   // ---AD changed: Helper to find actual tree name in ROOT file
-  // std::string findTreeName(const char* fileName, const char* expectedName) const; // ---AD changed
+  /*
+  * std::string findTreeName(const char* fileName, const char* expectedName) const; // ---AD changed
+  */ 
 
   std::string m_theApp;
   std::string m_description;
