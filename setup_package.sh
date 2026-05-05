@@ -185,7 +185,8 @@ if [ "$answer" = "1" ]; then
     cp ${git_dir}/op1_source_complied_files.sh ${MY_DIR}/source_compiled_files.sh
     #cp ${git_dir}/calibGenACD-master/python/Acd* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/
     cp ${MY_DIR}/releases/GR-20-09-10/mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/src/py_mootCore.py ${MY_DIR}/releases/GR-20-09-10/python/
-
+    cp ${git_dir}/submit_jobs.sh ${MY_DIR}/submit_jobs.sh 
+    cp
 
 else
     echo "Running option 2. Using a container which links to the old /afs paths by using bind mount"
