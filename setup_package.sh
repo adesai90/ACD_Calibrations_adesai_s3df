@@ -18,8 +18,8 @@ echo "Git dir is ${git_dir}"
 if [ -d "${git_dir}/calibGenACD-master" ]; then
     echo "Fermi calibGenACD git directory found."
 else
-    echo "Cloning repository..."
-    git clone "https://github.com/fermi-lat/calibGenACD.git" calibGenACD-master
+    echo "The repository should exist! If you clone a new one, Make sure the paths on the cloned repositoiry are correct"
+    #git clone "https://github.com/fermi-lat/calibGenACD.git" calibGenACD-master #(incorrect paths!)
 fi
 
 cd ..
@@ -27,18 +27,7 @@ MY_DIR=$(pwd)
 
 /Users/aadesai1/Desktop/In_use/ACD_calibrations/calibGenACD-master/src/AcdCalibMap.cxx
 # Delete past builds
-# This portion is to be run with cvs checkout calibgenacd and NOT github calibgenacd.
-#read -p "Update AcdCalibBase and AcdJobConfig files? (yes/no): " answer
-#    if [ "$answer" = "yes" ]; then
-#        cp ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase_org.cxx
-#        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.cxx
-#        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig_org.h
-#        #cp ${git_dir}/support_files/AcdCalibBase.cxx ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx
-#        #cp ${git_dir}/support_files/AcdJobConfig.cxx ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx
-#        #cp ${git_dir}/support_files/AcdJobConfig.h ${git_dir}/calibGenACD-master/src/AcdJobConfig.h
-#        echo "----modified----"
-#    fi
-#echo "----done----"
+
 
 echo "There are two options for the setup of ACD calibrations software."
 echo "1. Setup using links to /sdf/group/fermi/"
@@ -57,6 +46,26 @@ if [ "$answer" = "1" ]; then
     source ${MY_DIR}/ACD_calib_github_software/op1_setup.sh
     chmod +x ${MY_DIR}/ACD_calib_github_software/gcc_linker
     chmod +x ${MY_DIR}/ACD_calib_github_software/gpp_linker
+
+    # FIX ROOT to make sure glast root is used!
+    export ROOTSYS=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.26.00a-gl2/gcc44
+    #export PATH=$ROOTSYS/bin:$(echo $PATH | tr ':' '\n' | grep -v miniconda | grep -v conda | tr '\n' ':')
+    export PATH=$ROOTSYS/bin:$PATH
+    #source $ROOTSYS/env.sh
+    export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+    #unset CONDA_PREFIX_ROOT
+    #unset ROOTSYS_CONDA
+    #hash -r
+    echo "Using GLAST ROOT:"
+    which root-config
+    root-config --version
+    export GLAST_ROOT_OVERRIDE=1
+
+    echo "ROOTSYS=$ROOTSYS"
+    which root-config
+    root-config --version
+    root-config --libdir
+    
 
     # Delete past builds
     echo "Current working Directory: ${MY_DIR}"
@@ -79,11 +88,22 @@ if [ "$answer" = "1" ]; then
         #cvs checkout calibGenACD
         mkdir ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
         cp -r ${git_dir}/calibGenACD-master/* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
-        chmod -R +x ${MY_DIR}/releases/GR-20-09-10/calibGenACD/*
-        cvs checkout mootCore
-        chmod +x ${MY_DIR}/releases/GR-20-09-10/mootCore/*
+        chmod -R +x ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
+        mkdir ${MY_DIR}/releases/GR-20-09-10/mootCore/
+        cp -r ${git_dir}/mootcore-master/* ${MY_DIR}/releases/GR-20-09-10/mootCore/
+        chmod -R +x ${MY_DIR}/releases/GR-20-09-10/mootCore/
+        #chmod -R +x ${MY_DIR}/releases/GR-20-09-10/mootCore/*
         perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript #This is from the installation instructions on DGreen
     fi
+
+    read -p "Update AcdCalibBase and AcdJobConfig files? (yes/no): " answer
+    if [ "$answer" = "yes" ]; then
+        cp ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/AcdCalibBase_org.cxx
+        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/AcdJobConfig_org.cxx
+        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.h ${MY_DIR}/releases/GR-20-09-10/calibGenACD/AcdJobConfig_org.h
+        echo "----modified----"
+    fi
+    echo "----done----"
 
 
     #cp ${git_dir}/support_files/AcdCalibBase.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdCalibBase.cxx
@@ -94,7 +114,8 @@ if [ "$answer" = "1" ]; then
 
     cd ${MY_DIR}
     export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
-    export PATH=~/miniconda/envs/acd_test2/bin/root:$PATH
+    
+    #export PATH=~/miniconda/envs/acd_test2/bin/root:$PATH
     #export PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.34.03-gr01/bin/:$PATH #For some reason root was not loading so added this
     #export LD_LIBRARY_PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/openssl/1.0.2/lib:$LD_LIBRARY_PATH
     
@@ -112,8 +133,18 @@ if [ "$answer" = "1" ]; then
 
     echo "Scons command ran, check build files for log and error, fixing some harcoded paths now"
 
-    cp -r ${git_dir}/fermi_ground_bin_files PN
-
+    #cvs checkout calibGenACD
+    #cp -r ${git_dir}/calibGenACD-master/* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
+    #chmod -R +x ${MY_DIR}/releases/GR-20-09-10/calibGenACD/
+    #echo "Rebuilding Scons with modified files"
+    #scons -i -C ${PARENT} --variant=redhat6-x86_64-64bit-gcc44-Optimized --cxxflags="-D_GLIBCXX_USE_CXX11_ABI=0"\
+    #    --with-GLAST-EXT=${GLAST_EXT} --duplicate=soft-copy \
+    #    --exclude=workdir --supersede=${RELEASE} --rm --compile-opt \
+    #    --with-cc=${MY_DIR}/ACD_calib_github_software/gcc_linker \
+    #    --with-cxx=${MY_DIR}/ACD_calib_github_software/gpp_linker --debug=explain $* > build_ou2.log 2> build_err2.log
+   
+        
+    
     perl -i -pe 's|/afs/slac/g/glast/ground/bin/|${RELEASE}/fermi_ground_bin_files|g' \
         ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/ParseFileListNew.py \
         ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/ParseFileList.py \
@@ -124,7 +155,7 @@ if [ "$answer" = "1" ]; then
     cd ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/
     perl -i -pe 's|/Data/Flight/Level1/LPA/ > %s|/Data/Flight/Level1/LPA/ 2>\\/dev\\/null \| grep \x27^root:\\/\\/\x27 > %s|' ParseFileListNew.py
 
-
+    
     #read -p "Modify AcdReportUtil.py, to writte to local working directory instead of latmonroot? (yes/no): " answer
     #if [ "$answer" = "yes" ]; then
     #    LOCAL_OUT="./acd_output"
@@ -152,7 +183,7 @@ if [ "$answer" = "1" ]; then
 
     cp ${MY_DIR}/releases/GR-20-09-10/bin/redhat6-x86_64-64bit-gcc44-Optimized/_setup.sh ${MY_DIR}/releases/GR-20-09-10/
     cp ${git_dir}/op1_source_complied_files.sh ${MY_DIR}/source_compiled_files.sh
-    cp ${git_dir}/calibGenACD-master/python/Acd* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/
+    #cp ${git_dir}/calibGenACD-master/python/Acd* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/
     cp ${MY_DIR}/releases/GR-20-09-10/mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/src/py_mootCore.py ${MY_DIR}/releases/GR-20-09-10/python/
 
 

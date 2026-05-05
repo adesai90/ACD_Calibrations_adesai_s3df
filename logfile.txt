@@ -146,6 +146,14 @@ and manually replace them with "/sdf/group/fermi/a/"
 
 -Also Modified the setup file to make sure no duplicate files are wruitten to github.
 
+-----Another rather troubling issue that keeps on popping up:
+/sdf/home/a/abhishek/...../src/AcdCalibLoop_Digi.h:38:3: note:   candidate expects 4 arguments, 7 provided
+-Fixed it by fixing AcdCalibLoop_Digi constructor (for runOverlayPedestal)
+!!!!!!! there is a missing comma in mootcore that is imported from cvs!!!!! !!!!
+std::string precinctKey = DbUtil::getColumnWhere(m_rdb,
+                                                     "Precincts"
+                                                     "precinct_key",
+                                                     where, false);
 
 ########################################################################################
 ###########
@@ -181,6 +189,12 @@ The TChain can now load entries properly
 Added fix to read locate the Digi/DigiEvents by recompiling after adding fixes. Appears to be working now.
 
 Adding fix to rewrite job submission code.
+
+--- Additiona error for more arguments called in runoverlay pedestial, due to a leftore past code, I think. Fixing it bby removing the additional var.
+In runOverlayPedestal.cxx:
+AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config(), jc.optval_d(), jc.optval_2(), jc.optval_1());
+changed to (wuth Ad added comment)
+AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config());
 
 
 
