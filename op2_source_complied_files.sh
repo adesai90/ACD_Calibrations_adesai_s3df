@@ -26,3 +26,6 @@ source ${RELEASE}/_setup.sh
 cd ${RELEASE}/workdir
 export LD_LIBRARY_PATH=${MY_DIR}/local_libs:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+# Add system libraries for libcrypto.so.10
+export LD_LIBRARY_PATH=/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH
