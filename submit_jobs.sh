@@ -22,5 +22,5 @@ sbatch \
     --cpus-per-task 2 \
     --job-name acd_calibrations_week_${INPUT_VALUE} \
     --output $INPUT_PATH/releases/GR-20-09-10/workdir/submitted_jobs/week_${INPUT_VALUE}/acd_calibrations_week_${INPUT_VALUE}.out \
-    --wrap="source $INPUT_PATH/source_compiled_files.sh && cd $INPUT_PATH/releases/GR-20-09-10/workdir/submitted_jobs/week_${INPUT_VALUE} && python $RELEASE/calibGenACD/python/AcdWeeklyReport.py 'run' -w ${INPUT_VALUE} $INPUT_PATH/releases/GR-20-09-10/workdir/DIGI_260504.table $INPUT_PATH/releases/GR-20-09-10/workdir/RECON_260504.table
+    --wrap="source $INPUT_PATH/source_compiled_files.sh && cd $INPUT_PATH/releases/GR-20-09-10/workdir/submitted_jobs/week_${INPUT_VALUE} && python $RELEASE/calibGenACD/python/AcdWeeklyReport.py 'run' -w ${INPUT_VALUE} $INPUT_PATH/releases/GR-20-09-10/workdir/DIGI_260504.table $INPUT_PATH/releases/GR-20-09-10/workdir/RECON_260504.table"
 
