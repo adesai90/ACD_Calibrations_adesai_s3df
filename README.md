@@ -20,6 +20,8 @@
 - CHECK src/AcdJobConfig.h,  to see if Line 155 has a checksvac() line (if it is not commented, make it a comment) 
 - The ACD codes try to write in the <LATMonRoot=/sdf/group/fermi/ground/releases/monitor/> directory currently
 
+- While the codes can be run directly using an interactive cluster for testing, submitting using a job is preferred.
+For that use the submit_job.sh code, which runs run_wrapper to submit the job. However make sure the digi and recon files are correctly sources (check the names if you are reparsing the files)
 
 # AFTER SETUP:
 
