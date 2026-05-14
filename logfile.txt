@@ -190,7 +190,7 @@ Added fix to read locate the Digi/DigiEvents by recompiling after adding fixes. 
 
 Adding fix to rewrite job submission code.
 
---- Additiona error for more arguments called in runoverlay pedestial, due to a leftore past code, I think. Fixing it bby removing the additional var.
+--- Additional error for more arguments called in runoverlay pedestial, due to a leftore past code, I think. Fixing it bby removing the additional var.
 In runOverlayPedestal.cxx:
 AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config(), jc.optval_d(), jc.optval_2(), jc.optval_1());
 changed to (wuth Ad added comment)
@@ -218,6 +218,26 @@ AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config
 - Issue with xquarts showing the gui for me, so restarted xquarts and ran xhost + in it and then restared again
 - NOTE: got random issue wuth libraries so had to do a library fix, added in setup file
 
+---- Everything runs, except error in Gain.
+    Fix: 
+    ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/xrootd/xrootd-3.2.4/lib64/libXrdUtils.so.1 \
+      /sdf/home/a/abhishek/ACD_calib_using_paths_conda/local_libs/libXrdUtils.so.1
+
+    ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/xrootd/xrootd-3.2.4/lib64/libXrdClient.so.1 \
+      /sdf/home/a/abhishek/ACD_calib_using_paths_conda/local_libs/libXrdClient.so.1
+    Updated in setup file! Didnt do anyhting, but issues might have reduced, not sure.
+
+    Got an error in trend ():
+    Fix:
+    In src/AcdTrendCalib.cxx
+    replace
+    Int_t status_ref[216];
+    Int_t status[216];
+    with
+    UInt_t status_ref[216];
+    UInt_t status[216];
+
+    Recompile!!
 
 ########################################################################################
 ###########
@@ -239,6 +259,8 @@ AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config
 - the file update_canvas_code.pl is used to fixed ROOT errors, but this might not be required as root errors are not found anymore for interactive sessions.
 - If running from workdir use python $RELEASE/calibGenACD/python/Acd.....py
 
+- For job submission running syntax:
+source submit_jobs.sh 736 /sdf/home/a/abhishek/ACD_calib_using_paths_conda
 
 ########################################################################################
 ###########
@@ -248,7 +270,25 @@ AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config
 ###########
 ########################################################################################
 
+-While submitting jobs kept on getting issue for a lib not found. Turns out it was a symlink, If that comes fix:
+    ls -la /sdf/home/a/abhishek/ACD_calib_using_paths_conda/local_libs/libcrypto*
+    lrwxrwxrwx 1 abhishek gl 21 May  4 11:17 /sdf/home/a/abhishek/ACD_calib_using_paths_conda/local_libs/libcrypto.so.10 -> /lib64/libcrypto.so.3
+    (acd_test2) [abhishek@sdfiana007 test]$ rm /sdf/home/a/abhishek/ACD_calib_using_paths_conda/local_libs/libcrypto.so.10
+    (acd_test2) [abhishek@sdfiana007 test]$ ln -s /sdf/home/a/abhishek/miniconda/envs/acd_test2/lib/libcrypto.so.1.1 \
+    >       /sdf/home/a/abhishek/ACD_calib_using_paths_conda/local_libs/libcrypto.so.10
+    also added:
+    cp /lib64/libpng12.so.0    /sdf/home/a/abhishek/ACD_calib_using_paths_conda/local_libs/libpng12.so.0
+    cp /sdf/home/a/abhishek/miniconda/envs/acd_test2/lib/libstdc++.so.6 \
+   /sdf/home/a/abhishek/ACD_calib_using_paths_conda/local_libs/libstdc++.so.6
+   modified source file to see ld_library_path
+   Turns out the path in which LD_LIBRARY_PATH is set is incorrect, so needed to chenage the order!
 
+- Xrootd is dropping data because of longer runs in jobs 
+    Added to path   export XRD_TIMEOUTRESOLUTION=1
+                    export XRD_CONNECTIONRETRY=10
+                    export XRD_REQUESTTIMEOUT=1200
+                    export XRD_STREAMTIMEOUT=1200
+                    export XRD_RECONNECTWAIT=5
 
 
 

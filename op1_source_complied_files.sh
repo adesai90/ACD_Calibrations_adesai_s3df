@@ -18,5 +18,16 @@ source ${MY_DIR}/ACD_calib_github_software/op1_config.sh
 source ${MY_DIR}/ACD_calib_github_software/op1_setup.sh
 source ${RELEASE}/_setup.sh
 cd ${RELEASE}/workdir
-export LD_LIBRARY_PATH=${MY_DIR}/local_libs:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/xrootd/xrootd-3.2.4/lib64:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.26.00a-gl2/gcc44/lib/:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=${MY_DIR}/local_libs:$LD_LIBRARY_PATH
+
+
+export XRD_TIMEOUTRESOLUTION=1
+export XRD_CONNECTIONRETRY=10
+export XRD_REQUESTTIMEOUT=1200
+export XRD_STREAMTIMEOUT=1200
+export XRD_RECONNECTWAIT=5

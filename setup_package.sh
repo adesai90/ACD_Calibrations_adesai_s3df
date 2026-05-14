@@ -7,7 +7,7 @@
 # If not use: 
 #
 # conda create -n acd_test2 -c conda-forge python=2.7.18 root=6.16.00 xrootd=4.9.1 scons=3.1.2 f2c gcc_linux-64=7 gxx_linux-64=7 gfortran_linux-64=7 libtiff swig
-# 
+# if you reinstall conda, there might be some post install issues in the library links, see post install log for fix.
 #
 # Initialize:
 
@@ -186,7 +186,12 @@ if [ "$answer" = "1" ]; then
     #cp ${git_dir}/calibGenACD-master/python/Acd* ${MY_DIR}/releases/GR-20-09-10/calibGenACD/python/
     cp ${MY_DIR}/releases/GR-20-09-10/mootCore/build/redhat6-x86_64-64bit-gcc44-Optimized/src/py_mootCore.py ${MY_DIR}/releases/GR-20-09-10/python/
     cp ${git_dir}/submit_jobs.sh ${MY_DIR}/submit_jobs.sh 
-    cp
+    cp /lib64/libpng12.so.0 ${MY_DIR}/local_libs/libpng12.so.0
+
+    ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/xrootd/xrootd-3.2.4/lib64/libXrdClient.so.1 \
+      ${MY_DIR}/local_libs/libXrdClient.so.1
+    ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/xrootd/xrootd-3.2.4/lib64/libXrdUtils.so.1 \
+      ${MY_DIR}/local_libs/libXrdUtils.so.1
 
 else
     echo "Running option 2. Using a container which links to the old /afs paths by using bind mount"
