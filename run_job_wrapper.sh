@@ -2,6 +2,7 @@
 
 INPUT_VALUE=$1
 INPUT_PATH=$2
+INPUT_DIGI_RECON_DATE=$3
 
 ssh iana
 cd $INPUT_PATH
@@ -25,4 +26,4 @@ source source_compiled_files.sh
 
 # Now run the Python job   
 cd $INPUT_PATH/releases/GR-20-09-10/workdir/submitted_jobs/week_${INPUT_VALUE}/                                                                                                                                                          
-python $INPUT_PATH/releases/GR-20-09-10/calibGenACD/python/AcdWeeklyReport.py 'run' -w ${INPUT_VALUE} $INPUT_PATH/releases/GR-20-09-10/workdir/DIGI_260504.table $INPUT_PATH/releases/GR-20-09-10/workdir/RECON_260504.table
+python $INPUT_PATH/releases/GR-20-09-10/calibGenACD/python/AcdWeeklyReport.py 'run' -w ${INPUT_VALUE} $INPUT_PATH/releases/GR-20-09-10/workdir/DIGI_${INPUT_DIGI_RECON_DATE}.table $INPUT_PATH/releases/GR-20-09-10/workdir/RECON_${INPUT_DIGI_RECON_DATE}.table
