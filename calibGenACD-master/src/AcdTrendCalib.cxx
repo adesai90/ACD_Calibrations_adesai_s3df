@@ -98,10 +98,10 @@ Bool_t AcdTrendCalib::fillHistograms() {
 
   UInt_t id_ref[216];
   UInt_t pmt_ref[216];
-  UInt_t status_ref[216];
+  Int_t status_ref[216];
   UInt_t id[216];
   UInt_t pmt[216];
-  UInt_t status[216];
+  Int_t status[216];
 
 
   Float_t refVals[10][216];
@@ -153,7 +153,16 @@ Bool_t AcdTrendCalib::fillHistograms() {
 
 
       if ( id[j] != id_ref[j+offset] ) {
-	std::cerr << "Id numbers do no match " << i << ' ' << j << ' ' <<  id[j] << ' ' << id_ref[j] << std::endl << "Luckily (hopefully), Eric, Dave, and Terri fixed it."<< std::endl ;
+        // AD changed: diagnostic to find pattern of mismatches
+        std::cerr << "Id numbers do no match " << i << ' ' << j << ' ' <<  id[j] << ' ' << id_ref[j] 
+                  << " calib_entry=" << input 
+                  << " id[j]=" << id[j] << " id_ref[j]=" << id_ref[j+offset]
+                  << " pmt[j]=" << pmt[j] << " pmt_ref[j]=" << pmt_ref[j+offset]
+                  << " status[j]=" << status[j] << " status_ref[j]=" << status_ref[j+offset]
+                  << " id[j-1]=" << (j>0 ? (int)id[j-1] : -1) 
+                  << " id_ref[j-1]=" << (j>0 ? (int)id_ref[j-1] : -1)
+                  << std::endl << "Luckily (hopefully), Eric, Dave, and Terri fixed it."<< std::endl ; // AD changed
+	/*std::cerr << "Id numbers do no match " << i << ' ' << j << ' ' <<  id[j] << ' ' << id_ref[j] << std::endl << "Luckily (hopefully), Eric, Dave, and Terri fixed it."<< std::endl ;*/
 //	return kFALSE;
 	continue;
       }

@@ -21,7 +21,8 @@
 - The ACD codes try to write in the <LATMonRoot=/sdf/group/fermi/ground/releases/monitor/> directory currently
 
 - While the codes can be run directly using an interactive cluster for testing, submitting using a job is preferred.
-For that use the submit_job.sh code, which runs run_wrapper to submit the job. However make sure the digi and recon files are correctly sources (check the names if you are reparsing the files)
+For that use the submit_job.sh code, which runs run_wrapper to submit the job. However make sure the digi and recon files are correctly in the correct paths. To run submitter use:
+``` source submit_jobs.sh "736" "/sdf/home/a/abhishek/ACD_calib_using_paths_conda" "260514" ```
 
 # AFTER SETUP:
 
