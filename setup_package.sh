@@ -188,17 +188,24 @@ if [ "$answer" = "1" ]; then
     cp ${git_dir}/submit_jobs.sh ${MY_DIR}/submit_jobs.sh 
     cp /lib64/libpng12.so.0 ${MY_DIR}/local_libs/libpng12.so.0
 
-    rm ${MY_DIR}/local_libs/libcrypto.so.10
-    ln -s ${CONDA_PREFIX}/envs/acd_test2/lib/libcrypto.so.1.1 ${MY_DIR}/local_libs/libcrypto.so.10
+    rm ${MY_DIR}/local_libs/libssl.so.10
+    rm ${MY_DIR}/local_libs/libXrdClient.so.1
+    rm ${MY_DIR}/local_libs/libXrdUtils.so.1
+    
     cp /lib64/libpng12.so.0 ${MY_DIR}/local_libs/libpng12.so.0
-    cp ${CONDA_PREFIX}/envs/acd_test2/lib/libstdc++.so.6 ${MY_DIR}/local_libs/libstdc++.so.6
-    ln -s ${CONDA_PREFIX}/envs/acd_test2/lib/libssl.so.1.1 ${MY_DIR}/local_libs/libssl.so.10
+    cp ${CONDA_PREFIX}/lib/libstdc++.so.6 ${MY_DIR}/local_libs/libstdc++.so.6
+    ln -s ${CONDA_PREFIX}/lib/libssl.so.1.1 ${MY_DIR}/local_libs/libssl.so.10
 
     ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/xrootd/xrootd-3.2.4/lib64/libXrdClient.so.1 \
       ${MY_DIR}/local_libs/libXrdClient.so.1
     ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/xrootd/xrootd-3.2.4/lib64/libXrdUtils.so.1 \
       ${MY_DIR}/local_libs/libXrdUtils.so.1
 
+    rm /sdf/home/a/abhishek/ACD_calib_using_paths_conda/local_libs/libcrypto.so.10
+    ln -s ${CONDA_PREFIX}/lib/libcrypto.so.1.1 ${MY_DIR}/local_libs/libcrypto.so.10
+
+    cp ${git_dir}/support_files/rootrc_file ${MY_DIR}/local_libs/
+    cp ${git_dir}/support_files/xrootd.rc ${MY_DIR}/workdir/.rootrc
 else
     echo "Running option 2. Using a container which links to the old /afs paths by using bind mount"
     echo "######################################################################"
