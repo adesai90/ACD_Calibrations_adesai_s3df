@@ -48,7 +48,7 @@ if [ "$answer" = "1" ]; then
     chmod +x ${MY_DIR}/ACD_calib_github_software/gpp_linker
 
     # FIX ROOT to make sure glast root is used!
-    export ROOTSYS=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.26.00a-gl2/gcc44
+    export ROOTSYS=/sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/ROOT/v5.34.03-gr01
     #export PATH=$ROOTSYS/bin:$(echo $PATH | tr ':' '\n' | grep -v miniconda | grep -v conda | tr '\n' ':')
     export PATH=$ROOTSYS/bin:$PATH
     #source $ROOTSYS/env.sh
@@ -196,16 +196,17 @@ if [ "$answer" = "1" ]; then
     cp ${CONDA_PREFIX}/lib/libstdc++.so.6 ${MY_DIR}/local_libs/libstdc++.so.6
     ln -s ${CONDA_PREFIX}/lib/libssl.so.1.1 ${MY_DIR}/local_libs/libssl.so.10
 
-    ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/xrootd/xrootd-3.2.4/lib64/libXrdClient.so.1 \
-      ${MY_DIR}/local_libs/libXrdClient.so.1
-    ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/xrootd/xrootd-3.2.4/lib64/libXrdUtils.so.1 \
-      ${MY_DIR}/local_libs/libXrdUtils.so.1
+    #ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/xrootd/xrootd-3.2.4/lib64/libXrdClient.so.1 \
+    #  ${MY_DIR}/local_libs/libXrdClient.so.1
+    #ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/xrootd/xrootd-3.2.4/lib64/libXrdUtils.so.1 \
+    #  ${MY_DIR}/local_libs/libXrdUtils.so.1
 
     rm /sdf/home/a/abhishek/ACD_calib_using_paths_conda/local_libs/libcrypto.so.10
     ln -s ${CONDA_PREFIX}/lib/libcrypto.so.1.1 ${MY_DIR}/local_libs/libcrypto.so.10
-
-    cp ${git_dir}/support_files/rootrc_file ${MY_DIR}/local_libs/
-    cp ${git_dir}/support_files/xrootd.rc ${MY_DIR}/workdir/.rootrc
+    ln -s ${CONDA_PREFIX}/lib/libncurses.so.6.5 ${MY_DIR}/local_libs/libncurses.so.5
+    ln -s ${CONDA_PREFIX}/lib/libtinfo.so.6 ${MY_DIR}/local_libs/libtinfo.so.5
+    
+    cp ${git_dir}/support_files/rootrc_file ${MY_DIR}/workdir/.rootrc
 else
     echo "Running option 2. Using a container which links to the old /afs paths by using bind mount"
     echo "######################################################################"
