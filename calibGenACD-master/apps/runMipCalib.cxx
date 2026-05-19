@@ -17,7 +17,7 @@
 
 int main(int argn, char** argc) {
   
-  gSystem->Load("libNetx.so"); // AD added
+  
   gROOT->GetPluginManager()->AddHandler("TSystem", "^root:", 
     "TXNetSystem", "Netx", "TXNetSystem(const char *,Bool_t)");  // AD added
   gROOT->GetPluginManager()->AddHandler("TFile", "^root:", 
