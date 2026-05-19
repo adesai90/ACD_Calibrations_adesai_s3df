@@ -12,6 +12,7 @@
 #include "../src/AcdCalibMap.h"
 #include "TSystem.h"    // AD added
 #include "TROOT.h"     // AD added
+#include "TPluginManager.h" // AD added
 
 
 int main(int argn, char** argc) {
