@@ -96,14 +96,14 @@ if [ "$answer" = "1" ]; then
         perl -i -pe "s/if 'CHS' in progEnv\.Dictionary\(\)\['CPPDEFINES'\]:/\#if 'CHS' in progEnv.Dictionary()['CPPDEFINES']:\nif True:/g" mootCore/SConscript #This is from the installation instructions on DGreen
     fi
 
-    read -p "Update AcdCalibBase and AcdJobConfig files? (yes/no): " answer
-    if [ "$answer" = "yes" ]; then
-        cp ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/AcdCalibBase_org.cxx
-        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/AcdJobConfig_org.cxx
-        cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.h ${MY_DIR}/releases/GR-20-09-10/calibGenACD/AcdJobConfig_org.h
-        echo "----modified----"
-    fi
-    echo "----done----"
+    #read -p "Update AcdCalibBase and AcdJobConfig files? (yes/no): " answer
+    #if [ "$answer" = "yes" ]; then
+    #    cp ${git_dir}/calibGenACD-master/src/AcdCalibBase.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdCalibBase_org.cxx
+    #    cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig_org.cxx
+    #    cp ${git_dir}/calibGenACD-master/src/AcdJobConfig.h ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdJobConfig_org.h
+    #    echo "----modified----"
+    #fi
+    #echo "----done----"
 
 
     #cp ${git_dir}/support_files/AcdCalibBase.cxx ${MY_DIR}/releases/GR-20-09-10/calibGenACD/src/AcdCalibBase.cxx
