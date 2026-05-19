@@ -23,6 +23,15 @@ int main(int argn, char** argc) {
   gROOT->GetPluginManager()->AddHandler("TFile", "^root:", 
     "TXNetFile", "Netx", "TXNetFile(const char*,Option_t*,const char*,Int_t)");  // AD added
 
+  // AD added everything below
+  TPluginHandler* hAfter = gROOT->GetPluginManager()->FindHandler("TSystem","root://test");
+  if (hAfter) {
+    printf("AFTER: Handler found, LoadPlugin=%d\n", hAfter->LoadPlugin());
+  } else {
+    printf("AFTER: No handler found\n");
+  }
+  // AD added everything above
+
   // configure
   AcdJobConfig jc("runMipCalib.exe","This utility runs the MIP calibration code on SVAC files");
 
