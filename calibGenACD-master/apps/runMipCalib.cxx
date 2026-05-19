@@ -14,6 +14,7 @@
 
 int main(int argn, char** argc) {
   
+  gSystem->Load("libNetx.so"); // AD added
   // configure
   AcdJobConfig jc("runMipCalib.exe","This utility runs the MIP calibration code on SVAC files");
 
