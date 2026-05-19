@@ -16,6 +16,11 @@
 int main(int argn, char** argc) {
   
   gSystem->Load("libNetx.so"); // AD added
+  gROOT->GetPluginManager()->AddHandler("TSystem", "^root:", 
+    "TXNetSystem", "Netx", "TXNetSystem(const char *,Bool_t)");  // AD added
+  gROOT->GetPluginManager()->AddHandler("TFile", "^root:", 
+    "TXNetFile", "Netx", "TXNetFile(const char*,Option_t*,const char*,Int_t)");  // AD added
+
   // configure
   AcdJobConfig jc("runMipCalib.exe","This utility runs the MIP calibration code on SVAC files");
 
