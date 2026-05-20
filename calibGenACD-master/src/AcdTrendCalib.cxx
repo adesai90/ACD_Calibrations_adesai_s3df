@@ -153,7 +153,36 @@ Bool_t AcdTrendCalib::fillHistograms() {
 
 
       if ( id[j] != id_ref[j+offset] ) {
-        // AD changed: diagnostic to find pattern of mismatches
+        // AD changed : Everything below
+        UInt_t jRef = 216; 
+        std::cerr << "Searching for id=" << id[j] << " pmt=" << pmt[j] 
+                  << " instead of using j+offset=" << j+offset << std::endl;
+        for ( UInt_t jj(0); jj < 216; jj++ ) {
+          if ( id_ref[jj] == id[j] && pmt_ref[jj] == pmt[j] ) { 
+            jRef = jj; 
+            std::cerr << "Found match at jRef=" << jRef 
+                      << " original j+offset=" << j+offset << std::endl;
+            break;     
+          }
+        }
+        if ( jRef == 216 ) {
+          std::cerr << "No match found for id=" << id[j] 
+                    << " pmt=" << pmt[j] << " skipping. Original code would have continued with index" << std::endl;
+          continue; 
+        }
+        if ( status_ref[jRef] != 0 ) {
+          std::cerr << "Skipping bad status at jRef=" << jRef 
+                    << " status_ref=" << status_ref[jRef] 
+                    << " original code checked status_ref[j+offset]=" << status_ref[j+offset] << std::endl;
+          continue; 
+        }
+        offset = (int)jRef - (int)j; 
+        std::cerr << "Setting offset=" << offset 
+                  << " so j+offset=" << j+offset 
+                  << " matches id_ref=" << id_ref[j+offset] << std::endl;
+      }
+        /*
+        // Diagnostic code
         std::cerr << "Id numbers do no match " << i << ' ' << j << ' ' <<  id[j] << ' ' << id_ref[j] 
                   << " calib_entry=" << input 
                   << " id[j]=" << id[j] << " id_ref[j]=" << id_ref[j+offset]
@@ -161,11 +190,14 @@ Bool_t AcdTrendCalib::fillHistograms() {
                   << " status[j]=" << status[j] << " status_ref[j]=" << status_ref[j+offset]
                   << " id[j-1]=" << (j>0 ? (int)id[j-1] : -1) 
                   << " id_ref[j-1]=" << (j>0 ? (int)id_ref[j-1] : -1)
-                  << std::endl << "Luckily (hopefully), Eric, Dave, and Terri fixed it."<< std::endl ; // AD changed
-	/*std::cerr << "Id numbers do no match " << i << ' ' << j << ' ' <<  id[j] << ' ' << id_ref[j] << std::endl << "Luckily (hopefully), Eric, Dave, and Terri fixed it."<< std::endl ;*/
+                  << std::endl << "Luckily (hopefully), Eric, Dave, and Terri fixed it."<< std::endl ; 
+                  
+        */
+       // AD changed everything above
+	/*std::cerr << "Id numbers do no match " << i << ' ' << j << ' ' <<  id[j] << ' ' << id_ref[j] << std::endl << "Luckily (hopefully), Eric, Dave, and Terri fixed it."<< std::endl ;
 //	return kFALSE;
 	continue;
-      }
+      }*/
 
       // Loop on the values
       for ( UInt_t k(0); k < m_trendNames.size(); k++ ) {
