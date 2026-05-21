@@ -225,42 +225,14 @@ AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config
 
     ln -s /sdf/group/fermi/a/ground/GLAST_EXT/redhat6-x86_64-64bit-gcc44/xrootd/xrootd-3.2.4/lib64/libXrdClient.so.1 \
       /sdf/home/a/abhishek/ACD_calib_using_paths_conda/local_libs/libXrdClient.so.1
-    Updated in setup file! Didnt do anyhting, but issues might have reduced, not sure.
+    Updated in setup file! Didnt do much.
 
-    Got an error in trend ():
-    Fix:
-    In src/AcdTrendCalib.cxx
-    replace
-    Int_t status_ref[216];
-    Int_t status[216];
-    with
-    UInt_t status_ref[216];
-    UInt_t status[216];
+    Needed to add additional codes to make sure root is being loaded correctly in runMipCalib.cxx, also added some minor fiex in Acdcalib*.cxx files for some warnings.
+    All changes marked with // AD added 
+
+    
 
     Recompile!!
-
-########################################################################################
-###########
-###########
-###########              Notes for s3df paths
-###########
-###########
-########################################################################################
-
-
-- using /sdf/group/fermi/kube/oracle/
-- Reading files from /sdf/group/fermi/a
-- Trying to write files to /sdf/group/fermi/a/ground/releases/monitor/ACD/FLIGHT/----- archival
-/sdf/group/fermi/ground/releases/monitor/ACD/ -write here dont use /a/...
-- Trying to write files to /sdf/group/fermi/a/ground/releases/monitor/ACD/FLIGHT/
-- Is also trying to replace some files: mv: replace '/sdf/group/fermi/a/ground/releases/monitor/ACD/FLIGHT/ThreshVeto/trend/trend_veto.root'
-- addtrendabledata, addtrendablemetadata, ingestDigiTrending and ingestRecoTrending paths not set
-- pipeline/pipelinedev needs updated paths
-- the file update_canvas_code.pl is used to fixed ROOT errors, but this might not be required as root errors are not found anymore for interactive sessions.
-- If running from workdir use python $RELEASE/calibGenACD/python/Acd.....py
-
-- For job submission running syntax:
-source submit_jobs.sh 736 /sdf/home/a/abhishek/ACD_calib_using_paths_conda
 
 ########################################################################################
 ###########
@@ -289,6 +261,52 @@ source submit_jobs.sh 736 /sdf/home/a/abhishek/ACD_calib_using_paths_conda
                     export XRD_REQUESTTIMEOUT=1200
                     export XRD_STREAMTIMEOUT=1200
                     export XRD_RECONNECTWAIT=5
+
+########################################################################################
+###########
+###########   - MAJOR CHANGE 1:
+###########
+########################################################################################
+
+    The trend code uses a file from /sdf/group/fermi/ground/releases/monitor/ACD/FLIGHT/*/calibs.lst which point to /afs paths!!!
+    While these exist currently, they can give errors in the future, so changed everything here.
+    Old file is marked as calibs_old_afs_path.lst
+
+########################################################################################
+###########
+###########   - MAJOR CHANGE 2:
+###########
+########################################################################################
+
+    The src/AcdTrendCalib.cxx file has a condition:
+     - ( id[j] != id_ref[j+offset] ) 
+    where the id numbers do no match giving an error :uckylly (hopefully) it is fixed.
+
+    Analyzed the patterns with claude and added a fix to try to iterate through thr for loop to find the correct ID numbers.
+    A chunk of the code was changed marked with AD changed comments.
+
+########################################################################################
+###########
+###########
+###########              Notes for s3df paths
+###########
+###########
+########################################################################################
+
+
+- using /sdf/group/fermi/kube/oracle/
+- Reading some code files like xrootd from /sdf/group/fermi/a
+- Saving everything in /sdf/group/fermi/ground/releases/monitor/ACD/
+- Note old path --- /sdf/group/fermi/a/ground/releases/monitor/ACD/FLIGHT/----- archival
+
+- NOTE THAT: addtrendabledata, addtrendablemetadata, ingestDigiTrending and ingestRecoTrending paths not set
+- pipeline/pipelinedev needs updated paths
+- If running from workdir use python $RELEASE/calibGenACD/python/Acd.....py
+- For job submission running syntax:
+source submit_jobs.sh 736 /sdf/home/a/abhishek/ACD_calib_using_paths_conda
+(Check Job submission and run_wrapper codes to make any edits)
+
+
 
 
 
