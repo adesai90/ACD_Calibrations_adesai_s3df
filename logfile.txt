@@ -268,9 +268,35 @@ AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config
 ###########
 ########################################################################################
 
-    The trend code uses a file from /sdf/group/fermi/ground/releases/monitor/ACD/FLIGHT/*/calibs.lst which point to /afs paths!!!
-    While these exist currently, they can give errors in the future, so changed everything here.
-    Old file is marked as calibs_old_afs_path.lst
+    While calculating gain, it is forund that the MIP and delta MIP values are off. Checked the old r0679793552_gainPars.root file for week 736 and compared to the new one using root 
+    (Made /tmp/checkroot_new.C in my directory (abhishek) to open the file)
+    Found that the new one has values 
+    *    Row   * Instance * startTime *   endTime *  triggers *        id *       pmt *    status *      peak *     width *
+    ***********************************************************************************************************************
+    *        0 *        0 * 679793556 * 679822527 *   2208991 *         0 *       710 *         1 *      -nan *         0 *
+    *        0 *        1 * 679793556 * 679822527 *   2208991 *         1 *       711 *         1 *      -nan *         0 *
+    *        0 *        2 * 679793556 * 679822527 *   2208991 *         2 *         0 *         0 * 440.01257 * 154.30374 *
+    *        0 *        3 * 679793556 * 679822527 *   2208991 *         3 *         0 *         0 * 480.98605 * 163.99237 *
+    While the old one had values:
+    *    Row   * Instance * startTime *   endTime *  triggers *        id *       pmt *    status *      peak *     width *
+    ***********************************************************************************************************************
+    *        0 *        0 * 679793556 * 679822527 *   2208991 *         1 * 4.294e+09 *         0 * 655.01745 *         0 *
+    *        0 *        1 * 679793556 * 679822527 *   2208991 *         1 * 4.294e+09 *         0 * 540.95916 *         0 *
+    *        0 *        2 * 679793556 * 679822527 *   2208991 *         2 *         0 *         0 * 440.01178 * 154.30339 *
+    *        0 *        3 * 679793556 * 679822527 *   2208991 *         3 *         0 *         0 * 480.98593 * 163.99255 *
+    MEANING
+    THE new file is not getting the correct pmt values.
+    Some deep searches with LLMs helped locate the issue:
+
+    Possible issue
+    Older version gcc was just UINT_MAX or maximum value instead of 710/711 — because a different GCC version handled the undefined behavior differently.
+    But this one does it differently adding more entires to the map (240) over 216
+
+    Fix added to skip these values in AcdCalibMap.cxx ; specifically writeResultsToTree
+    
+
+
+
 
 ########################################################################################
 ###########
@@ -280,10 +306,21 @@ AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config
 
     The src/AcdTrendCalib.cxx file has a condition:
      - ( id[j] != id_ref[j+offset] ) 
-    where the id numbers do no match giving an error :uckylly (hopefully) it is fixed.
+    where the id numbers do no match giving an error :luckily (hopefully) it is fixed.
 
     Analyzed the patterns with claude and added a fix to try to iterate through thr for loop to find the correct ID numbers.
     A chunk of the code was changed marked with AD changed comments.
+
+########################################################################################
+###########
+###########   - MAJOR CHANGE 3:
+###########
+########################################################################################
+
+    The trend code uses a file from /sdf/group/fermi/ground/releases/monitor/ACD/FLIGHT/*/calibs.lst which point to /afs paths!!!
+    While these exist currently, they can give errors in the future, so changed everything here.
+    Old file is marked as calibs_old_afs_path.lst
+
 
 ########################################################################################
 ###########

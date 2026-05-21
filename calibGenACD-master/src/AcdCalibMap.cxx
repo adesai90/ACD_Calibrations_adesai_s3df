@@ -325,13 +325,6 @@ Bool_t AcdCalibMap::writeResultsToTree(const char* newFileName) {
   */
   for ( std::map<UInt_t,CalibData::AcdCalibObj*>::const_iterator itr = m_map.begin(); 
 	itr != m_map.end(); itr++) {  
-    if ( AcdKey::getId(itr->first) >= 700 ) {
-        std::cerr << "Warning Code Update: Skipping face=7 channel id=" << AcdKey::getId(itr->first)
-                  << " pmt=" << AcdKey::getPmt(itr->first)
-                  << " key=" << itr->first
-                  << " Reason: Previous code allowed idx to exceed 216 causing buffer overflow into adjacent pmt[] array, keeping same gives errors now" << std::endl;
-        continue;
-    }
     if ( AcdKey::getPmt(itr->first) >= AcdKey::nPmt ) {
         std::cerr << "Warning Code Update: skipping invalid pmt=" << AcdKey::getPmt(itr->first)
                   << " for id=" << AcdKey::getId(itr->first)
