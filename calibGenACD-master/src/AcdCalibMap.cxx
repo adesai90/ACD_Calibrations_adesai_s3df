@@ -333,7 +333,7 @@ Bool_t AcdCalibMap::writeResultsToTree(const char* newFileName) {
                   << " Reason: Previous code had no pmt validity check, keeping same gives errors now" << std::endl;
         continue;
     }
-    if ( idx >= 216 ) {
+    if ( idx > 216 ) {
         std::cerr << "Warning Code Update: Skipping  idx=" << idx
                   << " exceeds array size 216 for id=" << AcdKey::getId(itr->first)
                   << " pmt=" << AcdKey::getPmt(itr->first)
