@@ -292,8 +292,16 @@ AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config
     Older version gcc was just UINT_MAX or maximum value instead of 710/711 — because a different GCC version handled the undefined behavior differently.
     But this one does it differently adding more entires to the map (240) over 216
 
-    Fix added to skip these values in AcdCalibMap.cxx ; specifically writeResultsToTree
-    
+    *** Fix added to skip these values in AcdCalibMap.cxx ; specifically writeResultsToTree ***
+
+    Now, after fixing this, the issue still pops up in Gain reports where the MIP plots do no match, this is found because of a bug in Acdhtmlreport
+    where the rows are not ebing read properly.
+    New file:  row 0=(id=0,pmt=0), row 1=(id=1,pmt=0)... row 108=(id=0,pmt=1)
+    Old file:  row 0=(id=0,pmt=0), row 1=(id=0,pmt=1), row 2=(id=1,pmt=0)...
+
+    *** Modified Acdhtmlreport and acdreportplots ***
+
+
 
 
 
