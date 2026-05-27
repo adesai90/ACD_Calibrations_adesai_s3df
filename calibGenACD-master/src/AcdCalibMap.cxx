@@ -318,11 +318,13 @@ Bool_t AcdCalibMap::writeResultsToTree(const char* newFileName) {
     std::string lName = vName + "[216]/F";
     m_tree->Branch(vName.c_str(),&(vals[i][0]),lName.c_str());
   }
+
+  /* AD Changed:  Second change to previous change to make sure it is reading everything correctly
   UInt_t idx(0);
-  /* AD added Everything below 
-  for ( std::map<UInt_t,CalibData::AcdCalibObj*>::const_iterator itr = m_map.begin(); 
-	itr != m_map.end(); itr++, idx++ ) { //Remove idx++ and added it below
-  */
+  // AD added Everything below 
+  // for ( std::map<UInt_t,CalibData::AcdCalibObj*>::const_iterator itr = m_map.begin(); 
+	// itr != m_map.end(); itr++, idx++ ) { //Remove idx++ and added it below
+  
   for ( std::map<UInt_t,CalibData::AcdCalibObj*>::const_iterator itr = m_map.begin(); 
 	itr != m_map.end(); itr++) {  
     if ( AcdKey::getPmt(itr->first) >= AcdKey::nPmt ) {
@@ -342,7 +344,7 @@ Bool_t AcdCalibMap::writeResultsToTree(const char* newFileName) {
                   << " Reason: this is a safety catch for any other unexpected channels" << std::endl;
         continue;
     }
-    /* AD added Everything above */
+    // AD added Everything above 
     id[idx] = AcdKey::getId(itr->first);
     pmt[idx] =  AcdKey::getPmt(itr->first);
     status[idx] = itr->second->getStatus();
@@ -350,6 +352,46 @@ Bool_t AcdCalibMap::writeResultsToTree(const char* newFileName) {
       vals[iV][idx] = itr->second->operator[](iV);
     }
     idx++; // AD changed: removed from loop above and added here
+  }
+  m_tree->Fill();
+  m_tree->Write();
+  histFile->Close();
+  return kTRUE;
+}
+*/
+UInt_t idx(0);
+  // What was done: replaced m_map iterator loop with face/row/col/pmt ordered loop
+  // ORIGINAL: iterated m_map directly giving split ordering
+  // (all pmt=0 then all pmt=1) because std::map sorts by key
+  // Reference files have interleaved ordering (id0pmt0,id0pmt1,id1pmt0...)
+  // ROOT 5 Project/Draw uses positional row matching so orderings must match
+  // Fix: use same loop order as writeTxt to produce interleaved output
+  for(int iFace = 0; iFace != AcdKey::nFace; ++iFace) {
+    for(int iRow = 0; iRow != (int)AcdKey::getNRow(iFace); ++iRow) {
+      for(int iCol = 0; iCol != (int)AcdKey::getNCol(iFace,iRow); ++iCol) {
+        if ( ! AcdKey::channelExists(iFace,iRow,iCol) ) continue;
+        for(int iPmt = 0; iPmt != AcdKey::nPmt; ++iPmt) {
+          UInt_t chanId = AcdKey::makeId(iFace,iRow,iCol);
+          UInt_t key    = AcdKey::makeKey(iPmt,iFace,iRow,iCol);
+          std::map<UInt_t,CalibData::AcdCalibObj*>::const_iterator itr = m_map.find(key);
+          if ( itr == m_map.end() ) continue;
+          if ( idx >= 216 ) {
+            std::cerr << "Warning Code Update: Skipping idx=" << idx
+                      << " exceeds array size 216 for id=" << chanId
+                      << " pmt=" << iPmt
+                      << " Reason: safety catch for unexpected channels" << std::endl;
+            continue;
+          }
+          id[idx]     = chanId;
+          pmt[idx]    = iPmt;
+          status[idx] = itr->second->getStatus();
+          for ( UInt_t iV(0); iV < nVal; iV++ ) {
+            vals[iV][idx] = itr->second->operator[](iV);
+          }
+          idx++;
+        }
+      }
+    }
   }
   m_tree->Fill();
   m_tree->Write();
