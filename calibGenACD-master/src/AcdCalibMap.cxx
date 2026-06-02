@@ -300,7 +300,7 @@ Bool_t AcdCalibMap::writeResultsToTree(const char* newFileName) {
 
   UInt_t id[216];
   UInt_t pmt[216];
-  Int_t status[216];
+  UInt_t status[216]; //Ad changed to UInt_t
   if ( newFileName != 0 ) {
     histFile = TFile::Open(newFileName, "RECREATE");
     if ( histFile == 0 ) return kFALSE;
@@ -312,7 +312,8 @@ Bool_t AcdCalibMap::writeResultsToTree(const char* newFileName) {
   m_tree->Branch("triggers",&m_triggers,"triggers/i");
   m_tree->Branch("id",&id[0],"id[216]/i");
   m_tree->Branch("pmt",&pmt[0],"pmt[216]/i");
-  m_tree->Branch("status",&status[0],"status[216]/I");
+  /*m_tree->Branch("status",&status[0],"status[216]/I");*/
+  m_tree->Branch("status",&status[0],"status[216]/i"); // AD changed I to i to match UInt_t
   for ( UInt_t i(0); i < nVal; i++ ) {
     std::string vName = m_desc->getVarName(i);
     std::string lName = vName + "[216]/F";
@@ -384,7 +385,7 @@ UInt_t idx(0);
           }
           id[idx]     = chanId;
           pmt[idx]    = iPmt;
-          status[idx] = itr->second->getStatus();
+          status[idx] = (UInt_t)itr->second->getStatus(); // AD changed (added UInt_t; cast to UInt_t)
           for ( UInt_t iV(0); iV < nVal; iV++ ) {
             vals[iV][idx] = itr->second->operator[](iV);
           }
