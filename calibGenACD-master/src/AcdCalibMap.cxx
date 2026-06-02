@@ -361,38 +361,73 @@ Bool_t AcdCalibMap::writeResultsToTree(const char* newFileName) {
 }
 */
 UInt_t idx(0);
+  // The above commented out portion can be removed,, once fix is confirmed.
+  // Added a if condition as GAIN is written differently than the other ones giving an error!
   // What was done: replaced m_map iterator loop with face/row/col/pmt ordered loop
   // ORIGINAL: iterated m_map directly giving split ordering
   // (all pmt=0 then all pmt=1) because std::map sorts by key
   // Reference files have interleaved ordering (id0pmt0,id0pmt1,id1pmt0...)
   // ROOT 5 Project/Draw uses positional row matching so orderings must match
   // Fix: use same loop order as writeTxt to produce interleaved output
-  for(int iFace = 0; iFace != AcdKey::nFace; ++iFace) {
-    for(int iRow = 0; iRow != (int)AcdKey::getNRow(iFace); ++iRow) {
-      for(int iCol = 0; iCol != (int)AcdKey::getNCol(iFace,iRow); ++iCol) {
-        if ( ! AcdKey::channelExists(iFace,iRow,iCol) ) continue;
-        for(int iPmt = 0; iPmt != AcdKey::nPmt; ++iPmt) {
-          UInt_t chanId = AcdKey::makeId(iFace,iRow,iCol);
-          UInt_t key    = AcdKey::makeKey(iPmt,iFace,iRow,iCol);
-          std::map<UInt_t,CalibData::AcdCalibObj*>::const_iterator itr = m_map.find(key);
-          if ( itr == m_map.end() ) continue;
-          if ( idx >= 216 ) {
-            std::cerr << "Warning Code Update: Skipping idx=" << idx
-                      << " exceeds array size 216 for id=" << chanId
-                      << " pmt=" << iPmt
-                      << " Reason: safety catch for unexpected channels" << std::endl;
-            continue;
+  if ( m_desc->calibType() == AcdCalibData::GAIN ) {
+    // INTERLEAVED: id0pmt0, id0pmt1, id1pmt0, id1pmt1...
+    for(int iFace = 0; iFace != AcdKey::nFace; ++iFace) {
+      for(int iRow = 0; iRow != (int)AcdKey::getNRow(iFace); ++iRow) {
+        for(int iCol = 0; iCol != (int)AcdKey::getNCol(iFace,iRow); ++iCol) {
+          if ( ! AcdKey::channelExists(iFace,iRow,iCol) ) continue;
+          for(int iPmt = 0; iPmt != AcdKey::nPmt; ++iPmt) {
+            UInt_t chanId = AcdKey::makeId(iFace,iRow,iCol);
+            UInt_t key    = AcdKey::makeKey(iPmt,iFace,iRow,iCol);
+            std::map<UInt_t,CalibData::AcdCalibObj*>::const_iterator itr = m_map.find(key);
+            if ( itr == m_map.end() ) continue;
+            if ( idx >= 216 ) {
+              std::cerr << "Warning Code Update: Skipping idx=" << idx
+                        << " exceeds array size 216 for id=" << chanId
+                        << " pmt=" << iPmt
+                        << " Reason: safety catch for unexpected channels" << std::endl;
+              continue;
+            }
+            id[idx]     = chanId;
+            pmt[idx]    = iPmt;
+            status[idx] = (UInt_t)itr->second->getStatus(); // AD changed (added UInt_t; cast to UInt_t)
+            for ( UInt_t iV(0); iV < nVal; iV++ ) {
+              vals[iV][idx] = itr->second->operator[](iV);
+            }
+            idx++;
           }
-          id[idx]     = chanId;
-          pmt[idx]    = iPmt;
-          status[idx] = (UInt_t)itr->second->getStatus(); // AD changed (added UInt_t; cast to UInt_t)
-          for ( UInt_t iV(0); iV < nVal; iV++ ) {
-            vals[iV][idx] = itr->second->operator[](iV);
-          }
-          idx++;
         }
       }
     }
+  }
+  else {
+    // SPLIT: all pmt=0 first then all pmt=1 — matches all non-gain reference files
+    for ( std::map<UInt_t,CalibData::AcdCalibObj*>::const_iterator itr = m_map.begin(); 
+    itr != m_map.end(); itr++) {  
+      if ( AcdKey::getPmt(itr->first) >= AcdKey::nPmt ) {
+          std::cerr << "Warning Code Update: skipping invalid pmt=" << AcdKey::getPmt(itr->first)
+                    << " for id=" << AcdKey::getId(itr->first)
+                    << " key=" << itr->first
+                    << " valid pmt range is 0 to " << AcdKey::nPmt-1
+                    << " Reason: Previous code had no pmt validity check, keeping same gives errors now" << std::endl;
+          continue;
+      }
+      if ( idx >= 216 ) {
+          std::cerr << "Warning Code Update: Skipping  idx=" << idx
+                    << " exceeds array size 216 for id=" << AcdKey::getId(itr->first)
+                    << " pmt=" << AcdKey::getPmt(itr->first)
+                    << " key=" << itr->first
+                    << " original code had no boundary check on idx"
+                    << " Reason: this is a safety catch for any other unexpected channels" << std::endl;
+          continue;
+      }
+      id[idx] = AcdKey::getId(itr->first);
+      pmt[idx] =  AcdKey::getPmt(itr->first);
+      status[idx] = (UInt_t)itr->second->getStatus();
+      for ( UInt_t iV(0); iV < nVal; iV++ ) {
+        vals[iV][idx] = itr->second->operator[](iV);
+      }
+      idx++; 
+    } 
   }
   m_tree->Fill();
   m_tree->Write();
