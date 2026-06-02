@@ -26,5 +26,5 @@ source source_compiled_files.sh
 
 # Now run the Python job   
 cd $INPUT_PATH/releases/GR-20-09-10/workdir/submitted_jobs/week_${INPUT_VALUE}/     
-cp $INPUT_PATH/releases/GR-20-09-10/workdir/.rootrc .                                                                                                                                                    
+                                                                                                                                                   
 python $INPUT_PATH/releases/GR-20-09-10/calibGenACD/python/AcdWeeklyReport.py 'run' -w ${INPUT_VALUE} $INPUT_PATH/releases/GR-20-09-10/workdir/DIGI_${INPUT_DIGI_RECON_DATE}.table $INPUT_PATH/releases/GR-20-09-10/workdir/RECON_${INPUT_DIGI_RECON_DATE}.table

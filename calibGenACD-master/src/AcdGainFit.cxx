@@ -155,7 +155,7 @@ Int_t AcdGainFitLibrary::stats(CalibData::AcdCalibObj& result, const TH1& hist) 
 
 Int_t AcdGainFitLibrary::fallback(CalibData::AcdCalibObj& result, const TH1& hist) {
   Int_t ped, min, peak, halfMax;
-  Int_t status = extractFeatures(hist,4,ped,min,peak,halfMax);
+  UInt_t status = extractFeatures(hist,4,ped,min,peak,halfMax);
 
   if ( status != 0 ) return CalibData::AcdCalibObj::PREFIT_FAILED;
   //Float_t pedValue = hist.GetBinCenter(4*ped);
@@ -176,7 +176,7 @@ Int_t AcdGainFitLibrary::fitLandau(CalibData::AcdCalibObj& result, const TH1& hi
 
   float ave = theHist.GetMean();
   float rms = theHist.GetRMS();
-  Int_t status = theHist.Fit("landau", "", "", ave-2*rms, ave+3*rms);
+  UInt_t status = theHist.Fit("landau", "", "", ave-2*rms, ave+3*rms);
 
   if ( status != 0 ) return fallback(result,hist);
 
@@ -191,7 +191,7 @@ Int_t AcdGainFitLibrary::fitLandau(CalibData::AcdCalibObj& result, const TH1& hi
 Int_t AcdGainFitLibrary::fitP7(CalibData::AcdCalibObj& result, const TH1& hist) {
 
   Int_t ped, min, peak, halfMax;
-  Int_t status = extractFeatures(hist,4,ped,min,peak,halfMax);
+  UInt_t status = extractFeatures(hist,4,ped,min,peak,halfMax);
 
   TH1& theHist = const_cast<TH1&>(hist);
 
@@ -216,7 +216,7 @@ Int_t AcdGainFitLibrary::fitP7(CalibData::AcdCalibObj& result, const TH1& hist) 
 Int_t AcdGainFitLibrary::fitP3(CalibData::AcdCalibObj& result, const TH1& hist) {
 
   Int_t ped, min, peak, halfMax;
-  Int_t status = extractFeatures(hist,4,ped,min,peak,halfMax);
+  UInt_t status = extractFeatures(hist,4,ped,min,peak,halfMax);
 
   TH1& theHist = const_cast<TH1&>(hist);
 
@@ -242,7 +242,7 @@ Int_t AcdGainFitLibrary::fitP3(CalibData::AcdCalibObj& result, const TH1& hist) 
 Int_t AcdGainFitLibrary::fitLogNormal(CalibData::AcdCalibObj& result, const TH1& hist) {
   
   Int_t ped, min, peak, halfMax;
-  Int_t status = extractFeatures(hist,4,ped,min,peak,halfMax);
+  UInt_t status = extractFeatures(hist,4,ped,min,peak,halfMax);
 
   if ( status != 0 ) return status;
   //Float_t pedValue = hist.GetBinCenter(4*ped);
@@ -335,7 +335,7 @@ Int_t AcdGainFitLibrary::fitGaussP1(CalibData::AcdCalibObj& result, const TH1& h
 
   TH1& nch = const_cast<TH1&>(hist);
 
-  Int_t status = nch.Fit(&gaussP1,"0","",minVal,maxVal);
+  UInt_t status = nch.Fit(&gaussP1,"0","",minVal,maxVal);
   std::cout << "Done Fit" << std::endl;
 
   peak = gaussP1.GetParameter(1);

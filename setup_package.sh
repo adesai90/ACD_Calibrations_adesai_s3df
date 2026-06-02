@@ -206,7 +206,6 @@ if [ "$answer" = "1" ]; then
     ln -s ${CONDA_PREFIX}/lib/libncurses.so.6.5 ${MY_DIR}/local_libs/libncurses.so.5
     ln -s ${CONDA_PREFIX}/lib/libtinfo.so.6 ${MY_DIR}/local_libs/libtinfo.so.5
     
-    cp ${git_dir}/support_files/rootrc_file ${MY_DIR}/workdir/.rootrc
 else
     echo "Running option 2. Using a container which links to the old /afs paths by using bind mount"
     echo "######################################################################"

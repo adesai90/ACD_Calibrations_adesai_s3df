@@ -28,7 +28,7 @@ Int_t AcdCoherentNoiseFitLibrary::fit(CalibData::AcdCalibObj& result, const AcdC
   ring.SetParLimits(3,0.,2.*TMath::Pi());
 
   TH1& nch = const_cast<TH1&>(in);
-  Int_t status = nch.Fit(&ring,"","");
+  UInt_t status = nch.Fit(&ring,"","");
   
   // grab parameters
   Float_t amp = ring.GetParameter(0);
