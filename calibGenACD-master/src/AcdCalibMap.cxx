@@ -367,14 +367,33 @@ UInt_t idx(0);
     std::cout << "[AcdCalibMap::writeResultsToTree] calibType=" << m_desc->calibType() 
               << " (" << m_desc->calibTypeName() << "): using split map-iterator loop" << std::endl;
     for ( std::map<UInt_t,CalibData::AcdCalibObj*>::const_iterator itr = m_map.begin(); 
-    itr != m_map.end(); itr++, idx++ ) {
+    itr != m_map.end(); itr++) {  
+      if ( AcdKey::getPmt(itr->first) >= AcdKey::nPmt ) {
+          std::cerr << "Warning Code Update: skipping invalid pmt=" << AcdKey::getPmt(itr->first)
+                    << " for id=" << AcdKey::getId(itr->first)
+                    << " key=" << itr->first
+                    << " valid pmt range is 0 to " << AcdKey::nPmt-1
+                    << " Reason: Previous code had no pmt validity check, keeping same gives errors now" << std::endl;
+          continue;
+      }
+      if ( idx >= 216 ) {
+          std::cerr << "Warning Code Update: Skipping  idx=" << idx
+                    << " exceeds array size 216 for id=" << AcdKey::getId(itr->first)
+                    << " pmt=" << AcdKey::getPmt(itr->first)
+                    << " key=" << itr->first
+                    << " original code had no boundary check on idx"
+                    << " Reason: this is a safety catch for any other unexpected channels" << std::endl;
+          continue;
+      }
+      /* AD added Everything above */
       id[idx] = AcdKey::getId(itr->first);
       pmt[idx] =  AcdKey::getPmt(itr->first);
       status[idx] = itr->second->getStatus();
       for ( UInt_t iV(0); iV < nVal; iV++ ) {
-        vals[iV][idx] = itr->second->operator[](iV);
+        vals[iV][idx] = (UInt_t)itr->second->operator[](iV);
       }
-    }
+      idx++; // AD changed: removed from loop above and added here
+    } 
   }
   m_tree->Fill();
   m_tree->Write();

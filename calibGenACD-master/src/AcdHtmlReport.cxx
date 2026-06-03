@@ -126,11 +126,6 @@ Bool_t AcdHtmlReport::makeDeltaPlots( const char* outputPrefix, TTree* inTree, T
   if ( outputPrefix == 0 || inTree == 0 ) return kFALSE;
   delPlotsNames.clear();
   if ( refTree == 0 ) return kTRUE;
-  // AD changed: sort both trees by (id,pmt) before adding as friend
-  // ORIGINAL: AddFriend matched by row number — broke when new code changed
-  // Fix: create index on both trees by (id,pmt) so friend matching is by channel not position
-  inTree->BuildIndex("id","pmt"); // AD changed
-  refTree->BuildIndex("id","pmt"); // AD changed
   inTree->AddFriend(refTree,"old");
   return AcdReport::makeDeltaPlots( m_desc->calibType(), outputPrefix, inTree, delPlotsNames);
 }
