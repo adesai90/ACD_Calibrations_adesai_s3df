@@ -268,7 +268,9 @@ AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config
 ###########
 ########################################################################################
 
-    While calculating gain, it is forund that the MIP and delta MIP values are off. Checked the old r0679793552_gainPars.root file for week 736 and compared to the new one using root 
+   The new setup foces a recompile with a different version of C (but with a flag to make it work). 
+   Due to recomplie some bugs got surfaced, a major one bing how the files are written where GAIN file is INTERLEAVED (so it is not read correctly now)
+   While calculating gain, it is forund that the MIP and delta MIP values are off. Checked the old r0679793552_gainPars.root file for week 736 and compared to the new one using root 
     (Made /tmp/checkroot_new.C in my directory (abhishek) to open the file)
     Found that the new one has values 
     *    Row   * Instance * startTime *   endTime *  triggers *        id *       pmt *    status *      peak *     width *
@@ -300,6 +302,16 @@ AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config
     Old file:  row 0=(id=0,pmt=0), row 1=(id=0,pmt=1), row 2=(id=1,pmt=0)...
 
     *** Modified Acdhtmlreport and acdreportplots ***
+
+    Now the issue is gain files have this interleaved ordering but the other ones dont, giving this error for only gain, so we need to modify it accordingly
+    Based on a quick AI analysis:
+        PED REF:   SPLIT ordering (pmt=0 first, then pmt=1) — also has corrupt pmt=4.294e+09 at instance 1
+        VETO REF:  SPLIT ordering — same corrupt pmt at instance 1
+        GAIN REF:  INTERLEAVED ordering (id0pmt0, id0pmt1, id1pmt0...) — 2008 file, different
+        NEW files: INTERLEAVED ordering (our fix) — matches GAIN ref but breaks PED/VETO/CNO/NOISE
+    
+
+
 
 
 
