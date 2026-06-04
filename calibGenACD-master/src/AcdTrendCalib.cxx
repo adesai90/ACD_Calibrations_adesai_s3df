@@ -198,15 +198,21 @@ Bool_t AcdTrendCalib::fillHistograms() {
       Float_t delta = 0.;
       Float_t error = 1.;
       if (  k >= nAbs ) {
-        delta = vals[k-nAbs][j] - refVals[k-nAbs][j+offset];
+        /*delta = vals[k-nAbs][j] - refVals[k-nAbs][j+offset]; 
         if ( refVals[k-nAbs][j+offset] > 0.5 ) {
-          delta /= float(refVals[k-nAbs][j+offset]);
+          delta /= float(refVals[k-nAbs][j+offset]);*/
+          // AD Changed start: based on above
+        delta = vals[k-nAbs][j] - refVals[k-nAbs][jRef]; 
+          if ( refVals[k-nAbs][jRef] > 0.5 ) {
+            delta /= float(refVals[k-nAbs][jRef]);
+            // AD Changed end: based on above
         } else {
           delta = 0.42;
         }
         error = 0.01;
       } else {
-        delta = vals[k][j] - refVals[k][j+offset];
+        /*delta = vals[k][j] - refVals[k][j+offset];*/
+        delta = vals[k][j] - refVals[k][jRef];
       }
       fillHistBin(*m_trendHists,id[j],pmt[j],i+1,delta,error,k);
       m_summaryHists[k]->Fill((Float_t)i,delta);
