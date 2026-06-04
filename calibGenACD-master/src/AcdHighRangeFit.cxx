@@ -23,7 +23,7 @@ Int_t AcdHighRangeFitLibrary::fit(CalibData::AcdCalibObj& result, const AcdCalib
   calib.FixParameter(2,2000.);
 
   TH1& nch = const_cast<TH1&>(in);
-  UInt_t status = nch.Fit(&calib,"W","");
+  Int_t status = nch.Fit(&calib,"W","");
 
   Float_t slope = calib.GetParameter(1);
   Float_t satur = calib.GetParameter(2);

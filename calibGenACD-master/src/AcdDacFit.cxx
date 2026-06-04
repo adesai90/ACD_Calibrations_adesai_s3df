@@ -27,7 +27,7 @@ Int_t AcdDacFitLibrary::fitLinear(CalibData::AcdCalibObj& result, const AcdCalib
   TF1 pol1("pol1","[0] +  x * [1]");
   pol1.SetParameter(0,64.);
   pol1.SetParameter(1,0.003);
-  UInt_t status = theHist.Fit(&pol1);  
+  Int_t status = theHist.Fit(&pol1);  
   Double_t offset = pol1.GetParameter(0);
   Double_t slope = pol1.GetParameter(1);
   result.setVals(slope,offset,(CalibData::AcdCalibObj::STATUS)status);
