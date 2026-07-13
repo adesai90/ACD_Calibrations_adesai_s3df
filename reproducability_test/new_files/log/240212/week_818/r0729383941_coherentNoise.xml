@@ -1,0 +1,1072 @@
+<!DOCTYPE acdCalib [
+<!--
+   $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibUtil/xml/acdCalib_v3r2.dtd,v 1.1 2008/09/05 20:26:30 echarles Exp $
+
+   /**  @file       acdCalib.dtd
+        @authors    E. Charles, J. Bogart
+
+        dtd for ACD calibration data types
+
+    */
+
+ -->
+
+<!-- 
+   Overall structure is some header information followed by
+   a sequence of tile (or ribbon) data.  Tile (or ribbon) data is made up
+   of data form the 2 PMTs that read the tile
+
+   The header information comes in two parts:
+     "generic" is relevant to any sort of calibration data,
+               not just that from the ACD, such as the
+               name of the instrument being calibrated.
+               See further comments above the generic element
+               declaration
+     "dimension" contains all the parameters necessary to figure 
+               out which data goes with which hardware entity.
+               See further comments above the dimension element
+               declaration
+  -->  
+
+<!ELEMENT acdCalib (generic, dimension, tile* ) >
+       
+<!-- Container for all the header/metadata type information to be
+     included here.  Complete metadata will be found in the calibration
+     MySQL database. 
+
+     Description of attributes:
+
+            instrument    - one of "flight", "EM", etc.  Could also
+                            be implemented as enumeration rather than
+                            NMTOKEN
+            timestamp     - when the file was written (date and time)
+            calibType     - one of "ACD_Pedestal", "ACD_Gain",
+                            etc.
+            formatVersion - sufficient versioning information so that
+                            software attempting to read the file can
+                            determine if it supports this version. 
+                            [Might get rid of this here and just keep
+                            it in the MySQL metadata table]
+ -->
+<!ELEMENT  generic (inputSample?) >
+<!ATTLIST generic  
+   instrument  (LAT | CalUnit | MiniLat) #REQUIRED
+   timestamp   CDATA #REQUIRED
+   calibType ( ACD_Pedestal | ACD_Gain | ACD_Veto | ACD_Range |
+               ACD_Cno | ACD_HighRange | ACD_CoherentNoise | ACD_Ribbon |               
+               ACD_HighPed | ACD_Carbon | ACD_VetoFit | ACD_CnoFit | ACD_Check |
+               ACD_PE ) #REQUIRED              
+   algorithm   CDATA #REQUIRED
+   DTDVersion  NMTOKEN "v3"       
+   fmtVersion  NMTOKEN #REQUIRED>
+
+<!-- Description of events used as input to the procedure 
+     Start- and stop-times should be timestamps of earliest and
+     latest events included in sample.
+     inputSample is (for now) optional.
+-->
+<!ELEMENT inputSample (inputFile*) >
+<!ATTLIST inputSample  startTime CDATA #REQUIRED
+                       stopTime  CDATA #REQUIRED
+                       triggers  CDATA #REQUIRED 
+                       source    CDATA #REQUIRED
+                       mode      NMTOKEN  #REQUIRED>
+
+<!-- Description of the input files.
+     This is just the path to the file and the type of file.
+     Pedestal, Gain and Range and HighRange are calibration files,
+     Digi, Recon, Merit, Svac and CEL are event data files.  
+-->
+<!ELEMENT inputFile EMPTY>
+<!ATTLIST inputFile type  (Pedestal | Gain | Range | HighRange | Carbon | HighPed | 
+                           Veto | Cno | VetoSettings | CnoSettings |
+                           Digi | Recon | Merit | Svac | CEL ) #REQUIRED
+                    path  CDATA #REQUIRED>
+
+<!-- Describe how the data is dimensioned:
+        nTile:  number of tiles+ribbons and not-connected channels
+                (no default; should be 108 for LAT)
+        nFace:  face+ribbon orientations  (default = 5 + 2 = 7)
+        nRow:   max number       (default = 5, occurs in top face)
+        nCol:   max number       (default = 5, occurs in top face)
+        nPmt:   number of PMT      (default = 2)
+        nNA:    number of unconnected channels (default = 11)
+        exact:  true if number of subelements = nTile*nPmt, else
+                false.  Default is true.
+ -->
+  
+<!ELEMENT dimension EMPTY>
+<!ATTLIST dimension nTile NMTOKEN  #REQUIRED
+                    nFace NMTOKEN  "7"
+                    nRow  NMTOKEN  "5"
+                    nCol  NMTOKEN  "5"
+                    nPmt  NMTOKEN  "2"
+                    nNA   NMTOKEN  "11"
+                    exact NMTOKEN #FIXED "true"     >
+
+<!ELEMENT tile (pmt,pmt) >
+<!ATTLIST tile tileId NMTOKEN #REQUIRED>
+
+<!ELEMENT pmt (acdPed* | acdGain* | acdVeto* |  acdRange* |  
+               acdCno* | acdCoherentNoise* | acdHighRange* | acdRibbon* |
+               acdHighPed* | acdCarbon* | acdVetoFit* | acdCnoFit* | acdCheck* | 
+               acdPE* ) >
+<!ATTLIST pmt iPmt NMTOKEN #REQUIRED>
+
+<!ELEMENT acdPed  EMPTY>
+<!ATTLIST acdPed  mean NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdGain EMPTY>
+<!ATTLIST acdGain peak NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdVeto EMPTY>
+<!ATTLIST acdVeto veto NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED                  
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdRange EMPTY>
+<!ATTLIST acdRange low_max NMTOKEN #REQUIRED
+                 high_min NMTOKEN #REQUIRED
+                 status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdCno EMPTY>
+<!ATTLIST acdCno cno NMTOKEN #REQUIRED
+                 width NMTOKEN #REQUIRED                 
+                 status NMTOKEN #REQUIRED >
+
+
+<!ELEMENT acdCoherentNoise EMPTY>
+<!ATTLIST acdCoherentNoise amplitude NMTOKEN #REQUIRED
+                 decay NMTOKEN #REQUIRED
+                 frequency NMTOKEN #REQUIRED
+                 phase NMTOKEN #REQUIRED
+                 status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdHighRange EMPTY>
+<!ATTLIST acdHighRange pedestal NMTOKEN #REQUIRED
+                  slope NMTOKEN #REQUIRED
+                 saturation NMTOKEN #REQUIRED
+                 status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdRibbon EMPTY>
+<!ATTLIST acdRibbon Frac_n1 NMTOKEN #REQUIRED
+                  Frac_n2 NMTOKEN #REQUIRED
+                  Frac_n3 NMTOKEN #REQUIRED
+                  Frac_p1 NMTOKEN #REQUIRED
+                  Frac_p2 NMTOKEN #REQUIRED
+                  Frac_p3 NMTOKEN #REQUIRED
+                  Norm    NMTOKEN #IMPLIED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdHighPed  EMPTY>
+<!ATTLIST acdHighPed  mean NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdCarbon EMPTY>
+<!ATTLIST acdCarbon peak NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdVetoFit EMPTY>
+<!ATTLIST acdVetoFit slope NMTOKEN #REQUIRED
+                  offset NMTOKEN #REQUIRED 
+                  mipPeak NMTOKEN #IMPLIED       
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdCnoFit EMPTY>
+<!ATTLIST acdCnoFit slope NMTOKEN #REQUIRED
+                  offset NMTOKEN #REQUIRED      
+                  carbonPeak NMTOKEN #IMPLIED     
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdCheck EMPTY>
+<!ATTLIST acdCheck ped NMTOKEN #REQUIRED
+                  mip NMTOKEN #REQUIRED      
+                  veto NMTOKEN #REQUIRED   
+                  cno NMTOKEN #REQUIRED      
+                  range NMTOKEN #REQUIRED    
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdPE EMPTY>
+<!ATTLIST acdPE PE NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+] >
+<acdCalib>
+  <generic DTDVersion="v3r2" algorithm="Minuit" calibType="ACD_CoherentNoise" fmtVersion="v3r2" instrument="LAT" timestamp="2026-06-05 17:48:01 UTC">
+    <inputSample mode="Normal" source="Orbit" startTime="729383944.6773" stopTime="729389619.0856" triggers="10209">
+      <inputFile path="/sdf/group/fermi/ground/releases/monitor/ACD/FLIGHT/Ped/120910/r0368924812_ped.xml" type="Pedestal" />
+      <inputFile path="root://glast-rdr.slac.stanford.edu//glast/Data/Flight/Level1/LPA/prod/5.9/digi/r0729383941_v001_digi.root" type="Digi" />
+    </inputSample>
+  </generic>
+  <dimension nTile="108" />
+  <tile tileId="000">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="29.3358" decay="765.819" frequency="0.0054" phase="5.29197" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="21.9636" decay="990.774" frequency="0.0054" phase="5.28795" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="001">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="38.3325" decay="744.202" frequency="0.0054" phase="5.13823" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="29.8125" decay="971.421" frequency="0.0054" phase="5.35018" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="002">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="18.9699" decay="1147.03" frequency="0.0054" phase="5.10568" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="25.5305" decay="832.295" frequency="0.0054" phase="4.87346" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="003">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="16.3028" decay="1060.94" frequency="0.0054" phase="5.12691" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="23.3582" decay="804.149" frequency="0.0054" phase="4.94315" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="004">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="24.3008" decay="772.236" frequency="0.0054" phase="5.61109" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="29.7232" decay="773.325" frequency="0.0054" phase="5.48624" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="010">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="30.4281" decay="706.417" frequency="0.0054" phase="5.37328" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="19.5805" decay="633.73" frequency="0.0054" phase="4.91709" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="011">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="20.348" decay="831.825" frequency="0.0054" phase="6.04457" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="29.6252" decay="980.177" frequency="0.0054" phase="5.43268" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="012">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="37.8356" decay="621.55" frequency="0.0054" phase="5.54264" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="14.9381" decay="948.742" frequency="0.0054" phase="4.84772" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="013">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="16.4649" decay="953.337" frequency="0.0054" phase="4.92275" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="21.9758" decay="792.04" frequency="0.0054" phase="5.63644" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="014">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="14.4005" decay="876.063" frequency="0.0054" phase="4.65098" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="45.8601" decay="580.772" frequency="0.0054" phase="5.74388" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="020">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="24.2204" decay="823.495" frequency="0.0054" phase="5.28111" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="22.0509" decay="553.368" frequency="0.0054" phase="5.29649" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="021">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="14.4511" decay="993.382" frequency="0.0054" phase="4.87512" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="21.4202" decay="870.871" frequency="0.0054" phase="5.11716" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="022">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="14.8959" decay="799.168" frequency="0.0054" phase="4.94783" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="10.4803" decay="1202.27" frequency="0.0054" phase="4.8622" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="023">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="19.9048" decay="700.629" frequency="0.0054" phase="5.01552" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="27.8794" decay="592.48" frequency="0.0054" phase="5.13467" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="024">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="33.1434" decay="570.542" frequency="0.0054" phase="5.14469" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="21.9744" decay="857.531" frequency="0.0054" phase="5.11335" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="030">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="23.6008" decay="862.164" frequency="0.0054" phase="5.53995" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="23.9826" decay="1055.9" frequency="0.0054" phase="5.04164" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="031">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="26.7289" decay="728.81" frequency="0.0054" phase="5.31718" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="15.5986" decay="981.305" frequency="0.0054" phase="4.84459" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="032">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="28.0588" decay="858.915" frequency="0.0054" phase="5.16055" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="16.0454" decay="860.317" frequency="0.0054" phase="5.15494" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="033">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="32.1586" decay="736.034" frequency="0.0054" phase="4.96026" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="19.2497" decay="769.194" frequency="0.0054" phase="5.08345" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="034">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="28.7513" decay="831.205" frequency="0.0054" phase="5.33473" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="20.9602" decay="719.255" frequency="0.0054" phase="4.88511" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="040">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="24.1709" decay="817.922" frequency="0.0054" phase="5.19896" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="10.345" decay="1511.41" frequency="0.0054" phase="4.8735" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="041">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="28.1175" decay="765.175" frequency="0.0054" phase="5.51031" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="23.826" decay="639.864" frequency="0.0054" phase="5.45302" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="042">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="33.3927" decay="833.517" frequency="0.0054" phase="4.97984" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="20.7551" decay="882.59" frequency="0.0054" phase="5.02346" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="043">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="20.2809" decay="1084.38" frequency="0.0054" phase="5.10518" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="13.2123" decay="949.154" frequency="0.0054" phase="4.79683" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="044">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="33.2564" decay="445.967" frequency="0.0054" phase="5.81091" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="20.288" decay="713.353" frequency="0.0054" phase="4.88377" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="100">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="32.4621" decay="629.251" frequency="0.0054" phase="5.6497" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="15.2916" decay="945.425" frequency="0.0054" phase="5.13583" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="101">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="22.9359" decay="903.961" frequency="0.0054" phase="5.55699" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="15.0504" decay="1510.11" frequency="0.0054" phase="5.30512" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="102">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="34.4499" decay="755.125" frequency="0.0054" phase="5.23599" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="11.5365" decay="1322.79" frequency="0.0054" phase="4.97305" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="103">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="33.2392" decay="718.732" frequency="0.0054" phase="5.30734" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="10.9767" decay="1093.46" frequency="0.0054" phase="4.67713" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="104">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="15.6878" decay="979.544" frequency="0.0054" phase="4.82602" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="30.5484" decay="558.374" frequency="0.0054" phase="5.66718" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="110">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="27.7732" decay="606.822" frequency="0.0054" phase="5.34537" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="16.7495" decay="1192.74" frequency="0.0054" phase="4.98878" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="111">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="24.4769" decay="854.729" frequency="0.0054" phase="5.17859" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="31.2657" decay="696.202" frequency="0.0054" phase="5.27617" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="112">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="12.5577" decay="772.253" frequency="0.0054" phase="4.67606" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="18.5761" decay="825.099" frequency="0.0054" phase="4.89458" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="113">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="28.4791" decay="665.048" frequency="0.0054" phase="5.08612" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="14.9128" decay="979.784" frequency="0.0054" phase="4.81022" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="114">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="34.2996" decay="760.758" frequency="0.0054" phase="5.38557" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="36.4537" decay="942.783" frequency="0.0054" phase="5.39665" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="120">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="32.5481" decay="608.254" frequency="0.0054" phase="5.24146" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="15.5294" decay="1180.72" frequency="0.0054" phase="5.15384" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="121">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="20.543" decay="635.668" frequency="0.0054" phase="4.55547" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="37.7154" decay="426.807" frequency="0.0054" phase="5.13779" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="122">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="23.1208" decay="691.425" frequency="0.0054" phase="4.78437" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="22.6131" decay="561.193" frequency="0.0054" phase="4.80984" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="123">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="33.5268" decay="588.363" frequency="0.0054" phase="5.22" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="23.4658" decay="315.561" frequency="0.0054" phase="6.28319" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="124">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="26.2768" decay="559.314" frequency="0.0054" phase="5.84498" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="21.3857" decay="915.727" frequency="0.0054" phase="5.09875" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="130">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="31.9762" decay="799.914" frequency="0.0054" phase="5.32793" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="32.0438" decay="678.049" frequency="0.0054" phase="5.18529" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="200">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="21.2197" decay="845.346" frequency="0.0054" phase="5.25476" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="23.2379" decay="897.379" frequency="0.0054" phase="4.95269" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="201">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="16.3295" decay="951.538" frequency="0.0054" phase="4.95708" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="17.2459" decay="1044.7" frequency="0.0054" phase="5.04366" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="202">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="17.3158" decay="637.224" frequency="0.0054" phase="4.82161" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="31.8671" decay="628.494" frequency="0.0054" phase="5.70967" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="203">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="25.7429" decay="581.782" frequency="0.0054" phase="5.44846" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="21.485" decay="655.585" frequency="0.0054" phase="4.76521" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="204">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="6.32109" decay="1451.14" frequency="0.0054" phase="4.74399" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="19.9484" decay="775.798" frequency="0.0054" phase="4.86316" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="210">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="25.9967" decay="744.276" frequency="0.0054" phase="5.21354" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="22.2185" decay="1351.92" frequency="0.0054" phase="4.99106" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="211">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="38.6052" decay="674.442" frequency="0.0054" phase="5.43276" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="15.6035" decay="900.448" frequency="0.0054" phase="4.64106" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="212">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="23.1295" decay="1062.25" frequency="0.0054" phase="5.26957" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="31.3986" decay="816.241" frequency="0.0054" phase="5.25731" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="213">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="25.5796" decay="982.181" frequency="0.0054" phase="5.21769" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="31.6964" decay="777.375" frequency="0.0054" phase="4.95444" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="214">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="27.4239" decay="675.121" frequency="0.0054" phase="5.20958" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="31.6371" decay="787.003" frequency="0.0054" phase="5.18036" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="220">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="22.4104" decay="796.272" frequency="0.0054" phase="5.03506" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="29.0848" decay="871.8" frequency="0.0054" phase="4.81064" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="221">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="24.8505" decay="609.824" frequency="0.0054" phase="5.67114" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="15.462" decay="717.927" frequency="0.0054" phase="5.41967" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="222">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="32.0639" decay="690.313" frequency="0.0054" phase="5.45434" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="22.9038" decay="799.588" frequency="0.0054" phase="5.08589" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="223">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="12.5685" decay="1130.18" frequency="0.0054" phase="4.71797" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="6.58401" decay="1619.2" frequency="0.0054" phase="4.51214" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="224">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="28.8209" decay="596.388" frequency="0.0054" phase="5.02912" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="21.4567" decay="745.399" frequency="0.0054" phase="5.5815" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="230">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="25.0827" decay="843.128" frequency="0.0054" phase="5.16627" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="31.0193" decay="903.884" frequency="0.0054" phase="5.63328" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="300">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="21.4707" decay="708.746" frequency="0.0054" phase="4.81355" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="35.9553" decay="755.035" frequency="0.0054" phase="5.24473" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="301">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="14.4711" decay="646.571" frequency="0.0054" phase="4.83554" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="17.4651" decay="938.411" frequency="0.0054" phase="4.98918" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="302">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="25.7842" decay="782.13" frequency="0.0054" phase="4.94313" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="18.6733" decay="799.425" frequency="0.0054" phase="4.91726" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="303">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="15.3903" decay="827.696" frequency="0.0054" phase="5.08404" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="39.566" decay="644.41" frequency="0.0054" phase="5.20379" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="304">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="21.261" decay="990.232" frequency="0.0054" phase="4.9822" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="26.2999" decay="586.127" frequency="0.0054" phase="5.1412" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="310">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="11.26" decay="1354.41" frequency="0.0054" phase="4.76435" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="11.562" decay="1065.76" frequency="0.0054" phase="4.85249" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="311">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="23.052" decay="647.722" frequency="0.0054" phase="5.06427" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="24.1573" decay="716.087" frequency="0.0054" phase="5.18944" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="312">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="16.9755" decay="804.982" frequency="0.0054" phase="5.03247" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="28.1767" decay="800.463" frequency="0.0054" phase="5.09431" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="313">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="16.9836" decay="902.231" frequency="0.0054" phase="4.75013" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="28.8615" decay="638.918" frequency="0.0054" phase="5.47111" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="314">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="46.0211" decay="146.46" frequency="0.0054" phase="3.49065" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="20.6758" decay="900.02" frequency="0.0054" phase="5.63357" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="320">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="29.0181" decay="811.193" frequency="0.0054" phase="5.17751" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="25.7528" decay="865.02" frequency="0.0054" phase="4.87903" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="321">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="30.8531" decay="462.084" frequency="0.0054" phase="5.32094" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="29.2216" decay="614.021" frequency="0.0054" phase="4.89454" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="322">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="27.9243" decay="777.834" frequency="0.0054" phase="5.20266" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="24.4864" decay="665.818" frequency="0.0054" phase="4.74626" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="323">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="27.3175" decay="746.71" frequency="0.0054" phase="4.84977" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="21.7235" decay="647.353" frequency="0.0054" phase="4.94985" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="324">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="5.65414e-10" decay="1237.78" frequency="0.0054" phase="0.41886" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="33.4096" decay="549.035" frequency="0.0054" phase="5.42494" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="330">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="22.339" decay="963.629" frequency="0.0054" phase="5.10775" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="21.6687" decay="863.59" frequency="0.0054" phase="5.06554" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="400">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="33.1419" decay="708.955" frequency="0.0054" phase="5.12079" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="12.5067" decay="1036.02" frequency="0.0054" phase="4.61869" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="401">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="23.6473" decay="768.603" frequency="0.0054" phase="5.36973" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="16.858" decay="736.38" frequency="0.0054" phase="5.34029" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="402">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="29.8184" decay="667.889" frequency="0.0054" phase="5.33185" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="21.8587" decay="983.346" frequency="0.0054" phase="5.0644" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="403">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="23.5123" decay="835.819" frequency="0.0054" phase="5.23134" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="35.9784" decay="657.351" frequency="0.0054" phase="5.41326" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="404">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="30.1833" decay="806.979" frequency="0.0054" phase="5.05152" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="22.5426" decay="780.486" frequency="0.0054" phase="5.18591" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="410">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="19.6036" decay="851.143" frequency="0.0054" phase="5.13597" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="26.896" decay="685.979" frequency="0.0054" phase="5.26844" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="411">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="9.38861" decay="991.046" frequency="0.0054" phase="4.59199" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="19.4968" decay="733.47" frequency="0.0054" phase="5.36479" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="412">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="10.7353" decay="1035.74" frequency="0.0054" phase="4.92597" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="24.9261" decay="806.505" frequency="0.0054" phase="4.98557" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="413">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="12.2938" decay="947.629" frequency="0.0054" phase="4.72738" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="18.989" decay="867.296" frequency="0.0054" phase="4.80872" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="414">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="17.4508" decay="997.362" frequency="0.0054" phase="4.98485" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="18.8997" decay="710.092" frequency="0.0054" phase="4.97322" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="420">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="25.8739" decay="718.017" frequency="0.0054" phase="4.90665" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="21.899" decay="937.12" frequency="0.0054" phase="5.12068" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="421">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="10.7714" decay="962.537" frequency="0.0054" phase="4.81869" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="20.0858" decay="968.754" frequency="0.0054" phase="5.26357" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="422">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="24.1638" decay="592.642" frequency="0.0054" phase="5.82855" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="23.5304" decay="701.807" frequency="0.0054" phase="5.40285" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="423">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="27.3818" decay="791.146" frequency="0.0054" phase="5.46897" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="18.6295" decay="870.114" frequency="0.0054" phase="4.70226" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="424">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="8.3447" decay="987.792" frequency="0.0054" phase="4.90875" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="31.3874" decay="807.807" frequency="0.0054" phase="5.3674" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="430">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="18.6766" decay="573.174" frequency="0.0054" phase="4.3699" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="21.8304" decay="765.242" frequency="0.0054" phase="4.50784" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="500">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="18.3712" decay="856.393" frequency="0.0054" phase="4.69308" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="10.2799" decay="1972.79" frequency="0.0054" phase="1.0946e-11" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="501">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="28.7881" decay="712.326" frequency="0.0054" phase="5.17785" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="7.62233" decay="1270.44" frequency="0.0054" phase="4.21695" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="502">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="25.3351" decay="662.045" frequency="0.0054" phase="5.42295" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="32.7922" decay="752.185" frequency="0.0054" phase="5.04931" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="503">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="28.175" decay="801.244" frequency="0.0054" phase="5.27597" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="8.53778" decay="956.018" frequency="0.0054" phase="4.73888" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="600">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="24.7828" decay="900.689" frequency="0.0054" phase="5.13514" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="11.4353" decay="973.921" frequency="0.0054" phase="4.56391" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="601">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="34.5046" decay="454.444" frequency="0.0054" phase="5.68521" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="10.597" decay="1236.88" frequency="0.0054" phase="4.84516" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="602">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="27.5749" decay="847.44" frequency="0.0054" phase="5.35852" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="63.3992" decay="143.118" frequency="0.0054" phase="6.16338" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="603">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="29.8342" decay="570.179" frequency="0.0054" phase="5.11377" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="24.2181" decay="949.153" frequency="0.0054" phase="5.49573" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="700">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="701">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="702">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="703">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="704">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="705">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="706">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="707">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="708">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="709">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="710">
+    <pmt iPmt="0">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdCoherentNoise amplitude="40" decay="1000" frequency="0.0054" phase="4.71239" status="0" />
+    </pmt>
+  </tile>
+</acdCalib>

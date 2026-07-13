@@ -1,0 +1,1071 @@
+<!DOCTYPE acdCalib [
+<!--
+   $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibUtil/xml/acdCalib_v3r2.dtd,v 1.1 2008/09/05 20:26:30 echarles Exp $
+
+   /**  @file       acdCalib.dtd
+        @authors    E. Charles, J. Bogart
+
+        dtd for ACD calibration data types
+
+    */
+
+ -->
+
+<!-- 
+   Overall structure is some header information followed by
+   a sequence of tile (or ribbon) data.  Tile (or ribbon) data is made up
+   of data form the 2 PMTs that read the tile
+
+   The header information comes in two parts:
+     "generic" is relevant to any sort of calibration data,
+               not just that from the ACD, such as the
+               name of the instrument being calibrated.
+               See further comments above the generic element
+               declaration
+     "dimension" contains all the parameters necessary to figure 
+               out which data goes with which hardware entity.
+               See further comments above the dimension element
+               declaration
+  -->  
+
+<!ELEMENT acdCalib (generic, dimension, tile* ) >
+       
+<!-- Container for all the header/metadata type information to be
+     included here.  Complete metadata will be found in the calibration
+     MySQL database. 
+
+     Description of attributes:
+
+            instrument    - one of "flight", "EM", etc.  Could also
+                            be implemented as enumeration rather than
+                            NMTOKEN
+            timestamp     - when the file was written (date and time)
+            calibType     - one of "ACD_Pedestal", "ACD_Gain",
+                            etc.
+            formatVersion - sufficient versioning information so that
+                            software attempting to read the file can
+                            determine if it supports this version. 
+                            [Might get rid of this here and just keep
+                            it in the MySQL metadata table]
+ -->
+<!ELEMENT  generic (inputSample?) >
+<!ATTLIST generic  
+   instrument  (LAT | CalUnit | MiniLat) #REQUIRED
+   timestamp   CDATA #REQUIRED
+   calibType ( ACD_Pedestal | ACD_Gain | ACD_Veto | ACD_Range |
+               ACD_Cno | ACD_HighRange | ACD_CoherentNoise | ACD_Ribbon |               
+               ACD_HighPed | ACD_Carbon | ACD_VetoFit | ACD_CnoFit | ACD_Check |
+               ACD_PE ) #REQUIRED              
+   algorithm   CDATA #REQUIRED
+   DTDVersion  NMTOKEN "v3"       
+   fmtVersion  NMTOKEN #REQUIRED>
+
+<!-- Description of events used as input to the procedure 
+     Start- and stop-times should be timestamps of earliest and
+     latest events included in sample.
+     inputSample is (for now) optional.
+-->
+<!ELEMENT inputSample (inputFile*) >
+<!ATTLIST inputSample  startTime CDATA #REQUIRED
+                       stopTime  CDATA #REQUIRED
+                       triggers  CDATA #REQUIRED 
+                       source    CDATA #REQUIRED
+                       mode      NMTOKEN  #REQUIRED>
+
+<!-- Description of the input files.
+     This is just the path to the file and the type of file.
+     Pedestal, Gain and Range and HighRange are calibration files,
+     Digi, Recon, Merit, Svac and CEL are event data files.  
+-->
+<!ELEMENT inputFile EMPTY>
+<!ATTLIST inputFile type  (Pedestal | Gain | Range | HighRange | Carbon | HighPed | 
+                           Veto | Cno | VetoSettings | CnoSettings |
+                           Digi | Recon | Merit | Svac | CEL ) #REQUIRED
+                    path  CDATA #REQUIRED>
+
+<!-- Describe how the data is dimensioned:
+        nTile:  number of tiles+ribbons and not-connected channels
+                (no default; should be 108 for LAT)
+        nFace:  face+ribbon orientations  (default = 5 + 2 = 7)
+        nRow:   max number       (default = 5, occurs in top face)
+        nCol:   max number       (default = 5, occurs in top face)
+        nPmt:   number of PMT      (default = 2)
+        nNA:    number of unconnected channels (default = 11)
+        exact:  true if number of subelements = nTile*nPmt, else
+                false.  Default is true.
+ -->
+  
+<!ELEMENT dimension EMPTY>
+<!ATTLIST dimension nTile NMTOKEN  #REQUIRED
+                    nFace NMTOKEN  "7"
+                    nRow  NMTOKEN  "5"
+                    nCol  NMTOKEN  "5"
+                    nPmt  NMTOKEN  "2"
+                    nNA   NMTOKEN  "11"
+                    exact NMTOKEN #FIXED "true"     >
+
+<!ELEMENT tile (pmt,pmt) >
+<!ATTLIST tile tileId NMTOKEN #REQUIRED>
+
+<!ELEMENT pmt (acdPed* | acdGain* | acdVeto* |  acdRange* |  
+               acdCno* | acdCoherentNoise* | acdHighRange* | acdRibbon* |
+               acdHighPed* | acdCarbon* | acdVetoFit* | acdCnoFit* | acdCheck* | 
+               acdPE* ) >
+<!ATTLIST pmt iPmt NMTOKEN #REQUIRED>
+
+<!ELEMENT acdPed  EMPTY>
+<!ATTLIST acdPed  mean NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdGain EMPTY>
+<!ATTLIST acdGain peak NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdVeto EMPTY>
+<!ATTLIST acdVeto veto NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED                  
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdRange EMPTY>
+<!ATTLIST acdRange low_max NMTOKEN #REQUIRED
+                 high_min NMTOKEN #REQUIRED
+                 status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdCno EMPTY>
+<!ATTLIST acdCno cno NMTOKEN #REQUIRED
+                 width NMTOKEN #REQUIRED                 
+                 status NMTOKEN #REQUIRED >
+
+
+<!ELEMENT acdCoherentNoise EMPTY>
+<!ATTLIST acdCoherentNoise amplitude NMTOKEN #REQUIRED
+                 decay NMTOKEN #REQUIRED
+                 frequency NMTOKEN #REQUIRED
+                 phase NMTOKEN #REQUIRED
+                 status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdHighRange EMPTY>
+<!ATTLIST acdHighRange pedestal NMTOKEN #REQUIRED
+                  slope NMTOKEN #REQUIRED
+                 saturation NMTOKEN #REQUIRED
+                 status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdRibbon EMPTY>
+<!ATTLIST acdRibbon Frac_n1 NMTOKEN #REQUIRED
+                  Frac_n2 NMTOKEN #REQUIRED
+                  Frac_n3 NMTOKEN #REQUIRED
+                  Frac_p1 NMTOKEN #REQUIRED
+                  Frac_p2 NMTOKEN #REQUIRED
+                  Frac_p3 NMTOKEN #REQUIRED
+                  Norm    NMTOKEN #IMPLIED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdHighPed  EMPTY>
+<!ATTLIST acdHighPed  mean NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdCarbon EMPTY>
+<!ATTLIST acdCarbon peak NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdVetoFit EMPTY>
+<!ATTLIST acdVetoFit slope NMTOKEN #REQUIRED
+                  offset NMTOKEN #REQUIRED 
+                  mipPeak NMTOKEN #IMPLIED       
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdCnoFit EMPTY>
+<!ATTLIST acdCnoFit slope NMTOKEN #REQUIRED
+                  offset NMTOKEN #REQUIRED      
+                  carbonPeak NMTOKEN #IMPLIED     
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdCheck EMPTY>
+<!ATTLIST acdCheck ped NMTOKEN #REQUIRED
+                  mip NMTOKEN #REQUIRED      
+                  veto NMTOKEN #REQUIRED   
+                  cno NMTOKEN #REQUIRED      
+                  range NMTOKEN #REQUIRED    
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdPE EMPTY>
+<!ATTLIST acdPE PE NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+] >
+<acdCalib>
+  <generic DTDVersion="v3r2" algorithm="MeanValue" calibType="ACD_Pedestal" fmtVersion="v3r2" instrument="LAT" timestamp="2026-06-25 03:52:26 UTC">
+    <inputSample mode="Normal" source="Orbit" startTime="729383944.6773" stopTime="729389619.0856" triggers="10209">
+      <inputFile path="root://glast-rdr.slac.stanford.edu//glast/Data/Flight/Level1/LPA/prod/5.9/digi/r0729383941_v001_digi.root" type="Digi" />
+    </inputSample>
+  </generic>
+  <dimension nTile="108" />
+  <tile tileId="000">
+    <pmt iPmt="0">
+      <acdPed mean="198.964" status="0" width="6.34109" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="157.723" status="0" width="5.65329" />
+    </pmt>
+  </tile>
+  <tile tileId="001">
+    <pmt iPmt="0">
+      <acdPed mean="232.574" status="0" width="7.26136" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="173.329" status="0" width="6.7337" />
+    </pmt>
+  </tile>
+  <tile tileId="002">
+    <pmt iPmt="0">
+      <acdPed mean="177.139" status="0" width="5.19286" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="141.034" status="0" width="5.87813" />
+    </pmt>
+  </tile>
+  <tile tileId="003">
+    <pmt iPmt="0">
+      <acdPed mean="459.986" status="0" width="4.88682" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="553.519" status="0" width="5.27748" />
+    </pmt>
+  </tile>
+  <tile tileId="004">
+    <pmt iPmt="0">
+      <acdPed mean="209.936" status="0" width="5.55795" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="129.322" status="0" width="6.49129" />
+    </pmt>
+  </tile>
+  <tile tileId="010">
+    <pmt iPmt="0">
+      <acdPed mean="196.392" status="0" width="5.68497" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="722.952" status="0" width="6.09209" />
+    </pmt>
+  </tile>
+  <tile tileId="011">
+    <pmt iPmt="0">
+      <acdPed mean="128.636" status="0" width="5.00507" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="222.637" status="0" width="5.89919" />
+    </pmt>
+  </tile>
+  <tile tileId="012">
+    <pmt iPmt="0">
+      <acdPed mean="157.862" status="0" width="5.91584" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="365.906" status="0" width="5.8986" />
+    </pmt>
+  </tile>
+  <tile tileId="013">
+    <pmt iPmt="0">
+      <acdPed mean="188.721" status="0" width="5.05403" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="178.051" status="0" width="5.28371" />
+    </pmt>
+  </tile>
+  <tile tileId="014">
+    <pmt iPmt="0">
+      <acdPed mean="486.356" status="0" width="5.25723" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="410.211" status="0" width="7.19012" />
+    </pmt>
+  </tile>
+  <tile tileId="020">
+    <pmt iPmt="0">
+      <acdPed mean="453.096" status="0" width="6.21028" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="217.889" status="0" width="6.22211" />
+    </pmt>
+  </tile>
+  <tile tileId="021">
+    <pmt iPmt="0">
+      <acdPed mean="275.754" status="0" width="5.32194" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="505.602" status="0" width="6.45336" />
+    </pmt>
+  </tile>
+  <tile tileId="022">
+    <pmt iPmt="0">
+      <acdPed mean="529.952" status="0" width="4.9987" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="484.348" status="0" width="5.42205" />
+    </pmt>
+  </tile>
+  <tile tileId="023">
+    <pmt iPmt="0">
+      <acdPed mean="218.626" status="0" width="5.15921" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="147.459" status="0" width="5.45131" />
+    </pmt>
+  </tile>
+  <tile tileId="024">
+    <pmt iPmt="0">
+      <acdPed mean="109.302" status="0" width="6.08303" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="100.423" status="0" width="5.36077" />
+    </pmt>
+  </tile>
+  <tile tileId="030">
+    <pmt iPmt="0">
+      <acdPed mean="175.372" status="0" width="5.62793" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="135.124" status="0" width="5.80445" />
+    </pmt>
+  </tile>
+  <tile tileId="031">
+    <pmt iPmt="0">
+      <acdPed mean="598.989" status="0" width="5.553" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="151.545" status="0" width="4.74763" />
+    </pmt>
+  </tile>
+  <tile tileId="032">
+    <pmt iPmt="0">
+      <acdPed mean="199.784" status="0" width="6.09908" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="690.997" status="0" width="6.21037" />
+    </pmt>
+  </tile>
+  <tile tileId="033">
+    <pmt iPmt="0">
+      <acdPed mean="143.112" status="0" width="6.14822" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="194.225" status="0" width="5.74094" />
+    </pmt>
+  </tile>
+  <tile tileId="034">
+    <pmt iPmt="0">
+      <acdPed mean="203.359" status="0" width="6.13028" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="649.012" status="0" width="6.17617" />
+    </pmt>
+  </tile>
+  <tile tileId="040">
+    <pmt iPmt="0">
+      <acdPed mean="339.955" status="0" width="5.7428" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="303.702" status="0" width="5.71009" />
+    </pmt>
+  </tile>
+  <tile tileId="041">
+    <pmt iPmt="0">
+      <acdPed mean="199" status="0" width="5.56174" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="560.592" status="0" width="5.19656" />
+    </pmt>
+  </tile>
+  <tile tileId="042">
+    <pmt iPmt="0">
+      <acdPed mean="129.649" status="0" width="7.04543" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="399.756" status="0" width="5.72316" />
+    </pmt>
+  </tile>
+  <tile tileId="043">
+    <pmt iPmt="0">
+      <acdPed mean="231.524" status="0" width="6.10424" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="637.201" status="0" width="4.8178" />
+    </pmt>
+  </tile>
+  <tile tileId="044">
+    <pmt iPmt="0">
+      <acdPed mean="230.669" status="0" width="6.57667" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="581.429" status="0" width="7.19622" />
+    </pmt>
+  </tile>
+  <tile tileId="100">
+    <pmt iPmt="0">
+      <acdPed mean="156.667" status="0" width="6.20801" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="438.433" status="0" width="6.11971" />
+    </pmt>
+  </tile>
+  <tile tileId="101">
+    <pmt iPmt="0">
+      <acdPed mean="222.282" status="0" width="5.56343" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="129.561" status="0" width="5.0876" />
+    </pmt>
+  </tile>
+  <tile tileId="102">
+    <pmt iPmt="0">
+      <acdPed mean="285.564" status="0" width="6.56793" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="143.668" status="0" width="5.20648" />
+    </pmt>
+  </tile>
+  <tile tileId="103">
+    <pmt iPmt="0">
+      <acdPed mean="145.841" status="0" width="6.54072" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="266.508" status="0" width="5.41861" />
+    </pmt>
+  </tile>
+  <tile tileId="104">
+    <pmt iPmt="0">
+      <acdPed mean="544.983" status="0" width="6.70164" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="132.285" status="0" width="5.61985" />
+    </pmt>
+  </tile>
+  <tile tileId="110">
+    <pmt iPmt="0">
+      <acdPed mean="172.45" status="0" width="4.97955" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="257.705" status="0" width="5.4715" />
+    </pmt>
+  </tile>
+  <tile tileId="111">
+    <pmt iPmt="0">
+      <acdPed mean="186.42" status="0" width="5.32379" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="242.192" status="0" width="6.22669" />
+    </pmt>
+  </tile>
+  <tile tileId="112">
+    <pmt iPmt="0">
+      <acdPed mean="432.617" status="0" width="4.04514" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="366.951" status="0" width="5.43105" />
+    </pmt>
+  </tile>
+  <tile tileId="113">
+    <pmt iPmt="0">
+      <acdPed mean="457.254" status="0" width="5.80085" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="356.365" status="0" width="4.54508" />
+    </pmt>
+  </tile>
+  <tile tileId="114">
+    <pmt iPmt="0">
+      <acdPed mean="309.555" status="0" width="5.72408" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="176.944" status="0" width="6.53447" />
+    </pmt>
+  </tile>
+  <tile tileId="120">
+    <pmt iPmt="0">
+      <acdPed mean="234.826" status="0" width="5.03978" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="333.03" status="0" width="4.23403" />
+    </pmt>
+  </tile>
+  <tile tileId="121">
+    <pmt iPmt="0">
+      <acdPed mean="281.609" status="0" width="4.48033" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="506.727" status="0" width="6.98795" />
+    </pmt>
+  </tile>
+  <tile tileId="122">
+    <pmt iPmt="0">
+      <acdPed mean="98.9671" status="0" width="5.10811" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="606.529" status="0" width="5.52838" />
+    </pmt>
+  </tile>
+  <tile tileId="123">
+    <pmt iPmt="0">
+      <acdPed mean="205.697" status="0" width="6.17295" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="198.53" status="0" width="4.87316" />
+    </pmt>
+  </tile>
+  <tile tileId="124">
+    <pmt iPmt="0">
+      <acdPed mean="143.565" status="0" width="4.359" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="441.12" status="0" width="4.8776" />
+    </pmt>
+  </tile>
+  <tile tileId="130">
+    <pmt iPmt="0">
+      <acdPed mean="136.302" status="0" width="8.93895" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="184.26" status="0" width="9.6852" />
+    </pmt>
+  </tile>
+  <tile tileId="200">
+    <pmt iPmt="0">
+      <acdPed mean="140.132" status="0" width="4.98257" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="164.077" status="0" width="5.79304" />
+    </pmt>
+  </tile>
+  <tile tileId="201">
+    <pmt iPmt="0">
+      <acdPed mean="198.45" status="0" width="5.27717" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="365.656" status="0" width="5.33976" />
+    </pmt>
+  </tile>
+  <tile tileId="202">
+    <pmt iPmt="0">
+      <acdPed mean="171.2" status="0" width="4.63682" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="104.95" status="0" width="5.8427" />
+    </pmt>
+  </tile>
+  <tile tileId="203">
+    <pmt iPmt="0">
+      <acdPed mean="212.948" status="0" width="5.60609" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="462.573" status="0" width="7.41247" />
+    </pmt>
+  </tile>
+  <tile tileId="204">
+    <pmt iPmt="0">
+      <acdPed mean="695.184" status="0" width="5.23146" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="407.46" status="0" width="5.79205" />
+    </pmt>
+  </tile>
+  <tile tileId="210">
+    <pmt iPmt="0">
+      <acdPed mean="231.759" status="0" width="5.69023" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="120.54" status="0" width="6.02931" />
+    </pmt>
+  </tile>
+  <tile tileId="211">
+    <pmt iPmt="0">
+      <acdPed mean="126.308" status="0" width="6.02004" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="435.657" status="0" width="4.16567" />
+    </pmt>
+  </tile>
+  <tile tileId="212">
+    <pmt iPmt="0">
+      <acdPed mean="267.842" status="0" width="5.45066" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="151.445" status="0" width="6.33074" />
+    </pmt>
+  </tile>
+  <tile tileId="213">
+    <pmt iPmt="0">
+      <acdPed mean="221.867" status="0" width="5.81849" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="193.214" status="0" width="6.14967" />
+    </pmt>
+  </tile>
+  <tile tileId="214">
+    <pmt iPmt="0">
+      <acdPed mean="584.393" status="0" width="4.87574" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="396.802" status="0" width="6.4212" />
+    </pmt>
+  </tile>
+  <tile tileId="220">
+    <pmt iPmt="0">
+      <acdPed mean="136.847" status="0" width="4.69872" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="117.942" status="0" width="6.21995" />
+    </pmt>
+  </tile>
+  <tile tileId="221">
+    <pmt iPmt="0">
+      <acdPed mean="151.085" status="0" width="4.4953" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="284.503" status="0" width="3.97805" />
+    </pmt>
+  </tile>
+  <tile tileId="222">
+    <pmt iPmt="0">
+      <acdPed mean="157.789" status="0" width="5.50613" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="628.649" status="0" width="5.03478" />
+    </pmt>
+  </tile>
+  <tile tileId="223">
+    <pmt iPmt="0">
+      <acdPed mean="377.253" status="0" width="4.57922" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="336.731" status="0" width="3.80776" />
+    </pmt>
+  </tile>
+  <tile tileId="224">
+    <pmt iPmt="0">
+      <acdPed mean="166.981" status="0" width="5.67122" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="271.049" status="0" width="4.80452" />
+    </pmt>
+  </tile>
+  <tile tileId="230">
+    <pmt iPmt="0">
+      <acdPed mean="189.425" status="0" width="8.99521" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="78.3722" status="0" width="8.65946" />
+    </pmt>
+  </tile>
+  <tile tileId="300">
+    <pmt iPmt="0">
+      <acdPed mean="317.608" status="0" width="6.04605" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="172.486" status="0" width="6.95552" />
+    </pmt>
+  </tile>
+  <tile tileId="301">
+    <pmt iPmt="0">
+      <acdPed mean="446.34" status="0" width="5.929" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="446.243" status="0" width="6.72858" />
+    </pmt>
+  </tile>
+  <tile tileId="302">
+    <pmt iPmt="0">
+      <acdPed mean="101.938" status="0" width="5.76569" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="673.314" status="0" width="5.51275" />
+    </pmt>
+  </tile>
+  <tile tileId="303">
+    <pmt iPmt="0">
+      <acdPed mean="496.895" status="0" width="6.38808" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="119.29" status="0" width="6.93759" />
+    </pmt>
+  </tile>
+  <tile tileId="304">
+    <pmt iPmt="0">
+      <acdPed mean="331.633" status="0" width="6.31551" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="164.898" status="0" width="6.92798" />
+    </pmt>
+  </tile>
+  <tile tileId="310">
+    <pmt iPmt="0">
+      <acdPed mean="197.212" status="0" width="4.7553" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="344.074" status="0" width="4.50191" />
+    </pmt>
+  </tile>
+  <tile tileId="311">
+    <pmt iPmt="0">
+      <acdPed mean="198.203" status="0" width="4.86584" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="209.763" status="0" width="4.97483" />
+    </pmt>
+  </tile>
+  <tile tileId="312">
+    <pmt iPmt="0">
+      <acdPed mean="147.551" status="0" width="4.63046" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="119.263" status="0" width="5.73156" />
+    </pmt>
+  </tile>
+  <tile tileId="313">
+    <pmt iPmt="0">
+      <acdPed mean="247.444" status="0" width="5.32147" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="220.265" status="0" width="5.71642" />
+    </pmt>
+  </tile>
+  <tile tileId="314">
+    <pmt iPmt="0">
+      <acdPed mean="253.35" status="0" width="4.78593" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="116.156" status="0" width="4.92688" />
+    </pmt>
+  </tile>
+  <tile tileId="320">
+    <pmt iPmt="0">
+      <acdPed mean="150.123" status="0" width="5.85374" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="223.998" status="0" width="5.89305" />
+    </pmt>
+  </tile>
+  <tile tileId="321">
+    <pmt iPmt="0">
+      <acdPed mean="154.729" status="0" width="4.82907" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="148.259" status="0" width="5.20899" />
+    </pmt>
+  </tile>
+  <tile tileId="322">
+    <pmt iPmt="0">
+      <acdPed mean="122.041" status="0" width="5.99668" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="546.452" status="0" width="5.12988" />
+    </pmt>
+  </tile>
+  <tile tileId="323">
+    <pmt iPmt="0">
+      <acdPed mean="457.767" status="0" width="5.7332" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="445.227" status="0" width="4.65407" />
+    </pmt>
+  </tile>
+  <tile tileId="324">
+    <pmt iPmt="0">
+      <acdPed mean="487.944" status="0" width="4.43149" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="186.685" status="0" width="4.97867" />
+    </pmt>
+  </tile>
+  <tile tileId="330">
+    <pmt iPmt="0">
+      <acdPed mean="178.798" status="0" width="10.1829" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="494.652" status="0" width="12.0674" />
+    </pmt>
+  </tile>
+  <tile tileId="400">
+    <pmt iPmt="0">
+      <acdPed mean="201.345" status="0" width="7.28209" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="696.91" status="0" width="6.05217" />
+    </pmt>
+  </tile>
+  <tile tileId="401">
+    <pmt iPmt="0">
+      <acdPed mean="159.944" status="0" width="5.70199" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="456.267" status="0" width="4.53151" />
+    </pmt>
+  </tile>
+  <tile tileId="402">
+    <pmt iPmt="0">
+      <acdPed mean="276.255" status="0" width="7.41664" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="175.184" status="0" width="5.61915" />
+    </pmt>
+  </tile>
+  <tile tileId="403">
+    <pmt iPmt="0">
+      <acdPed mean="90.5937" status="0" width="5.44046" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="104.682" status="0" width="6.61235" />
+    </pmt>
+  </tile>
+  <tile tileId="404">
+    <pmt iPmt="0">
+      <acdPed mean="159.874" status="0" width="6.00134" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="125.13" status="0" width="5.33088" />
+    </pmt>
+  </tile>
+  <tile tileId="410">
+    <pmt iPmt="0">
+      <acdPed mean="164.957" status="0" width="4.70476" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="363.179" status="0" width="5.23115" />
+    </pmt>
+  </tile>
+  <tile tileId="411">
+    <pmt iPmt="0">
+      <acdPed mean="391.967" status="0" width="4.05655" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="313.068" status="0" width="4.47924" />
+    </pmt>
+  </tile>
+  <tile tileId="412">
+    <pmt iPmt="0">
+      <acdPed mean="277.958" status="0" width="4.67185" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="211.443" status="0" width="5.76716" />
+    </pmt>
+  </tile>
+  <tile tileId="413">
+    <pmt iPmt="0">
+      <acdPed mean="481.8" status="0" width="5.20141" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="300.866" status="0" width="5.13227" />
+    </pmt>
+  </tile>
+  <tile tileId="414">
+    <pmt iPmt="0">
+      <acdPed mean="103.454" status="0" width="4.45817" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="171.041" status="0" width="4.6591" />
+    </pmt>
+  </tile>
+  <tile tileId="420">
+    <pmt iPmt="0">
+      <acdPed mean="361.696" status="0" width="5.9915" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="200.447" status="0" width="5.32947" />
+    </pmt>
+  </tile>
+  <tile tileId="421">
+    <pmt iPmt="0">
+      <acdPed mean="544.488" status="0" width="3.73955" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="215.761" status="0" width="4.28574" />
+    </pmt>
+  </tile>
+  <tile tileId="422">
+    <pmt iPmt="0">
+      <acdPed mean="207.549" status="0" width="5.08123" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="146.03" status="0" width="5.07139" />
+    </pmt>
+  </tile>
+  <tile tileId="423">
+    <pmt iPmt="0">
+      <acdPed mean="184.302" status="0" width="5.07446" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="160.737" status="0" width="4.35321" />
+    </pmt>
+  </tile>
+  <tile tileId="424">
+    <pmt iPmt="0">
+      <acdPed mean="640.475" status="0" width="5.02315" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="174.399" status="0" width="5.32301" />
+    </pmt>
+  </tile>
+  <tile tileId="430">
+    <pmt iPmt="0">
+      <acdPed mean="609.545" status="0" width="14.3889" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="147.817" status="0" width="8.67802" />
+    </pmt>
+  </tile>
+  <tile tileId="500">
+    <pmt iPmt="0">
+      <acdPed mean="192.106" status="0" width="5.26924" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="170.397" status="0" width="4.72668" />
+    </pmt>
+  </tile>
+  <tile tileId="501">
+    <pmt iPmt="0">
+      <acdPed mean="206.253" status="0" width="5.2515" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="768.682" status="0" width="3.56449" />
+    </pmt>
+  </tile>
+  <tile tileId="502">
+    <pmt iPmt="0">
+      <acdPed mean="129.353" status="0" width="4.42693" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="130.05" status="0" width="5.321" />
+    </pmt>
+  </tile>
+  <tile tileId="503">
+    <pmt iPmt="0">
+      <acdPed mean="235.984" status="0" width="5.79343" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="390.745" status="0" width="3.94762" />
+    </pmt>
+  </tile>
+  <tile tileId="600">
+    <pmt iPmt="0">
+      <acdPed mean="161.183" status="0" width="4.92582" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="593.053" status="0" width="3.86314" />
+    </pmt>
+  </tile>
+  <tile tileId="601">
+    <pmt iPmt="0">
+      <acdPed mean="126.093" status="0" width="5.52882" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="427.577" status="0" width="4.7023" />
+    </pmt>
+  </tile>
+  <tile tileId="602">
+    <pmt iPmt="0">
+      <acdPed mean="105.449" status="0" width="5.0025" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="204.57" status="0" width="4.50305" />
+    </pmt>
+  </tile>
+  <tile tileId="603">
+    <pmt iPmt="0">
+      <acdPed mean="193.518" status="0" width="4.64729" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="140.461" status="0" width="5.22971" />
+    </pmt>
+  </tile>
+  <tile tileId="700">
+    <pmt iPmt="0">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+  </tile>
+  <tile tileId="701">
+    <pmt iPmt="0">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+  </tile>
+  <tile tileId="702">
+    <pmt iPmt="0">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+  </tile>
+  <tile tileId="703">
+    <pmt iPmt="0">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+  </tile>
+  <tile tileId="704">
+    <pmt iPmt="0">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+  </tile>
+  <tile tileId="705">
+    <pmt iPmt="0">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+  </tile>
+  <tile tileId="706">
+    <pmt iPmt="0">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+  </tile>
+  <tile tileId="707">
+    <pmt iPmt="0">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+  </tile>
+  <tile tileId="708">
+    <pmt iPmt="0">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+  </tile>
+  <tile tileId="709">
+    <pmt iPmt="0">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+  </tile>
+  <tile tileId="710">
+    <pmt iPmt="0">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdPed mean="0" status="0" width="0" />
+    </pmt>
+  </tile>
+</acdCalib>

@@ -326,9 +326,10 @@ AcdCalibLoop_Digi r(AcdCalibData::GAIN, jc.digiChain(), jc.optval_P(), jc.config
 
     The src/AcdTrendCalib.cxx file has a condition:
      - ( id[j] != id_ref[j+offset] ) 
-    where the id numbers do no match giving an error :luckily (hopefully) it is fixed.
+    where the id numbers do no match giving an error/warning :"luckily (hopefully) it is fixed."
+    This is a major issue as the error is not fixed and the trend plots come out blank.
 
-    Analyzed the patterns with claude and added a fix to try to iterate through thr for loop to find the correct ID numbers.
+    Analyzed the patterns with generative ai and added a fix to try to iterate through thr for loop to find the correct ID numbers.
     A chunk of the code was changed marked with AD changed comments.
 
 ########################################################################################
@@ -369,13 +370,25 @@ source submit_jobs.sh 736 /sdf/home/a/abhishek/ACD_calib_using_paths_conda
 
 ########################################################################################
 #
-# NEW ISSUE
+# CHECKS
 #
 ########################################################################################
 
 
+- Initial cheks were done to see if past results are reproduced. Most of the results are the same except some changes in the gain (delta MIP).
+- Secondary detail checks involving individual fits files were also performed for week 818:
+    - First, the existing 818 files in the sdf directories (CoherentNoise,Ped,Range,ThreshHigh,ThreshVeto and ElecGain) are replaced to say 240212_orig
+    - Next, the updated code is run to generate new 240212 files.
+    - Both are saved in the directory supporting 
 
-
+REPRODUCABILITY CHECKS RESULTS:
+1. It is found that the results that are created using this setup match the ones that were created in 2026 (for 240115,240129,240212). 
+Both of them are different from the ones online! Meaning something changed in 2026! REFERENCE CALIBRATION!!!
+the web files use /u/gl/damgreen/releases/GR-20-03-01/calibGenACD/python/junk/r0250381744_gain.xml
+while the new ones after 2026 use
+"/ACD/FLIGHT/ElecGain/081208/r0250381744_gain.html">/sdf/group/fermi/ground/releases/monitor/ACD/FLIGHT/ElecGain/081208/r0250381744_gain.xml
+Note that this reference file is only used for: (week 660-812)
+2. The root files are downloaded to see the changes (everything matches except the reference file), so that is the main difference
 
 
 

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ACD Calibration Report Viewer</title>
+  <style>
+    body { font-family: Arial; display: flex; height: 100vh; margin: 0; }
+    #sidebar { width: 250px; background: #f4f4f4; padding: 10px; overflow-y: auto; }
+    #content { flex: 1; display: flex; }
+    .frame-panel { flex: 1; display: flex; flex-direction: column; border-right: 1px solid #ccc; }
+    .frame-header { padding: 6px; background: #e0e0e0; font-weight: bold; text-align: center; font-size: 13px; }
+    iframe { width: 100%; flex: 1; border: none; }
+    select { width: 100%; margin-bottom: 15px; padding: 5px; }
+    .tab { display: block; padding: 8px; margin: 4px 0; background: white; 
+           border: 1px solid #ccc; cursor: pointer; border-radius: 4px; }
+    .tab:hover { background: #e0e0ff; }
+    .tab.active { background: #4444ff; color: white; }
+    .compare-toggle { margin-bottom: 15px; }
+    .compare-toggle label { font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar">
+    <div class="compare-toggle">
+      <label>
+        <!-- AD added: unchecked by default — no "checked" attribute -->
+        <input type="checkbox" id="compareToggle" onchange="toggleCompare()">
+        Compare two dates
+      </label>
+    </div>
+
+    <h3>Select Date</h3>
+    <select id="dateSelect" onchange="loadCalibsForDate()"></select>
+
+    <!-- AD added: hidden by default via inline style, only shown when compare is toggled on -->
+    <div id="dateBWrapper" style="display:none;">
+      <h3>Compare With</h3>
+      <select id="dateSelectB" onchange="loadCalibsForDate()"></select>
+    </div>
+
+    <h3>Calibration Reports</h3>
+    <div id="calibTabs"></div>
+  </div>
+
+  <div id="content">
+    <div class="frame-panel">
+      <div class="frame-header" id="headerA"></div>
+      <iframe id="reportFrame"></iframe>
+    </div>
+    <!-- AD added: hidden by default, second panel only appears when compare is toggled on -->
+    <div class="frame-panel" id="panelB" style="display:none;">
+      <div class="frame-header" id="headerB"></div>
+      <iframe id="reportFrameB"></iframe>
+    </div>
+  </div>
+
+  <script>
+    let currentDate = null;
+    let currentDateB = null;
+    // AD added: compareMode starts false — default behavior is single-panel view
+    let compareMode = false;
+    let allDates = [];
+
+    // Load all available dates on page load
+    fetch('/api/dates')
+      .then(r => r.json())
+      .then(dates => {
+        allDates = dates;
+        const select = document.getElementById('dateSelect');
+        const selectB = document.getElementById('dateSelectB');
+        dates.forEach(d => {
+          [select, selectB].forEach(sel => {
+            const opt = document.createElement('option');
+            opt.value = d;
+            opt.textContent = d;
+            sel.appendChild(opt);
+          });
+        });
+        if (dates.length > 0) {
+          select.value = dates[dates.length - 1];
+          selectB.value = dates.length > 1 ? dates[dates.length - 2] : dates[dates.length - 1];
+          loadCalibsForDate();
+        }
+      });
+
+    // AD added: toggles compare mode on/off — controls visibility only
+    // Default state on page load is always OFF (single panel)
+    function toggleCompare() {
+      compareMode = document.getElementById('compareToggle').checked;
+      document.getElementById('dateBWrapper').style.display = compareMode ? 'block' : 'none';
+      document.getElementById('panelB').style.display = compareMode ? 'flex' : 'none';
+      loadCalibsForDate();
+    }
+
+    function loadCalibsForDate() {
+      currentDate = document.getElementById('dateSelect').value;
+      currentDateB = document.getElementById('dateSelectB').value;
+
+      document.getElementById('headerA').textContent = currentDate;
+      document.getElementById('headerB').textContent = currentDateB;
+
+      fetch('/api/available/' + currentDate)
+        .then(r => r.json())
+        .then(calibs => {
+          const tabDiv = document.getElementById('calibTabs');
+          tabDiv.innerHTML = '';
+          calibs.forEach((c, idx) => {
+            const tab = document.createElement('div');
+            tab.className = 'tab';
+            tab.textContent = c.calib_type;
+            tab.onclick = () => selectTab(tab, c.calib_type);
+            tabDiv.appendChild(tab);
+            if (idx === 0) selectTab(tab, c.calib_type); // auto-select first
+          });
+        });
+    }
+
+    function selectTab(tabEl, calibType) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tabEl.classList.add('active');
+
+      // Panel A always loads regardless of compare mode
+      fetch('/api/available/' + currentDate)
+        .then(r => r.json())
+        .then(calibs => {
+          const match = calibs.find(c => c.calib_type === calibType);
+          if (match) {
+            document.getElementById('reportFrame').src = 
+              '/report/' + calibType + '/' + currentDate + '/' + match.filename;
+          }
+        });
+
+      // AD added: Panel B only loads if compareMode is explicitly true
+      // By default (compareMode = false) this block never executes
+      if (compareMode) {
+        fetch('/api/available/' + currentDateB)
+          .then(r => r.json())
+          .then(calibs => {
+            const match = calibs.find(c => c.calib_type === calibType);
+            if (match) {
+              document.getElementById('reportFrameB').src = 
+                '/report/' + calibType + '/' + currentDateB + '/' + match.filename;
+            }
+          });
+      }
+    }
+  </script>
+
+</body>
+</html>

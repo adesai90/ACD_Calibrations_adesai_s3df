@@ -342,13 +342,13 @@ UInt_t idx(0);
             UInt_t key    = AcdKey::makeKey(iPmt,iFace,iRow,iCol);
             std::map<UInt_t,CalibData::AcdCalibObj*>::const_iterator itr = m_map.find(key);
             if ( itr == m_map.end() ) continue;
-            if ( idx >= 216 ) {
+            /*if ( idx >= 216 ) {
               std::cerr << "Warning Code Update: Skipping idx=" << idx
                         << " exceeds array size 216 for id=" << chanId
                         << " pmt=" << iPmt
                         << " Reason: safety catch for unexpected channels" << std::endl;
               continue;
-            }
+            }*/
             id[idx]     = chanId;
             pmt[idx]    = iPmt;
             status[idx] = itr->second->getStatus(); 
@@ -367,7 +367,7 @@ UInt_t idx(0);
               << " (" << m_desc->calibTypeName() << "): using split map-iterator loop" << std::endl;
     for ( std::map<UInt_t,CalibData::AcdCalibObj*>::const_iterator itr = m_map.begin(); 
     itr != m_map.end(); itr++) {  
-      if ( AcdKey::getPmt(itr->first) >= AcdKey::nPmt ) {
+      /*if ( AcdKey::getPmt(itr->first) >= AcdKey::nPmt ) {
           std::cerr << "Warning Code Update: skipping invalid pmt=" << AcdKey::getPmt(itr->first)
                     << " for id=" << AcdKey::getId(itr->first)
                     << " key=" << itr->first
@@ -383,7 +383,7 @@ UInt_t idx(0);
                     << " original code had no boundary check on idx"
                     << " Reason: this is a safety catch for any other unexpected channels" << std::endl;
           continue;
-      }
+      }*/
       /* AD added Everything above */
       id[idx] = AcdKey::getId(itr->first);
       pmt[idx] =  AcdKey::getPmt(itr->first);

@@ -32,6 +32,7 @@ For that use the submit_job.sh code, which runs run_wrapper to submit the job. H
 - Also make sure scons package has the correct python linked to it in the first line 
 - See full logfile which lists steps taken to move the code to s3df.
 - Datacatbin in parlefilenew.py
+- Library errors while submitting jobs. Recheck that all the local_libraries are linked properly.
 
 
 # Copyright (Fermi ACD software labeled calibGenACD-master)
