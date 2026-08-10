@@ -1,9 +1,0 @@
-output file prefix: trend
-instrument: LAT
-timestamp: 2026-06-08 14:55:59 UTC
-Reference file: /sdf/group/fermi/ground/releases/monitor/ACD/FLIGHT/ThreshVeto/081208/r0250381744_veto.xml
-/sdf/home/a/abhishek/ACD_calib_using_paths_conda/releases/GR-20-09-10/bin/redhat6-x86_64-64bit-gcc44-Optimized/runCalibTrend -x /sdf/group/fermi/ground/releases/monitor/ACD/FLIGHT/ThreshVeto/081208/r0250381744_veto.xml -o trend /sdf/group/fermi/ground/releases/monitor/ACD/FLIGHT/ThreshVeto/calibs.lst
-output file prefix: trend
-instrument: LAT
-timestamp: 2026-06-08 14:56:28 UTC
-Reference file: /sdf/group/fermi/ground/releases/monitor/ACD/FLIGHT/Range/081208/r0250381744_range.xml
