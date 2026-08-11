@@ -1,4 +1,0 @@
-Plugin.TSystem: ^root:  TXNetSystem  Netx  "TXNetSystem(const char *,Bool_t)"
-Plugin.TSystem: ^xroot: TXNetSystem  Netx  "TXNetSystem(const char *,Bool_t)"
-Plugin.TFile:   ^root:  TXNetFile    Netx  "TXNetFile(const char*,Option_t*,const char*,Int_t)"
-Plugin.TFile:   ^xroot: TXNetFile    Netx  "TXNetFile(const char*,Option_t*,const char*,Int_t)"
