@@ -381,21 +381,33 @@ source submit_jobs.sh 736 /sdf/home/a/abhishek/ACD_calib_using_paths_conda
     - Next, the updated code is run to generate new 240212 files.
     - Both are saved in the directory supporting 
 
-REPRODUCABILITY CHECKS RESULTS:
+REPRODUCABILITY CHECKS RESULTS FOR GAIN:
 1. It is found that the results that are created using this setup match the ones that were created in 2026 (for 240115,240129,240212). 
 Both of them are different from the ones online! Meaning something changed in 2026! REFERENCE CALIBRATION!!!
 the web files use /u/gl/damgreen/releases/GR-20-03-01/calibGenACD/python/junk/r0250381744_gain.xml
 while the new ones after 2026 use
 "/ACD/FLIGHT/ElecGain/081208/r0250381744_gain.html">/sdf/group/fermi/ground/releases/monitor/ACD/FLIGHT/ElecGain/081208/r0250381744_gain.xml
-Note that this reference file is only used for: (week 660-812)
-2. The root files are downloaded to see the changes (everything matches except the reference file), so that is the main difference
+Note that this reference file is only used for: (week 660-812) 660 210201
+2. The root files are downloaded to see the changes (the generated values matches (not exsctly for all the cases but close) except the reference file), so reference file is the main difference
+3. Finally found the older reference file from damgreen directory, this is what I feel happened. (See reproducability_test/damgreen_081208_ref_comparision for details)
+    - Code was updated in 2013 (or at least the reference files were rechecked I think). 
+    - The generated file in damgreen directory is stored in a bit different way than the previous 081208 directory gain file. 
+    - Values are almost same but there are some differences in storage and how the header/info is written. 
+    - From Week 660-812 (210201 - 240101) on /sdf/directory, this damgreen file was used as a reference for GAIN. On the website the same damgreen file was used as reference.
+    - When the previous 081208 file is uesed as reference MIP peak new vs old does not show a trend, same for delta MIP peak/mip peak which does not give a proper histogram.
+    - When the newer generated damgreen file is used as refernce however, the reference check gives a nice plot.
+    - SO the damgreen file that works was created in 2013 for DTD and fmt version v3r2, but the current reference file (081208) was created in 2008 with DTD and fmt verion c3
+    - This means damgreen file SHOULD be used. Note that the calib values dont change by too much. See damgreen_081208_ref_comparision for details
 
+- THE MIP GAIN over TIME changes quite a bit. Using the notes from: https://confluence.slac.stanford.edu/spaces/SCIGRPS/pages/132221608/ACD+Calibrations+Monthly+Update
+and from individual checks, some additional information was added as a seperate pdf labeled MIP GAIN history
 
 
 ########################################################################################
 #
-# TO BE DONE
+# NEW FEATURES!
 #
 ########################################################################################
 
--remove cvs mootcore
+- API to quickly check results!
+- 
