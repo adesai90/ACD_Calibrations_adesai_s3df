@@ -23,27 +23,28 @@
 Note: If you get minor warnings you can ignore, but in case of major errors please contact the developers.
 
 
-# USAGE:
+# USAGE (NOTE INITIAL SETUP FOR TESTING AND NORMAL USES ARE DIFFERENT):
 As a failsafe, by default the codes are set to write only in your home directory and not update </sdf/group/fermi/ground/releases/monitor/ACD>, this is to make sure that the ocde is running properly before the files are written in the main ACD Calibrations directory.
 
-For Testing (By default all of there are already commented out, just check to make sure they are):
-- In your install directory, <releases/GR-20-09-10/calibGenACD/python/AcdReportUtil>, lines 270 to 283 (from "if not os.path.exists(toDir): #HF" to "addStore(idFt,options.tag,options.comment,htmlName)") should be commented out 
-- In your install directory, <releases/GR-20-09-10/calibGenACD/python/AcdReportTrend>, lines 126 to 133 (from "sysCom = "mkdir -p %s" % saveDir" to "os.system(sysCom)") should be commented out 
-For Running Normally:
+### For Testing (By default all of there are already commented out, just check to make sure they are):
+- In your install directory, ``` {path to directory..}\releases/GR-20-09-10/calibGenACD/python/AcdReportUtil``` , lines 270 to 283 (from ``` if not os.path.exists(toDir): #HF ```  to ``` addStore(idFt,options.tag,options.comment,htmlName)```  should be commented out 
+- In your install directory, ``` {path to directory..}\releases/GR-20-09-10/calibGenACD/python/AcdReportTrend``` , lines 126 to 133 (from ``` sysCom = "mkdir -p %s" % saveDir ```  to ``` os.system(sysCom)```  should be commented out 
+###For Running Normally:
 - Uncomment the lines that were commented out for TESTING (see above) in  AcdReportUtil and AcdReportTrend 
 
-Running Either Testing or Normal Scenarios:
+
+## How to run (This process is the same for Testing or Normal cases):
 - Go to the folder where the setup is installed and run ```source source_compiled_files.sh```
-- This should get the code ready for running and take you to </releases/GR-20-09-10/workdir> in your install, This is your working directory
-- Here, before anything you need to parse the data catalog using ```python $RELEASE/calibGenACD/python/ParseFileListNew.py DIGI``` and ```python $RELEASE/calibGenACD/python/ParseFileListNew.py RECON``` which should me 2 DIGI and 2 RECON files with a date indentifier. For this example say the names are <DIGI_260727> and <RECON_260727>. (see also DGreen_ACD_Calib_Constants_Memo.pdf for more details)
-- NOTE: In case of the above code gives an error with parsefiles, check to see that the datacatbin is pointing to the right directory in Parsefilenew.py, it should be DATACATBIN = "/sdf/group/fermi/a/ground/bin/datacat"
+- This should get the code ready for running and take you to``` {path to directory..}/releases/GR-20-09-10/workdir```  in your install, This is your working directory
+- Here, before anything you need to parse the data catalog using ```python $RELEASE/calibGenACD/python/ParseFileListNew.py DIGI``` and ```python $RELEASE/calibGenACD/python/ParseFileListNew.py RECON``` which should make 2 DIGI and 2 RECON files with a date indentifier. For this example say the names are <DIGI_260727> and <RECON_260727>. (see also DGreen_ACD_Calib_Constants_Memo.pdf for more details)
+- NOTE: In case of the above code gives an error with parsefiles, check to see that the datacatbin is pointing to the right directory in Parsefilenew.py, it should be ``` DATACATBIN = "/sdf/group/fermi/a/ground/bin/datacat" ``` 
 - Next you can go back to your install directory by using ```cd ../../../```
 - Here you can submit a job directly to the cluster to run your code. Example job submission for week 882 and DIGI/RECON date value of 260727 is: ```source submit_jobs.sh "882" "/sdf/home/a/abhishek/ACD_calib_using_paths_conda" "260727"```
-- In case of testing this will save all the outputs in <releases/GR-20-09-10/workdir/submitted_jobs/week_882/> and in the case of running normally it will save the log in <releases/GR-20-09-10/workdir/submitted_jobs/week_882/> and actual calibration files in </sdf/group/fermi/ground/releases/monitor/ACD>
+- In case of testing this will save all the outputs in ``` {path to directory..}releases/GR-20-09-10/workdir/submitted_jobs/week_882/```  and in the case of running normally it will save the log in ``` {path to directory..}releases/GR-20-09-10/workdir/submitted_jobs/week_882/```  and actual calibration files in ``` /sdf/group/fermi/ground/releases/monitor/ACD``` 
 
-For Trend plots:
-- This uses all the information saved at </sdf/group/fermi/ground/releases/monitor/ACD> and will modify the trend codes saved there if testing mode is not on.
--To run do ```python $RELEASE/calibGenACD/python/AcdWeeklyReport.py 'trend'```
+##For Trend plots:
+- This uses all the information saved at ``` /sdf/group/fermi/ground/releases/monitor/ACD```  and will modify the trend codes saved there if testing mode is not on.
+- To run do ```python $RELEASE/calibGenACD/python/AcdWeeklyReport.py 'trend'```
 
 
 
