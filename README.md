@@ -42,8 +42,24 @@ Note: If you get minor warnings you can ignore, but in case of major errors plea
 As a failsafe, by default the codes are set to write only in your home directory and not update </sdf/group/fermi/ground/releases/monitor/ACD>, this is to make sure that the ocde is running properly before the files are written in the main ACD Calibrations directory.
 
 ### For Testing (By default all of there are already commented out, just check to make sure they are):
-- In your install directory, ``` {path to directory..}\releases/GR-20-09-10/calibGenACD/python/AcdReportUtil``` , lines 270 to 283 (from ```python  if not os.path.exists(toDir): #HF ```  to ``` addStore(idFt,options.tag,options.comment,htmlName)```  should be commented out 
-- In your install directory, ``` {path to directory..}\releases/GR-20-09-10/calibGenACD/python/AcdReportTrend``` , lines 126 to 133 (from ```python sysCom = "mkdir -p %s" % saveDir ```  to ```python os.system(sysCom)```  should be commented out 
+- In your install directory, ``` {path to directory..}\releases/GR-20-09-10/calibGenACD/python/AcdReportUtil``` , lines 270 to 283 (from 
+```python  
+if not os.path.exists(toDir): #HF 
+``` 
+ to 
+ ```python
+ addStore(idFt,options.tag,options.comment,htmlName)
+ ```  
+ should be commented out 
+- In your install directory, ``` {path to directory..}\releases/GR-20-09-10/calibGenACD/python/AcdReportTrend``` , lines 126 to 133 (from 
+```python 
+sysCom = "mkdir -p %s" % saveDir 
+```  
+to 
+```python 
+os.system(sysCom)
+```  
+should be commented out 
 ###For Running Normally:
 - Uncomment the lines that were commented out for TESTING (see above) in  AcdReportUtil and AcdReportTrend 
 
