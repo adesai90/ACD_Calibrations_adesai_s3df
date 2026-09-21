@@ -39,7 +39,6 @@ Note: If you get minor warnings you can ignore, but in case of major errors plea
 
 
 # USAGE (NOTE INITIAL SETUP FOR TESTING AND NORMAL USES ARE DIFFERENT):
-# USAGE (NOTE INITIAL SETUP FOR TESTING AND NORMAL USES ARE DIFFERENT):
 As a failsafe, by default the codes are set to write only in your home directory and not update </sdf/group/fermi/ground/releases/monitor/ACD>, this is to make sure that the ocde is running properly before the files are written in the main ACD Calibrations directory.
 
 ### For Testing (By default all of there are already commented out, just check to make sure they are):
