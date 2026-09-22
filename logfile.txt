@@ -1,3 +1,23 @@
+Created by Abhishek Desai Feb-June 2026:
+
+Main highlights of the document below:
+- Environment Setup & Modernization: The project required creating a very specific Conda environment (Python 2.7, ROOT 6.16, GCC 7) to run legacy code, and extensively troubleshooting pathing issues between older parent libraries and the local build.
+- Overcoming Compiler & Build Issues: A significant portion of the work involved tricking or forcing modern compilers and build tools (scons) to work with older C++ standards and libraries (e.g., using C++03 flags and faking GCC 4.4).
+- Data Formatting & Ordering Bugs: Updates to the compiler exposed latent bugs in how data was read and formatted (e.g., interleaved vs. split ordering, corrupted PMT values), which required deep code fixes to ensure reports and plots generated correctly.
+- Historical Validation: Successfully validated the new pipeline's outputs against past results. A major discrepancy in GAIN results was traced back to the use of different reference files, ultimately confirming which historical reference file (the 2013 "damgreen" file) is correct for future use.
+
+
+########################################################################################
+#
+# DETAILED LOG BELOW (Structed based on issues found with the migration)
+#
+########################################################################################
+
+
+
+
+
+
 Update:
 -Setup and check
 
@@ -403,11 +423,11 @@ Note that this reference file is only used for: (week 660-812) 660 210201
 and from individual checks, some additional information was added as a seperate pdf labeled MIP GAIN history
 
 
-########################################################################################
+#####################################################################################################################################
 #
-# NEW FEATURES!
+# NEW FEATURES! (To be added)
 #
-########################################################################################
+#####################################################################################################################################
 
 - API to quickly check results!
-- 
+- Maybe a second installation method using a container similar to some other tasks, but not extremely necessary.
