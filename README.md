@@ -14,7 +14,7 @@
 ```bash 
 mkdir ACD_Calibration
 ``` 
-- INSIDE this FOLDER, Download the github setup. Make sure this is done inside the folder, as the github setup uses cd .. and then installs all the directories there. This is done by 
+- INSIDE this FOLDER, Download this github repository. Make sure this is done INSIDE the folder, as the github setup uses cd .. and then installs all the directories there. This is done by 
 ```bash 
 cd ACD_Calibration
 ``` 
@@ -24,24 +24,26 @@ git clone git@github.com:adesai90/ACD_Calibrations_adesai_s3df.git ACD_calib_git
 ``` 
 > [!NOTE]
 > Make sure the github folder name is set to "ACD_calib_github_software". 
+
+FOLLOW THESE STEPS BEFORE INSTALLING: 
 - Before Setup, You NEED a conda environment. In the default case, miniconda is used, with a setup pointing to the directory of the user abhishek. You need to:
-    1. Install conda/miniconda
-    2. In setup_package.sh, change CONDA_PREFIX path from "/sdf/home/a/abhishek/miniconda" to your directory with the newly installed conda/miniconda
-    3. If everything was done correctly, source ${CONDA_PREFIX}/etc/profile.d/conda.sh should activate your conda setup
-    4. You also need to create a special conda environemnt which will be used by this code. After activating conda run:
+    1. Install miniconda (If you use anything other than miniconda, make the changes in the setup.sh file too, namely In setup_package.sh, change CONDA_PREFIX path from "$HOME/miniconda" to your directory with the newly installed conda)
+    2. You also need to create a special conda environemnt called "acd_env" which will be used by this code. (Note you can use some other name, if you use anything other than acd_env, make the changes in setup_package.sh) After activating conda run:
     ```bash 
     conda create -n acd_env -c conda-forge python=2.7.18 root=6.16.00 xrootd=4.9.1 scons=3.1.2 f2c gcc_linux-64=7 gxx_linux-64=7 gfortran_linux-64=7 libtiff swig
     ```
+    > [!NOTE]
+    > If everything was done correctly, source ${CONDA_PREFIX}/etc/profile.d/conda.sh should activate your conda setup, If you get a conda error during the setup, something went wrong in the setup while reading your conda environment.
 - You should be ready to run the install using ```bash source setup_package.sh``` which should do eveything for you! 
 - On every prompt answer yes/no as required (In an ideal install, everything is answered Yes)
 - Check the error and install logs, if everything went well your build_err log will be empty! 
 Note: If you get minor warnings you can ignore, but in case of major errors please contact the developers.
 
 
-# USAGE (NOTE INITIAL SETUP FOR TESTING AND NORMAL USES ARE DIFFERENT):
-As a failsafe, by default the codes are set to write only in your home directory and not update </sdf/group/fermi/ground/releases/monitor/ACD>, this is to make sure that the ocde is running properly before the files are written in the main ACD Calibrations directory.
+# USAGE (NOTE: INITIAL SETUP FOR TESTING AND NORMAL USE CASES ARE DIFFERENT, DEFAULT is TESTING):
+As a failsafe, by default the codes are set to write only in your home directory and not update </sdf/group/fermi/ground/releases/monitor/ACD>, this is to make sure that the code is running properly before the files are written in the main ACD Calibrations directory.
 
-### For Testing (By default all of there are already commented out, just check to make sure they are):
+### For Testing (By default all of there are already commented out, just check to make sure before running):
 - In your install directory, ``` {path to directory..}\releases/GR-20-09-10/calibGenACD/python/AcdReportUtil``` , lines 270 to 283 (from 
 ```python  
 if not os.path.exists(toDir): #HF 

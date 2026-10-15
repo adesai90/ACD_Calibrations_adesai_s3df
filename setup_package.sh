@@ -11,16 +11,28 @@
 #
 # Initialize:
 
+read -p "This install is designed to run on a specific conda environemnt named acd_env, see README. Continue (yes/no): " answer
+if [ "$answer" = "no" ]; then
+    echo "Setup aborted by user (requires the specific conda environment, see README)."
+    exit 1
+fi
+
 
 git_dir=$(pwd)
-echo "Git dir is ${git_dir}"
+echo "Setup and Git dir is ${git_dir}"
 
 if [ -d "${git_dir}/calibGenACD-master" ]; then
     echo "Fermi calibGenACD git directory found."
 else
-    echo "The repository should exist! If you clone a new one, Make sure the paths on the cloned repositoiry are correct"
-    ##(DO not use this as older paths can cause an error here!: git clone "https://github.com/fermi-lat/calibGenACD.git" calibGenACD-master 
-    ## Use the calibgenacd version in adesai90 github.
+    echo "The calibGenACD repository does not exist. Cloning from Github"
+    git clone "https://github.com/fermi-lat/calibGenACD.git" calibGenACD-master
+fi
+
+if [ -d "${git_dir}/mootcore-master" ]; then
+    echo "Fermi mootcore git directory found."
+else
+    echo "The mootcore repository does not exist. Cloning from Github"
+    git clone "https://github.com/fermi-lat/mootcore.git" mootcore-master
 fi
 
 cd ..
@@ -37,7 +49,7 @@ echo "Note: A future additional setup option 2 using a container which links to 
 echo "......................................................................................................................."
 
 echo "Running Setup using links to /sdf/group/fermi/"
-export CONDA_PREFIX=/sdf/home/a/abhishek/miniconda
+export CONDA_PREFIX="$HOME/miniconda"
 export PATH=${CONDA_PREFIX}/bin/:$PATH
 source ${CONDA_PREFIX}/etc/profile.d/conda.sh
 conda activate acd_env

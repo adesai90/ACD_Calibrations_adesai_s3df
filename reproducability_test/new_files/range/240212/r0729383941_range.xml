@@ -1,0 +1,1077 @@
+<!DOCTYPE acdCalib [
+<!--
+   $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibUtil/xml/acdCalib_v3r2.dtd,v 1.1 2008/09/05 20:26:30 echarles Exp $
+
+   /**  @file       acdCalib.dtd
+        @authors    E. Charles, J. Bogart
+
+        dtd for ACD calibration data types
+
+    */
+
+ -->
+
+<!-- 
+   Overall structure is some header information followed by
+   a sequence of tile (or ribbon) data.  Tile (or ribbon) data is made up
+   of data form the 2 PMTs that read the tile
+
+   The header information comes in two parts:
+     "generic" is relevant to any sort of calibration data,
+               not just that from the ACD, such as the
+               name of the instrument being calibrated.
+               See further comments above the generic element
+               declaration
+     "dimension" contains all the parameters necessary to figure 
+               out which data goes with which hardware entity.
+               See further comments above the dimension element
+               declaration
+  -->  
+
+<!ELEMENT acdCalib (generic, dimension, tile* ) >
+       
+<!-- Container for all the header/metadata type information to be
+     included here.  Complete metadata will be found in the calibration
+     MySQL database. 
+
+     Description of attributes:
+
+            instrument    - one of "flight", "EM", etc.  Could also
+                            be implemented as enumeration rather than
+                            NMTOKEN
+            timestamp     - when the file was written (date and time)
+            calibType     - one of "ACD_Pedestal", "ACD_Gain",
+                            etc.
+            formatVersion - sufficient versioning information so that
+                            software attempting to read the file can
+                            determine if it supports this version. 
+                            [Might get rid of this here and just keep
+                            it in the MySQL metadata table]
+ -->
+<!ELEMENT  generic (inputSample?) >
+<!ATTLIST generic  
+   instrument  (LAT | CalUnit | MiniLat) #REQUIRED
+   timestamp   CDATA #REQUIRED
+   calibType ( ACD_Pedestal | ACD_Gain | ACD_Veto | ACD_Range |
+               ACD_Cno | ACD_HighRange | ACD_CoherentNoise | ACD_Ribbon |               
+               ACD_HighPed | ACD_Carbon | ACD_VetoFit | ACD_CnoFit | ACD_Check |
+               ACD_PE ) #REQUIRED              
+   algorithm   CDATA #REQUIRED
+   DTDVersion  NMTOKEN "v3"       
+   fmtVersion  NMTOKEN #REQUIRED>
+
+<!-- Description of events used as input to the procedure 
+     Start- and stop-times should be timestamps of earliest and
+     latest events included in sample.
+     inputSample is (for now) optional.
+-->
+<!ELEMENT inputSample (inputFile*) >
+<!ATTLIST inputSample  startTime CDATA #REQUIRED
+                       stopTime  CDATA #REQUIRED
+                       triggers  CDATA #REQUIRED 
+                       source    CDATA #REQUIRED
+                       mode      NMTOKEN  #REQUIRED>
+
+<!-- Description of the input files.
+     This is just the path to the file and the type of file.
+     Pedestal, Gain and Range and HighRange are calibration files,
+     Digi, Recon, Merit, Svac and CEL are event data files.  
+-->
+<!ELEMENT inputFile EMPTY>
+<!ATTLIST inputFile type  (Pedestal | Gain | Range | HighRange | Carbon | HighPed | 
+                           Veto | Cno | VetoSettings | CnoSettings |
+                           Digi | Recon | Merit | Svac | CEL ) #REQUIRED
+                    path  CDATA #REQUIRED>
+
+<!-- Describe how the data is dimensioned:
+        nTile:  number of tiles+ribbons and not-connected channels
+                (no default; should be 108 for LAT)
+        nFace:  face+ribbon orientations  (default = 5 + 2 = 7)
+        nRow:   max number       (default = 5, occurs in top face)
+        nCol:   max number       (default = 5, occurs in top face)
+        nPmt:   number of PMT      (default = 2)
+        nNA:    number of unconnected channels (default = 11)
+        exact:  true if number of subelements = nTile*nPmt, else
+                false.  Default is true.
+ -->
+  
+<!ELEMENT dimension EMPTY>
+<!ATTLIST dimension nTile NMTOKEN  #REQUIRED
+                    nFace NMTOKEN  "7"
+                    nRow  NMTOKEN  "5"
+                    nCol  NMTOKEN  "5"
+                    nPmt  NMTOKEN  "2"
+                    nNA   NMTOKEN  "11"
+                    exact NMTOKEN #FIXED "true"     >
+
+<!ELEMENT tile (pmt,pmt) >
+<!ATTLIST tile tileId NMTOKEN #REQUIRED>
+
+<!ELEMENT pmt (acdPed* | acdGain* | acdVeto* |  acdRange* |  
+               acdCno* | acdCoherentNoise* | acdHighRange* | acdRibbon* |
+               acdHighPed* | acdCarbon* | acdVetoFit* | acdCnoFit* | acdCheck* | 
+               acdPE* ) >
+<!ATTLIST pmt iPmt NMTOKEN #REQUIRED>
+
+<!ELEMENT acdPed  EMPTY>
+<!ATTLIST acdPed  mean NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdGain EMPTY>
+<!ATTLIST acdGain peak NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdVeto EMPTY>
+<!ATTLIST acdVeto veto NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED                  
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdRange EMPTY>
+<!ATTLIST acdRange low_max NMTOKEN #REQUIRED
+                 high_min NMTOKEN #REQUIRED
+                 status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdCno EMPTY>
+<!ATTLIST acdCno cno NMTOKEN #REQUIRED
+                 width NMTOKEN #REQUIRED                 
+                 status NMTOKEN #REQUIRED >
+
+
+<!ELEMENT acdCoherentNoise EMPTY>
+<!ATTLIST acdCoherentNoise amplitude NMTOKEN #REQUIRED
+                 decay NMTOKEN #REQUIRED
+                 frequency NMTOKEN #REQUIRED
+                 phase NMTOKEN #REQUIRED
+                 status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdHighRange EMPTY>
+<!ATTLIST acdHighRange pedestal NMTOKEN #REQUIRED
+                  slope NMTOKEN #REQUIRED
+                 saturation NMTOKEN #REQUIRED
+                 status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdRibbon EMPTY>
+<!ATTLIST acdRibbon Frac_n1 NMTOKEN #REQUIRED
+                  Frac_n2 NMTOKEN #REQUIRED
+                  Frac_n3 NMTOKEN #REQUIRED
+                  Frac_p1 NMTOKEN #REQUIRED
+                  Frac_p2 NMTOKEN #REQUIRED
+                  Frac_p3 NMTOKEN #REQUIRED
+                  Norm    NMTOKEN #IMPLIED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdHighPed  EMPTY>
+<!ATTLIST acdHighPed  mean NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdCarbon EMPTY>
+<!ATTLIST acdCarbon peak NMTOKEN #REQUIRED
+                  width NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdVetoFit EMPTY>
+<!ATTLIST acdVetoFit slope NMTOKEN #REQUIRED
+                  offset NMTOKEN #REQUIRED 
+                  mipPeak NMTOKEN #IMPLIED       
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdCnoFit EMPTY>
+<!ATTLIST acdCnoFit slope NMTOKEN #REQUIRED
+                  offset NMTOKEN #REQUIRED      
+                  carbonPeak NMTOKEN #IMPLIED     
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdCheck EMPTY>
+<!ATTLIST acdCheck ped NMTOKEN #REQUIRED
+                  mip NMTOKEN #REQUIRED      
+                  veto NMTOKEN #REQUIRED   
+                  cno NMTOKEN #REQUIRED      
+                  range NMTOKEN #REQUIRED    
+                  status NMTOKEN #REQUIRED >
+
+<!ELEMENT acdPE EMPTY>
+<!ATTLIST acdPE PE NMTOKEN #REQUIRED
+                  status NMTOKEN #REQUIRED >
+
+] >
+<acdCalib>
+  <generic DTDVersion="v3r2" algorithm="Counting" calibType="ACD_Range" fmtVersion="v3r2" instrument="LAT" timestamp="2026-07-08 18:45:38 UTC">
+    <inputSample mode="Normal" source="Orbit" startTime="729383944.6773" stopTime="729409455.0866" triggers="9700931">
+      <inputFile path="/sdf/group/fermi/ground/releases/monitor/ACD/FLIGHT/Ped/120910/r0368924812_ped.xml" type="Pedestal" />
+      <inputFile path="/sdf/group/fermi/ground/releases/monitor/ACD/FLIGHT/HighPed/081208/r0250709941_pedHigh.xml" type="HighPed" />
+      <inputFile path="root://glast-rdr.slac.stanford.edu//glast/Data/Flight/Level1/LPA/prod/5.9/digi/r0729383941_v001_digi.root" type="Digi" />
+      <inputFile path="root://glast-rdr.slac.stanford.edu//glast/Data/Flight/Level1/LPA/prod/5.9/digi/r0729389629_v001_digi.root" type="Digi" />
+      <inputFile path="root://glast-rdr.slac.stanford.edu//glast/Data/Flight/Level1/LPA/prod/5.9/digi/r0729395318_v000_digi.root" type="Digi" />
+      <inputFile path="root://glast-rdr.slac.stanford.edu//glast/Data/Flight/Level1/LPA/prod/5.9/digi/r0729401006_v001_digi.root" type="Digi" />
+      <inputFile path="root://glast-rdr.slac.stanford.edu//glast/Data/Flight/Level1/LPA/prod/5.9/digi/r0729404665_v000_digi.root" type="Digi" />
+    </inputSample>
+  </generic>
+  <dimension nTile="108" />
+  <tile tileId="000">
+    <pmt iPmt="0">
+      <acdRange high_min="228" low_max="3940" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="773" low_max="3928" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="001">
+    <pmt iPmt="0">
+      <acdRange high_min="400" low_max="3961" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="505" low_max="3945" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="002">
+    <pmt iPmt="0">
+      <acdRange high_min="503" low_max="3909" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="224" low_max="4005" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="003">
+    <pmt iPmt="0">
+      <acdRange high_min="211" low_max="3943" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="444" low_max="3965" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="004">
+    <pmt iPmt="0">
+      <acdRange high_min="840" low_max="3943" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="610" low_max="3928" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="010">
+    <pmt iPmt="0">
+      <acdRange high_min="394" low_max="3922" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="150" low_max="3973" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="011">
+    <pmt iPmt="0">
+      <acdRange high_min="1005" low_max="3909" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="878" low_max="3935" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="012">
+    <pmt iPmt="0">
+      <acdRange high_min="552" low_max="3968" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="350" low_max="3950" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="013">
+    <pmt iPmt="0">
+      <acdRange high_min="242" low_max="3989" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="919" low_max="3985" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="014">
+    <pmt iPmt="0">
+      <acdRange high_min="219" low_max="3952" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="205" low_max="3966" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="020">
+    <pmt iPmt="0">
+      <acdRange high_min="128" low_max="3978" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="638" low_max="3906" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="021">
+    <pmt iPmt="0">
+      <acdRange high_min="125" low_max="3946" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="168" low_max="3950" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="022">
+    <pmt iPmt="0">
+      <acdRange high_min="209" low_max="3928" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="197" low_max="3927" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="023">
+    <pmt iPmt="0">
+      <acdRange high_min="699" low_max="3957" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="688" low_max="4044" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="024">
+    <pmt iPmt="0">
+      <acdRange high_min="432" low_max="3981" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="752" low_max="3941" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="030">
+    <pmt iPmt="0">
+      <acdRange high_min="348" low_max="3949" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="593" low_max="4000" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="031">
+    <pmt iPmt="0">
+      <acdRange high_min="198" low_max="4010" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="118" low_max="3940" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="032">
+    <pmt iPmt="0">
+      <acdRange high_min="328" low_max="3937" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="218" low_max="3951" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="033">
+    <pmt iPmt="0">
+      <acdRange high_min="428" low_max="3931" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="250" low_max="3929" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="034">
+    <pmt iPmt="0">
+      <acdRange high_min="386" low_max="3967" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="166" low_max="3937" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="040">
+    <pmt iPmt="0">
+      <acdRange high_min="355" low_max="3929" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="256" low_max="3965" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="041">
+    <pmt iPmt="0">
+      <acdRange high_min="675" low_max="3943" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="151" low_max="3979" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="042">
+    <pmt iPmt="0">
+      <acdRange high_min="419" low_max="3991" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="168" low_max="3925" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="043">
+    <pmt iPmt="0">
+      <acdRange high_min="699" low_max="3953" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="191" low_max="3886" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="044">
+    <pmt iPmt="0">
+      <acdRange high_min="423" low_max="3903" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="452" low_max="3990" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="100">
+    <pmt iPmt="0">
+      <acdRange high_min="919" low_max="3936" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="260" low_max="3920" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="101">
+    <pmt iPmt="0">
+      <acdRange high_min="175" low_max="3922" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="183" low_max="3968" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="102">
+    <pmt iPmt="0">
+      <acdRange high_min="183" low_max="3989" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="328" low_max="3952" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="103">
+    <pmt iPmt="0">
+      <acdRange high_min="939" low_max="3957" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="234" low_max="3956" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="104">
+    <pmt iPmt="0">
+      <acdRange high_min="200" low_max="3985" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="477" low_max="3974" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="110">
+    <pmt iPmt="0">
+      <acdRange high_min="607" low_max="3919" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="177" low_max="3929" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="111">
+    <pmt iPmt="0">
+      <acdRange high_min="506" low_max="3933" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="486" low_max="3937" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="112">
+    <pmt iPmt="0">
+      <acdRange high_min="373" low_max="3949" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="526" low_max="3954" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="113">
+    <pmt iPmt="0">
+      <acdRange high_min="161" low_max="3950" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="206" low_max="3970" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="114">
+    <pmt iPmt="0">
+      <acdRange high_min="237" low_max="3950" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="921" low_max="3948" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="120">
+    <pmt iPmt="0">
+      <acdRange high_min="467" low_max="3964" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="402" low_max="3960" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="121">
+    <pmt iPmt="0">
+      <acdRange high_min="138" low_max="3930" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="222" low_max="3966" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="122">
+    <pmt iPmt="0">
+      <acdRange high_min="154" low_max="3933" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="163" low_max="3933" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="123">
+    <pmt iPmt="0">
+      <acdRange high_min="185" low_max="3928" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="159" low_max="3915" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="124">
+    <pmt iPmt="0">
+      <acdRange high_min="221" low_max="3962" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="220" low_max="3932" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="130">
+    <pmt iPmt="0">
+      <acdRange high_min="418" low_max="3995" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="581" low_max="3957" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="200">
+    <pmt iPmt="0">
+      <acdRange high_min="733" low_max="3992" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="596" low_max="3969" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="201">
+    <pmt iPmt="0">
+      <acdRange high_min="208" low_max="3963" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="182" low_max="3883" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="202">
+    <pmt iPmt="0">
+      <acdRange high_min="224" low_max="3959" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="716" low_max="3972" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="203">
+    <pmt iPmt="0">
+      <acdRange high_min="775" low_max="3973" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="149" low_max="3964" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="204">
+    <pmt iPmt="0">
+      <acdRange high_min="227" low_max="3985" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="181" low_max="3957" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="210">
+    <pmt iPmt="0">
+      <acdRange high_min="200" low_max="3957" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="932" low_max="3914" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="211">
+    <pmt iPmt="0">
+      <acdRange high_min="460" low_max="3917" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="121" low_max="3963" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="212">
+    <pmt iPmt="0">
+      <acdRange high_min="175" low_max="3957" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="704" low_max="3940" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="213">
+    <pmt iPmt="0">
+      <acdRange high_min="442" low_max="3951" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="187" low_max="3962" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="214">
+    <pmt iPmt="0">
+      <acdRange high_min="223" low_max="3926" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="146" low_max="3955" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="220">
+    <pmt iPmt="0">
+      <acdRange high_min="168" low_max="3991" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="224" low_max="3963" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="221">
+    <pmt iPmt="0">
+      <acdRange high_min="473" low_max="3990" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="127" low_max="3992" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="222">
+    <pmt iPmt="0">
+      <acdRange high_min="588" low_max="3945" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="167" low_max="4000" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="223">
+    <pmt iPmt="0">
+      <acdRange high_min="375" low_max="3993" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="186" low_max="3997" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="224">
+    <pmt iPmt="0">
+      <acdRange high_min="436" low_max="3967" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="139" low_max="3939" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="230">
+    <pmt iPmt="0">
+      <acdRange high_min="447" low_max="3993" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="332" low_max="3950" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="300">
+    <pmt iPmt="0">
+      <acdRange high_min="408" low_max="3988" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="468" low_max="3988" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="301">
+    <pmt iPmt="0">
+      <acdRange high_min="394" low_max="3975" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="130" low_max="3925" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="302">
+    <pmt iPmt="0">
+      <acdRange high_min="423" low_max="3983" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="201" low_max="3970" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="303">
+    <pmt iPmt="0">
+      <acdRange high_min="354" low_max="3954" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="287" low_max="3925" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="304">
+    <pmt iPmt="0">
+      <acdRange high_min="202" low_max="3962" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="509" low_max="3923" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="310">
+    <pmt iPmt="0">
+      <acdRange high_min="697" low_max="3926" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="216" low_max="3924" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="311">
+    <pmt iPmt="0">
+      <acdRange high_min="178" low_max="3933" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="524" low_max="3932" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="312">
+    <pmt iPmt="0">
+      <acdRange high_min="453" low_max="3954" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="183" low_max="3946" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="313">
+    <pmt iPmt="0">
+      <acdRange high_min="152" low_max="3975" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="454" low_max="3923" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="314">
+    <pmt iPmt="0">
+      <acdRange high_min="471" low_max="3936" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="814" low_max="3949" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="320">
+    <pmt iPmt="0">
+      <acdRange high_min="528" low_max="3974" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="125" low_max="3959" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="321">
+    <pmt iPmt="0">
+      <acdRange high_min="673" low_max="3920" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="419" low_max="3921" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="322">
+    <pmt iPmt="0">
+      <acdRange high_min="321" low_max="4010" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="512" low_max="3996" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="323">
+    <pmt iPmt="0">
+      <acdRange high_min="122" low_max="3916" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="198" low_max="3919" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="324">
+    <pmt iPmt="0">
+      <acdRange high_min="226" low_max="3922" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="371" low_max="3944" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="330">
+    <pmt iPmt="0">
+      <acdRange high_min="728" low_max="3917" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="217" low_max="3989" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="400">
+    <pmt iPmt="0">
+      <acdRange high_min="553" low_max="3921" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="227" low_max="3969" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="401">
+    <pmt iPmt="0">
+      <acdRange high_min="1033" low_max="3969" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="237" low_max="3921" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="402">
+    <pmt iPmt="0">
+      <acdRange high_min="165" low_max="3951" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="725" low_max="3968" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="403">
+    <pmt iPmt="0">
+      <acdRange high_min="333" low_max="3920" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="633" low_max="3926" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="404">
+    <pmt iPmt="0">
+      <acdRange high_min="343" low_max="4001" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="599" low_max="3940" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="410">
+    <pmt iPmt="0">
+      <acdRange high_min="401" low_max="3965" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="207" low_max="3993" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="411">
+    <pmt iPmt="0">
+      <acdRange high_min="234" low_max="3919" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="237" low_max="4014" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="412">
+    <pmt iPmt="0">
+      <acdRange high_min="204" low_max="3991" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="608" low_max="3934" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="413">
+    <pmt iPmt="0">
+      <acdRange high_min="221" low_max="3961" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="310" low_max="3963" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="414">
+    <pmt iPmt="0">
+      <acdRange high_min="283" low_max="3951" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="288" low_max="3914" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="420">
+    <pmt iPmt="0">
+      <acdRange high_min="553" low_max="3942" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="608" low_max="3994" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="421">
+    <pmt iPmt="0">
+      <acdRange high_min="184" low_max="3936" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="317" low_max="3926" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="422">
+    <pmt iPmt="0">
+      <acdRange high_min="272" low_max="3950" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="397" low_max="3965" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="423">
+    <pmt iPmt="0">
+      <acdRange high_min="609" low_max="4003" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="585" low_max="3950" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="424">
+    <pmt iPmt="0">
+      <acdRange high_min="138" low_max="3940" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="304" low_max="3955" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="430">
+    <pmt iPmt="0">
+      <acdRange high_min="164" low_max="3965" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="290" low_max="3947" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="500">
+    <pmt iPmt="0">
+      <acdRange high_min="376" low_max="4013" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="681" low_max="3932" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="501">
+    <pmt iPmt="0">
+      <acdRange high_min="546" low_max="3916" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="165" low_max="3980" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="502">
+    <pmt iPmt="0">
+      <acdRange high_min="854" low_max="3967" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="231" low_max="3940" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="503">
+    <pmt iPmt="0">
+      <acdRange high_min="231" low_max="3935" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="232" low_max="3962" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="600">
+    <pmt iPmt="0">
+      <acdRange high_min="662" low_max="3956" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="251" low_max="3934" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="601">
+    <pmt iPmt="0">
+      <acdRange high_min="953" low_max="3945" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="399" low_max="3968" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="602">
+    <pmt iPmt="0">
+      <acdRange high_min="850" low_max="3993" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="450" low_max="3916" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="603">
+    <pmt iPmt="0">
+      <acdRange high_min="0" low_max="910" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="493" low_max="3964" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="700">
+    <pmt iPmt="0">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="701">
+    <pmt iPmt="0">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="702">
+    <pmt iPmt="0">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="703">
+    <pmt iPmt="0">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="704">
+    <pmt iPmt="0">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="705">
+    <pmt iPmt="0">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="706">
+    <pmt iPmt="0">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="707">
+    <pmt iPmt="0">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="708">
+    <pmt iPmt="0">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="709">
+    <pmt iPmt="0">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+  </tile>
+  <tile tileId="710">
+    <pmt iPmt="0">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+    <pmt iPmt="1">
+      <acdRange high_min="0" low_max="0" status="0" />
+    </pmt>
+  </tile>
+</acdCalib>
